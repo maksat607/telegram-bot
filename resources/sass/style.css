@@ -151,7 +151,7 @@ input[type="checkbox"] {
 .me .image {
     width: 70px;
     height: 70px;
-    background: #FFF url(https://thispersondoesnotexist.com/image) no-repeat center;
+    /*background: #FFF url() no-repeat center;*/
     background-size: cover;
     border-radius: 100%;
     cursor: pointer;
@@ -538,7 +538,7 @@ header {
 }
 
 .chatInfo .my-image {
-    background-image: url(https://avatars1.githubusercontent.com/u/21313332?s=460&v=4);
+    /*background-image: url(https://avatars1.githubusercontent.com/u/21313332?s=460&v=4);*/
 }
 
 .chatInfo .name {
