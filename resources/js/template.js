@@ -72,19 +72,27 @@ async function getChat(customer) {
     await axios.get(`${APP_URL}/customer/${customer}/chat`)
         .then(response => {
 
+            if ( $(`#${response.data.customer_id} .chatButton`).length ) {
+                var active = false;
+                if ($(`#${response.data.customer_id} .chatButton`).hasClass('active')){
+                    active = true;
+                    $('.convHistory.userBg').empty();
+                    $('.convHistory.userBg').append(response.data.messages);
+                }
 
-            var active = false;
-            if ($(`#${response.data.customer_id} .chatButton`).hasClass('active')){
-                active = true;
-                $('.convHistory.userBg').empty();
-                $('.convHistory.userBg').append(response.data.messages);
+                $(`#${response.data.customer_id}`).empty();
+                $(`#${response.data.customer_id}`).append(response.data.customer)
+                if(active){
+                    $(`#${response.data.customer_id} .chatButton`).addClass('active');
+                }
+            }else {
+                $('.chats').prepend(
+                    `<div id="${response.data.customer_id}">
+                        ${response.data.customer}
+                     </div>`
+                );
             }
 
-            $(`#${response.data.customer_id}`).empty();
-            $(`#${response.data.customer_id}`).append(response.data.customer)
-            if(active){
-                $(`#${response.data.customer_id} .chatButton`).addClass('active');
-            }
             // convHistory userBg
             var objDiv = document.getElementById("scrollBar");
             objDiv.scrollTop = objDiv.scrollHeight;
