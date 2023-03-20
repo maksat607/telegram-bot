@@ -28,7 +28,7 @@ class HomeController extends Controller
 //        foreach ($customers as $customer){
 //            $htmlRender =+ view('left', compact('fullname','short','time','unread',))->render();
 //        }
-        $customers = Customer::with('notifications')->get();
+        $customers = Customer::with('notifications')->orderBy('created_at')->get();
         return view('home',compact('customers'));
     }
 }

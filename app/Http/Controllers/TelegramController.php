@@ -47,14 +47,6 @@ class TelegramController extends Controller
         $customer->load('notifications');
         event(new ApplicationChat($customer,$data));
 
-//        $client = new Client(['base_uri' => 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/']);
-//        $client->post('sendMessage', [
-//            'json' => [
-//                'chat_id' => '$chatId',
-//                'text' => 'You said: ' . '$message',
-//            ],
-//        ]);
-
         return 'OK';
     }
     public function setwebhook(){

@@ -2,7 +2,7 @@
     @php
         $count = $customer->notifications->filter(function ($notification) {
                 $data = $notification->data;
-                return $data['self'] == 0;/**/
+                return $data['self'] == 1;/**/
             })->count()
     @endphp
     <div class="chatButton  @if (isset($loop)&&$loop->first)active @endif " data-id="{{ $customer->id }}">
