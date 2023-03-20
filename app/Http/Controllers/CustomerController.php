@@ -49,7 +49,12 @@ class CustomerController extends Controller
             'chat_id' => $customer->telegram_id,
             'text' => $request->message
         ];
-        $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage?" . http_build_query($data) );
+        try {
+            $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage?" . http_build_query($data) );
+        }catch(Exception $e) {
+            echo 'Message: ' .$e->getMessage();
+        }
+
 
         return true;
     }
