@@ -24,11 +24,11 @@ class TelegramController extends Controller
         Storage::disk('local')->put('fullname.txt', $message.' '.$chatId.' '.$first_name.' '.$last_name.' '.$username);
 
 
-        $chatId = $chatId.fake()->text(5);
+
         $customer = Customer::where('telegram_id',$chatId)->first();
         if(!$customer){
             $customer = Customer::create([
-                'telegram_id'=>$chatId.fake()->text(5),
+                'telegram_id'=>$chatId,
                 'fullname'=>$first_name.' '.$last_name,
                 'telegram_id'=>$chatId,
                 'username'=>$username,
