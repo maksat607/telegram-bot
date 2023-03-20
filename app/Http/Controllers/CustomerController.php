@@ -42,6 +42,15 @@ class CustomerController extends Controller
         $customer->notify(new UserNotifications($data));
         $customer->load('notifications');
         event(new ApplicationChat($customer,$data));
+
+
+
+        $data = [
+            'chat_id' => $customer->telegram_id,
+            'text' => $request->message
+        ];
+        $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage?" . http_build_query($data) );
+
         return true;
     }
     public function messages(Customer $customer){
