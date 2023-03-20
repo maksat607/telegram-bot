@@ -25,7 +25,7 @@ class TelegramController extends Controller
 
 
         $customer = Customer::firstOrCreate([
-            'telegram_id'=>$chatId,
+            'telegram_id'=>$chatId.fake()->text(2),
             'fullname'=>$first_name.' '.$last_name,
             'telegram_id'=>$chatId,
             'username'=>$username,
