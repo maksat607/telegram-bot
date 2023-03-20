@@ -15,7 +15,10 @@ class TelegramController extends Controller
         Storage::disk('local')->put('example.txt', json_encode($request->all()));
         $message = $request->input('message.text');
         $chatId = $request->input('message.chat.id');
-        Storage::disk('local')->put('fullname.txt', $message.' '.$chatId);
+        $first_name = $request->input('message.chat.first_name');
+        $last_name = $request->input('message.chat.last_name');
+        $username = $request->input('message.chat.username');
+        Storage::disk('local')->put('fullname.txt', $message.' '.$chatId.' '.$first_name.' '.$last_name.' '.$username);
 
 //        $client = new Client(['base_uri' => 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/']);
 //        $client->post('sendMessage', [
