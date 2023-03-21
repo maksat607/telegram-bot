@@ -90,7 +90,7 @@ class CustomerController extends Controller
 
 // Send the request to the Telegram bot API
         $response = $client->request('POST', "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
-            RequestOptions::MULTIPART => $form_params
+            'multipart' => $form_params
         ]);
 
 // Handle the response
