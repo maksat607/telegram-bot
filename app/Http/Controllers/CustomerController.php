@@ -73,10 +73,20 @@ class CustomerController extends Controller
         $client = new Client();
 
 // Create a multipart form request with the file
+
+
+
         $form_params = [
-            'chat_id' => $customer->telegram_id,
-            'document' => fopen($file_path, 'r')
+            [
+                'name' => 'chat_id',
+                'chat_id' => $customer->telegram_id,
+            ],
+            [
+                'name' => 'document',
+                'contents' => fopen($file_path, 'r')
+            ]
         ];
+
 
 // Send the request to the Telegram bot API
         $response = $client->request('POST', "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
