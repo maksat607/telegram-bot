@@ -8,6 +8,7 @@ use App\Notifications\UserNotifications;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class CustomerController extends Controller
 {
@@ -83,16 +84,17 @@ class CustomerController extends Controller
             ],
             [
                 'name' => 'document',
-                'contents' => fopen($file_path, 'r')
+                'contents' => $file_path
             ]
         ];
 
 
-// Send the request to the Telegram bot API
-        $response = $client->request('POST', "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
-            'multipart' => $form_params
-        ]);
 
+        $response = Http::attach(
+            'document', file_get_contents($file_path), 'photo.jpg'
+        )->post("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
+            'chat_id' => $customer->telegram_id
+        ]);
 // Handle the response
         if ($response->getStatusCode() == 200) {
             // Success
