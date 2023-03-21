@@ -3,73 +3,107 @@
 namespace App\Http\Controllers;
 
 use App\Events\ApplicationChat;
-use App\Events\NewMessages;
 use App\Models\Customer;
 use App\Notifications\UserNotifications;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function event(Customer $customer){
+    public function event(Customer $customer)
+    {
 
 
-        $bin = rand(0,1);
+        $bin = rand(0, 1);
         $data = [
-            'user_id'=> $bin ? 0 : auth()->id(),
-            'curomer_id'=>$customer->id,
-            'message'=>'tt'.fake()->text(100),
-            'self'=>$bin
+            'user_id' => $bin ? 0 : auth()->id(),
+            'curomer_id' => $customer->id,
+            'message' => 'tt' . fake()->text(100),
+            'self' => $bin
         ];
-            $customer->notify(new UserNotifications($data));
+        $customer->notify(new UserNotifications($data));
         $customer->load('notifications');
-        event(new ApplicationChat($customer,$data));
+        event(new ApplicationChat($customer, $data));
 
         echo now();
 
     }
-    public function chat(){
+
+    public function chat()
+    {
         $customers = Customer::with('notifications')->get();
-        return view('chat',compact('customers'));
+        return view('chat', compact('customers'));
     }
 
-    public function respond(Request $request,Customer $customer){
+    public function respond(Request $request, Customer $customer)
+    {
         $data = [
-            'user_id'=> auth()->id(),
-            'curomer_id'=>$customer->id,
-            'message'=>$request->message,
-            'self'=>0
+            'user_id' => auth()->id(),
+            'curomer_id' => $customer->id,
+            'message' => $request->message,
+            'self' => 0
         ];
         $customer->notify(new UserNotifications($data));
         $customer->load('notifications');
-        event(new ApplicationChat($customer,$data));
+        event(new ApplicationChat($customer, $data));
+
+        //        $url = URL::to('/uploads') . '/' . $file;
+//        file_put_contents($upload_dir, $image_base64);
+//        chmod(public_path() . '/uploads/' . $file, 0777);
 
 
+//        $data = [
+//            'chat_id' => $customer->telegram_id,
+//            'text' => $request->message
+//        ];
+//        try {
+//            $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage?" . http_build_query($data) );
+//        }catch(Exception $e) {
+//            echo 'Message: ' .$e->getMessage();
+//        }
+//
+//
+//        return true;
 
-        $data = [
+
+        $file_path = public_path().'/fon.jpg';
+
+// Create a Guzzle client
+        $client = new Client();
+
+// Create a multipart form request with the file
+        $form_params = [
             'chat_id' => $customer->telegram_id,
-            'text' => $request->message
+            'document' => fopen($file_path, 'r')
         ];
-        try {
-            $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage?" . http_build_query($data) );
-        }catch(Exception $e) {
-            echo 'Message: ' .$e->getMessage();
+
+// Send the request to the Telegram bot API
+        $response = $client->request('POST', "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
+            RequestOptions::MULTIPART => $form_params
+        ]);
+
+// Handle the response
+        if ($response->getStatusCode() == 200) {
+            // Success
+        } else {
+            // Error
         }
 
 
-        return true;
     }
-    public function messages(Customer $customer){
+
+    public function messages(Customer $customer)
+    {
 
 
-
-
-        $customerView = view('customer',['customer'=>$customer])->render();
-        $messagesView = view('messages',['messages'=>$customer->notifications->sortBy('created_at')])->render();
+        $customerView = view('customer', ['customer' => $customer])->render();
+        $messagesView = view('messages', ['messages' => $customer->notifications->sortBy('created_at')])->render();
         return [
-            'id'=>$customer->id,
-            'customer'=>$customerView,
-            'customer_id'=>'customer-'.$customer->id,
-            'messages'=>$messagesView
+            'id' => $customer->id,
+            'customer' => $customerView,
+            'customer_id' => 'customer-' . $customer->id,
+            'messages' => $messagesView
         ];
 
 
