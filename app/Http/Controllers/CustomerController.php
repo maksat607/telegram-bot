@@ -91,7 +91,7 @@ class CustomerController extends Controller
 
 
         $response = Http::attach(
-            'document', file_get_contents($file_path), 'photo.jpg'
+            'document', fopen($file_path, 'r'), 'photo.jpg'
         )->post("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
             'chat_id' => $customer->telegram_id
         ]);
