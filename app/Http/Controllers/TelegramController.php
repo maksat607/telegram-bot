@@ -25,7 +25,7 @@ class TelegramController extends Controller
             // Download the document file from Telegram
             $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/getFile?file_id=$fileId");
             $data = json_decode($response, true);
-            Storage::disk('local')->append('doc.txt', $data);
+            Storage::disk('local')->append('doc.txt', $response);
             $filePath = $data['result']['file_path'];
             $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
 //            $fileData = file_get_contents($fileUrl);
