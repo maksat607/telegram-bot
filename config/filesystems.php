@@ -29,7 +29,38 @@ return [
     */
 
     'disks' => [
-
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/'),
+            'url' => env('APP_URL').'/uploads/',
+            'visibility' => 'public',
+            'permissions' => [
+                'file'=>[
+                    'public' => 0664,
+                    'private' => 0600
+                ],
+                'dir'=>[
+                    'public' => 0664,
+                    'private' => 0600
+                ]
+            ]
+        ],
+        'icons' => [
+            'driver' => 'local',
+            'root' => public_path('icons/'),
+            'url' => env('APP_URL').'/icons/',
+            'visibility' => 'public',
+            'permissions' => [
+                'file'=>[
+                    'public' => 0664,
+                    'private' => 0600
+                ],
+                'dir'=>[
+                    'public' => 0664,
+                    'private' => 0600
+                ]
+            ]
+        ],
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),

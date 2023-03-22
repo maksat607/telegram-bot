@@ -21,9 +21,14 @@
     </div>
 
     <div class="replyBar">
-        <button class="attach">
-            <i class="material-icons d45">attach_file</i>
-        </button>
+
+
+            <input type="file" name="files[]" multiple id="file" class="d-none">
+            <button class="attach">
+                <i class="material-icons d45">attach_file</i>
+            </button>
+
+
 
         <input type="text" class="replyMessage" placeholder="Type your message...">
 

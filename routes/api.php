@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('/telegram-bot', [\App\Http\Controllers\TelegramController::class, 'handle']);
+Route::post('/{customer}/upload', [\App\Http\Controllers\TelegramController::class, 'upload']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
