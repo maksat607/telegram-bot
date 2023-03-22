@@ -17,7 +17,7 @@ class TelegramController extends Controller
     public function handle(Request $request)
     {
         $data = json_decode($request->getContent(), true);
-        Storage::disk('local')->append('json.txt', json_encode(($data));
+        Storage::disk('local')->append('json.txt', json_encode(($data)));
         if (isset($data['message']['document'])) {
             // Get the document file ID
             $fileId = $data['message']['document']['file_id'];
