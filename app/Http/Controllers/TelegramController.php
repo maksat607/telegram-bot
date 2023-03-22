@@ -88,6 +88,66 @@ class TelegramController extends Controller
 
             return response('OK', 200);
         }
+
+
+        $photos = $request->input('message.photo');
+
+        if ($photos) {
+            // Get the largest version of the photo
+            $photo = end($photos);
+
+            // Get the filename and extension of the photo
+            $file_id = $photo['file_id'];
+            $mime_type = mime_content_type('https://api.telegram.org/file/bot' . env('TELEGRAM_BOT_TOKEN') . '/' . $photo['file_path']);
+            $extension = $this->getExtensionFromMimeType($mime_type);
+            $filename = $file_id . '.' . $extension;
+
+            // Download the photo from Telegram's servers
+            $url = 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/getFile?file_id=' . $file_id;
+            $response = json_decode(file_get_contents($url), true);
+            $file_path = $response['result']['file_path'];
+            $photo_data = file_get_contents('https://api.telegram.org/file/bot' . env('TELEGRAM_BOT_TOKEN') . '/' . $file_path);
+
+            Storage::disk('uploads')->put($filename, $photo_data);
+
+                Image::make($photo_data)->resize(300, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save(public_path(). '/uploads/thumbnails/' . $filename);
+                $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
+                $url = Storage::disk('uploads')->url( $filename);
+
+            $customer = Customer::where('telegram_id', $chatId)->first();
+            if (!$customer) {
+                $customer = Customer::create([
+                    'telegram_id' => $chatId,
+                    'fullname' => $first_name . ' ' . $last_name,
+                    'telegram_id' => $chatId,
+                    'username' => $username,
+                ]);
+            }
+
+
+            $data = [
+                'user_id' => 0,
+                'curomer_id' => $customer->id,
+                'message' => '_file',
+                'thumbnail_url'=>$thumbnail_url,
+                'url'=>$url,
+                'self' => 1
+            ];
+            $customer->notify(new UserNotifications($data));
+            $customer->load('notifications');
+            event(new ApplicationChat($customer, $data));
+
+            return 'OK';
+
+            // Do something with the saved photo, e.g. send it to a user or store its path in a database
+        }
+
+
+
+
+
         Storage::disk('local')->append('example.txt', json_encode($request->all()));
 
 
@@ -115,7 +175,17 @@ class TelegramController extends Controller
 
         return 'OK';
     }
+    private function getExtensionFromMimeType($mime_type)
+    {
+        $extensions = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/bmp' => 'bmp',
+        ];
 
+        return $extensions[$mime_type] ?? '';
+    }
     public function upload(Request $request,Customer $customer,Telegram $telegram)
     {
 
