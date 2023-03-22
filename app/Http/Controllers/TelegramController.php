@@ -37,12 +37,12 @@ class TelegramController extends Controller
             $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
 
             Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
-            Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save(public_path(). '/uploads/thumbnails/' . basename($fileUrl));
+//            Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
+//                $constraint->aspectRatio();
+//            })->save(public_path(). '/uploads/thumbnails/' . basename($fileUrl));
 
             $url = Storage::disk('uploads')->url( basename($fileUrl));
-            $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . basename($fileUrl));
+
 
             $path_parts = pathinfo($fileUrl);
 
