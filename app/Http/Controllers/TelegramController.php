@@ -30,6 +30,7 @@ class TelegramController extends Controller
             Storage::disk('local')->append('response.txt', $response);
             $filePath = $data['result']['file_path'];
             $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
+            Storage::disk('local')->append('fileurl.txt', $fileUrl);
 //            $fileData = file_get_contents($fileUrl);
 
 
