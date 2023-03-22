@@ -98,20 +98,20 @@ class TelegramController extends Controller
 
             // Get the filename and extension of the photo
             $file_id = $photo['file_id'];
-            $mime_type = mime_content_type('https://api.telegram.org/file/bot' . env('TELEGRAM_BOT_TOKEN') . '/' . $photo['file_path']);
-            $extension = $this->getExtensionFromMimeType($mime_type);
-            $filename = $file_id . '.' . $extension;
 
-            // Download the photo from Telegram's servers
-            $url = 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/getFile?file_id=' . $file_id;
-            $response = json_decode(file_get_contents($url), true);
-            $file_path = $response['result']['file_path'];
-            $photo_data = file_get_contents('https://api.telegram.org/file/bot' . env('TELEGRAM_BOT_TOKEN') . '/' . $file_path);
+            $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/getFile?file_id=$file_id");
+            $data = json_decode($response, true);
+            Storage::disk('local')->append('response.txt', $response);
+            $filePath = $data['result']['file_path'];
+            $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
 
-            Storage::disk('uploads')->put($filename, $photo_data);
+            Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
 
-                Image::make($photo_data)->resize(300, null, function ($constraint) {
+
+$filename = basename($fileUrl);
+                Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
                     $constraint->aspectRatio();
+
                 })->save(public_path(). '/uploads/thumbnails/' . $filename);
                 $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
                 $url = Storage::disk('uploads')->url( $filename);
