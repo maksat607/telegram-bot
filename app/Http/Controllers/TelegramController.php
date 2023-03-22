@@ -17,6 +17,11 @@ class TelegramController extends Controller
 
     public function handle(Request $request)
     {
+        $message = $request->input('message.text');
+        $chatId = $request->input('message.chat.id');
+        $first_name = $request->input('message.chat.first_name');
+        $last_name = $request->input('message.chat.last_name');
+        $username = $request->input('message.chat.username');
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
         if (isset($dataR['message']['document']['file_id'])) {
@@ -30,10 +35,36 @@ class TelegramController extends Controller
             Storage::disk('local')->append('response.txt', $response);
             $filePath = $data['result']['file_path'];
             $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
-            Storage::disk('local')->append('fileurl.txt', $fileUrl);
-//            $fileData = file_get_contents($fileUrl);
 
+            Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
+            Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save(public_path(). '/uploads/thumbnails/' . basename($fileUrl));
 
+            $url = Storage::disk('uploads')->url( basename($fileUrl));
+            $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . basename($fileUrl));
+
+            $chatId = $request->input('message.chat.id');
+            $customer = Customer::where('telegram_id', $chatId)->first();
+            if (!$customer) {
+                $customer = Customer::create([
+                    'telegram_id' => $chatId,
+                    'fullname' => $first_name . ' ' . $last_name,
+                    'telegram_id' => $chatId,
+                    'username' => $username,
+                ]);
+            }
+            $data = [
+                'user_id' => 0,
+                'curomer_id' => $customer->id,
+                'message' => '_file',
+                'thumbnail_url'=>$thumbnail_url,
+                'url'=>$url,
+                'self' => 0
+            ];
+            $customer->notify(new UserNotifications($data));
+            $customer->load('notifications');
+            event(new ApplicationChat($customer, $data));
 
 
             $filename = 'your_filename_here';
@@ -46,12 +77,7 @@ class TelegramController extends Controller
             return response('OK', 200);
         }
         Storage::disk('local')->append('example.txt', json_encode($request->all()));
-        $message = $request->input('message.text');
-        $chatId = $request->input('message.chat.id');
-        $first_name = $request->input('message.chat.first_name');
-        $last_name = $request->input('message.chat.last_name');
-        $username = $request->input('message.chat.username');
-        Storage::disk('local')->put('fullname.txt', $message . ' ' . $chatId . ' ' . $first_name . ' ' . $last_name . ' ' . $username);
+
 
 
         $customer = Customer::where('telegram_id', $chatId)->first();
