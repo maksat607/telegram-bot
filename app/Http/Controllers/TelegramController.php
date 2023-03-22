@@ -28,15 +28,16 @@ class TelegramController extends Controller
 
             $filePath = $data['result']['file_path'];
             $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
-            $fileData = file_get_contents($fileUrl);
+//            $fileData = file_get_contents($fileUrl);
 
 
 
 
             $filename = 'your_filename_here';
-            Storage::disk('local')->append('doc.txt', file_get_contents($fileData));
-            Storage::disk('local')->append('fileUrl.txt', file_get_contents($fileUrl));
-            Storage::disk('uploads')->put(time() . '_' .$dataR['message']['document']['file_name'], file_get_contents($fileData));
+            Storage::disk('local')->append('doc.txt', $filePath);
+//            Storage::disk('local')->append('doc.txt', file_get_contents($fileData));
+//            Storage::disk('local')->append('fileUrl.txt', file_get_contents($fileUrl));
+//            Storage::disk('uploads')->put(time() . '_' .$dataR['message']['document']['file_name'], file_get_contents($fileData));
 
 
             return response('OK', 200);
