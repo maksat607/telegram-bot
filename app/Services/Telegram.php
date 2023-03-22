@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class Telegram
 {
+
     private $api_key;
     private $api_url;
 
@@ -27,6 +29,14 @@ class Telegram
             ],
         ]);
 
+        return json_decode($response->getBody(), true);
+    }
+    public function sendFile($chat_id,$file_path,){
+        $response = Http::attach(
+            'document', fopen($file_path, 'r'), basename($file_path)
+        )->post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendDocument", [
+            'chat_id' => $chat_id
+        ]);
         return json_decode($response->getBody(), true);
     }
 }

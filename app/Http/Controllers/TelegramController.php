@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Events\ApplicationChat;
 use App\Models\Customer;
 use App\Notifications\UserNotifications;
+use App\Services\Telegram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Telegram\Bot\Api;
-use Telegram\Bot\Laravel\Facades\Telegram;
+
 
 class TelegramController extends Controller
 {
@@ -76,7 +77,7 @@ class TelegramController extends Controller
         return 'OK';
     }
 
-    public function upload(Request $request,Customer $customer)
+    public function upload(Request $request,Customer $customer,Telegram $telegram)
     {
 
         if ($request->hasFile('files')) {
@@ -108,6 +109,9 @@ class TelegramController extends Controller
                 $customer->notify(new UserNotifications($data));
                 $customer->load('notifications');
                 event(new ApplicationChat($customer, $data));
+
+                $telegram->sendFile($customer->telegram_id,public_path('uploads').'/'.basename($url));
+
             }
             return response()->json(['message' => 'Files uploaded successfully']);
         } else {

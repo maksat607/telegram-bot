@@ -14,6 +14,7 @@ use Monolog\Handler\TelegramBotHandler;
 
 class CustomerController extends Controller
 {
+
     public function event(Customer $customer)
     {
 
@@ -39,7 +40,7 @@ class CustomerController extends Controller
         return view('chat', compact('customers'));
     }
 
-    public function respond(Request $request, Customer $customer)
+    public function respond(Request $request, Customer $customer, Telegram $telegramBot)
     {
         $data = [
             'user_id' => auth()->id(),
@@ -70,10 +71,9 @@ class CustomerController extends Controller
 //        return true;
 
 
-        $file_path = public_path().'/fon.jpg';
 
-// Create a Guzzle client
-        $client = new Client();
+
+
 
 // Create a multipart form request with the file
 
@@ -82,14 +82,10 @@ class CustomerController extends Controller
 
 
 
-//        $response = Http::attach(
-//            'document', fopen($file_path, 'r'), 'photo.jpg'
-//        )->post("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
-//            'chat_id' => $customer->telegram_id
-//        ]);
+
 // Handle the response
 
-        $telegramBot = new Telegram();
+
         $response = $telegramBot->sendMessage( $customer->telegram_id, $request->message);
 
 
