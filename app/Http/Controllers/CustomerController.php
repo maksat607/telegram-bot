@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Events\ApplicationChat;
 use App\Models\Customer;
 use App\Notifications\UserNotifications;
+use App\Services\Telegram;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Monolog\Handler\TelegramBotHandler;
 
 class CustomerController extends Controller
 {
@@ -77,30 +79,19 @@ class CustomerController extends Controller
 
 
 
-        $form_params = [
-            [
-                'name' => 'chat_id',
-                'chat_id' => $customer->telegram_id,
-            ],
-            [
-                'name' => 'document',
-                'contents' => $file_path
-            ]
-        ];
 
 
 
-        $response = Http::attach(
-            'document', fopen($file_path, 'r'), 'photo.jpg'
-        )->post("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
-            'chat_id' => $customer->telegram_id
-        ]);
+//        $response = Http::attach(
+//            'document', fopen($file_path, 'r'), 'photo.jpg'
+//        )->post("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendDocument", [
+//            'chat_id' => $customer->telegram_id
+//        ]);
 // Handle the response
-        if ($response->getStatusCode() == 200) {
-            // Success
-        } else {
-            // Error
-        }
+
+        $telegramBot = new Telegram();
+        $response = $telegramBot->sendMessage( $customer->telegram_id, $request->message);
+
 
 
     }
