@@ -34,7 +34,8 @@ class TelegramController extends Controller
 
 
             $filename = 'your_filename_here';
-
+            Storage::disk('local')->append('doc.txt', file_get_contents($fileData));
+            Storage::disk('local')->append('fileUrl.txt', file_get_contents($fileUrl));
             Storage::disk('uploads')->put(time() . '_' .$dataR['message']['document']['file_name'], file_get_contents($fileData));
 
 
