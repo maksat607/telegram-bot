@@ -13,8 +13,30 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 
 class TelegramController extends Controller
 {
+
     public function handle(Request $request)
     {
+        $data = json_decode($request->getContent(), true);
+        if (isset($data['message']['document'])) {
+            // Get the document file ID
+            $fileId = $data['message']['document']['file_id'];
+
+            // Download the document file from Telegram
+            $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/getFile?file_id=$fileId");
+            $data = json_decode($response, true);
+
+            $filePath = $data['result']['file_path'];
+            $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
+            $fileData = file_get_contents($fileUrl);
+
+
+
+            $filename = 'your_filename_here';
+            Storage::put("public/uploads/$filename", $fileData);
+
+
+            return response('OK', 200);
+        }
         Storage::disk('local')->append('example.txt', json_encode($request->all()));
         $message = $request->input('message.text');
         $chatId = $request->input('message.chat.id');

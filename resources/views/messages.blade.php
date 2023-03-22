@@ -4,7 +4,7 @@
         {{ $message->data['message'] }}
         @else
             <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="">
-                <img src="{{  str_replace('\\', '', $message->data['thumbnail_url']) }}" alt="Thumbnail Image">
+                <img src="{{  str_replace('\\', '', $message->data['thumbnail_url']) }}" alt="Document">
             </a>
         @endif
         <i class="material-icons readStatus">done</i>

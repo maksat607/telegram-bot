@@ -30,6 +30,7 @@
 
 
 
+
         <input type="text" class="replyMessage" placeholder="Type your message...">
 
         <div class="emojiBar" style="display: none;">

@@ -10,7 +10,9 @@ $(`body`).on('change', `#file`, function (e) {
         let file = this.files.item(i);
         formData.append('files[]', images.files[i]);
     }
-    console.log(formData)
+    $('#loading').append(`<div id="spinner" class="hidden">
+          <div class="spinner-inner"></div>
+       </div>`);
     $.ajax({
         url: `api/${id}/upload`,
         headers: {
@@ -24,6 +26,16 @@ $(`body`).on('change', `#file`, function (e) {
             console.log(response);
             var objDiv = document.getElementById("scrollBar");
             objDiv.scrollTop = objDiv.scrollHeight;
+
+            $(document).ready(function() {
+                var objDiv = $("#scrollBar");
+                var images = $("img");
+
+                images.on("load", function() {
+                    objDiv.scrollTop(objDiv[0].scrollHeight);
+                });
+            });
+            $('#loading').empty();
         },
         error: function(xhr, status, error) {
             var errorMessage = xhr.status + ': ' + xhr.statusText

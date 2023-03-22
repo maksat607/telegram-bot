@@ -93,9 +93,24 @@ async function getChat(customer) {
                 );
             }
 
-            // convHistory userBg
+            function delay(time) {
+                return new Promise(resolve => setTimeout(resolve, time));
+            }
+
+
             var objDiv = document.getElementById("scrollBar");
             objDiv.scrollTop = objDiv.scrollHeight;
+
+
+            $(document).ready(function() {
+                var objDiv = $("#scrollBar");
+                var images = $("img");
+
+                images.on("load", function() {
+                    objDiv.scrollTop(objDiv[0].scrollHeight);
+                });
+            });
+
 
 
         }).catch(error => {
