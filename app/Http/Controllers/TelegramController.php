@@ -49,9 +49,11 @@ class TelegramController extends Controller
 //            echo $path_parts['basename']; // output: file.txt
 
 
-            $thumbnail_url = Storage::disk('icons')->url('unknown.svg');
-            if(file_exists(public_path('icons').'/'.$path_parts['extension'].'.svg')){
-                $thumbnail_url = Storage::disk('icons')->url($path_parts['extension'].'.svg');
+
+
+            $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/unknown.svg');
+            if(file_exists(public_path('uploads').'/thumbnails/'.$path_parts['extension'].'.svg')){
+                $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/'.$path_parts['extension'].'.svg');
             }
 
             $chatId = $request->input('message.chat.id');
@@ -130,9 +132,9 @@ class TelegramController extends Controller
                         $url = Storage::disk('uploads')->url( $fileName);
                     }else{
                         $url = Storage::disk('uploads')->url( $fileName);
-                        $thumbnail_url = Storage::disk('icons')->url('unknown.svg');
-                        if(file_exists(public_path('icons').'/'.$singleFile->getClientOriginalExtension().'.svg')){
-                            $thumbnail_url = Storage::disk('icons')->url($singleFile->getClientOriginalExtension().'.svg');
+                        $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/unknown.svg');
+                        if(file_exists(public_path('uploads').'/thumbnails/'.$singleFile->getClientOriginalExtension().'.svg')){
+                            $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/'.$singleFile->getClientOriginalExtension().'.svg');
                         }
                     }
                 $data = [
