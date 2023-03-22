@@ -44,6 +44,16 @@ class TelegramController extends Controller
             $url = Storage::disk('uploads')->url( basename($fileUrl));
             $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . basename($fileUrl));
 
+            $path_parts = pathinfo($fileUrl);
+
+//            echo $path_parts['basename']; // output: file.txt
+
+
+            $thumbnail_url = Storage::disk('icons')->url('unknown.svg');
+            if(file_exists(public_path('icons').'/'.$path_parts['extension'].'.svg')){
+                $thumbnail_url = Storage::disk('icons')->url($path_parts['extension'].'.svg');
+            }
+
             $chatId = $request->input('message.chat.id');
             $customer = Customer::where('telegram_id', $chatId)->first();
             if (!$customer) {
@@ -60,7 +70,7 @@ class TelegramController extends Controller
                 'message' => '_file',
                 'thumbnail_url'=>$thumbnail_url,
                 'url'=>$url,
-                'self' => 0
+                'self' => 1
             ];
             $customer->notify(new UserNotifications($data));
             $customer->load('notifications');
