@@ -16,11 +16,11 @@ class TelegramController extends Controller
 
     public function handle(Request $request)
     {
-        $data = json_decode($request->getContent(), true);
-        Storage::disk('local')->append('json.txt', json_encode(($data)));
-        if (isset($data['message']['document'])) {
+        $dataR = json_decode($request->getContent(), true);
+        Storage::disk('local')->append('json.txt', json_encode(($dataR)));
+        if (isset($dataR['message']['document'])) {
             // Get the document file ID
-            $fileId = $data['message']['document']['file_id'];
+            $fileId = $dataR['message']['document']['file_id'];
 
             // Download the document file from Telegram
             $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/getFile?file_id=$fileId");
@@ -35,7 +35,7 @@ class TelegramController extends Controller
 
             $filename = 'your_filename_here';
 
-            Storage::disk('uploads')->put(time() . '_' .$data['message']['document']['file_name'], file_get_contents($fileData));
+            Storage::disk('uploads')->put(time() . '_' .$dataR['message']['document']['file_name'], file_get_contents($fileData));
 
 
             return response('OK', 200);
