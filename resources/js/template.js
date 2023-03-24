@@ -262,7 +262,7 @@ $(document).ready(function () {
 
                 mediaRecorder.addEventListener("stop", function () {
                     clearTimeout(recordingTimeout); // Clear any existing timeout
-                    recordingTimeout = setTimeout(function() { // Add a delay of 500ms
+                    recordingTimeout = setTimeout(function() { // Add a delay of 2 seconds
                         var audioBlob = new Blob(audioChunks);
                         var formData = new FormData();
                         var customer = $('.chatButton.active').data('id');
@@ -283,7 +283,7 @@ $(document).ready(function () {
                             .fail(function (data) {
                                 console.log(data)
                             });
-                    }, 1000);
+                    }, 2000); // increase the delay to 2 seconds
                 });
 
                 mediaRecorder.start();
@@ -293,10 +293,13 @@ $(document).ready(function () {
     $('.audio').mouseup(function () {
         if (recording) {
             recording = false;
-            mediaRecorder.stop();
+            setTimeout(function() {
+                mediaRecorder.stop();
+            }, 2000); // increase the delay to 2 seconds
             $(this).removeClass("active");
         }
     });
 });
+
 
 
