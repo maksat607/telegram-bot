@@ -109,40 +109,40 @@ async function getChat(customer) {
                 images.on("load", function () {
                     objDiv.scrollTop(objDiv[0].scrollHeight);
 
-                    if ($('.searchChats').val().length > 0) {
-                        var keyword = $('.searchChats').val();
-                        // Find all the messages
-                        var messages = $(".convHistory").find(".msg");
-
-                        timer = setTimeout(function () {
-
-                        // Loop through all the messages
-                        messages.each(function () {
-                            // Get the message text
-                            var messageText = $(this).text();
-
-                            // Check if the keyword is present in the message text
-
-                            if (messageText.indexOf(keyword) >= 0) {
-
-                                // Add a highlight class to the message
-                                $(this).addClass("highlight");
-
-                                // Scroll to the message
-                                console.log($(this).offset().top)
-                                // var objDiv = document.getElementById("scrollBar");
-                                // objDiv.scrollTop = objDiv.scrollHeight;
-                                // objDiv.scrollTop = $(this).offset().top;
-
-
-                                var $scrollBar = $('#scrollBar');
-                                $scrollBar.animate({
-                                    scrollTop: $(this).offset().top - $scrollBar.offset().top + $scrollBar.scrollTop()
-                                }, 500);
-                            }
-                        });
-                        }, 1300);
-                    }
+                    // if ($('.searchChats').val().length > 0) {
+                    //     var keyword = $('.searchChats').val();
+                    //     // Find all the messages
+                    //     var messages = $(".convHistory").find(".msg");
+                    //
+                    //     timer = setTimeout(function () {
+                    //
+                    //     // Loop through all the messages
+                    //     messages.each(function () {
+                    //         // Get the message text
+                    //         var messageText = $(this).text();
+                    //
+                    //         // Check if the keyword is present in the message text
+                    //
+                    //         if (messageText.indexOf(keyword) >= 0) {
+                    //
+                    //             // Add a highlight class to the message
+                    //             $(this).addClass("highlight");
+                    //
+                    //             // Scroll to the message
+                    //             console.log($(this).offset().top)
+                    //             // var objDiv = document.getElementById("scrollBar");
+                    //             // objDiv.scrollTop = objDiv.scrollHeight;
+                    //             // objDiv.scrollTop = $(this).offset().top;
+                    //
+                    //
+                    //             var $scrollBar = $('#scrollBar');
+                    //             $scrollBar.animate({
+                    //                 scrollTop: $(this).offset().top - $scrollBar.offset().top + $scrollBar.scrollTop()
+                    //             }, 500);
+                    //         }
+                    //     });
+                    //     }, 10);
+                    // }
 
 
                 });

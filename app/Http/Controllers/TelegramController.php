@@ -24,6 +24,62 @@ class TelegramController extends Controller
         $username = $request->input('message.chat.username');
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
+
+        if (isset($dataR['message']['voice'])) {
+            $voice = $dataR['message']['voice'];
+            $file_id = $voice['file_id'];
+            $file_size = $voice['file_size'];
+
+            // Download the voice recording using the Telegram Bot API
+            $bot_token =env('TELEGRAM_BOT_TOKEN');
+            $url = "https://api.telegram.org/bot{$bot_token}/getFile?file_id={$file_id}";
+            $response = file_get_contents($url);
+            $data = json_decode($response, true);
+
+            if (isset($data['result']['file_path'])) {
+                $file_path = $data['result']['file_path'];
+                $file_url = "https://api.telegram.org/file/bot{$bot_token}/{$file_path}";
+
+                // Save the voice recording to disk
+                $destination_path = storage_path("app/voice/{$file_id}.ogg");
+                Storage::disk('uploads')->put(basename($file_path), file_get_contents($file_url));
+                $url = Storage::disk('uploads')->url( basename($file_path));
+
+                $path_parts = pathinfo($file_url);
+                $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/unknown.svg');
+
+
+                if(file_exists(public_path('uploads').'/thumbnails/'.$path_parts['extension'].'.svg')){
+                    $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/'.$path_parts['extension'].'.svg');
+                }
+                $customer = Customer::where('telegram_id', $chatId)->first();
+                if (!$customer) {
+                    $customer = Customer::create([
+                        'telegram_id' => $chatId,
+                        'fullname' => $first_name . ' ' . $last_name,
+                        'telegram_id' => $chatId,
+                        'username' => $username,
+                    ]);
+                }
+
+
+                $data = [
+                    'user_id' => 0,
+                    'curomer_id' => $customer->id,
+                    'message' => '_file',
+                    'thumbnail_url'=>$thumbnail_url,
+                    'url'=>$url,
+                    'self' => 1
+                ];
+                $customer->notify(new UserNotifications($data));
+                $customer->load('notifications');
+                event(new ApplicationChat($customer, $data));
+
+                return 'OK';
+
+            }
+        }
+
         if (isset($dataR['message']['document']['file_id'])) {
             // Get the document file ID
             $fileId = $dataR['message']['document']['file_id'];

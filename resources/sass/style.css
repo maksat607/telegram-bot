@@ -1009,17 +1009,9 @@ div[class~="onTop"] > .count {
     }
 }
 
-.search-container {
-    position: relative;
-}
 
 .searchChats {
-    width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px 36px 8px 12px;
-    font-size: 16px;
+    position: relative;
 }
 
 .searchChats::before,
@@ -1028,63 +1020,19 @@ div[class~="onTop"] > .count {
     position: absolute;
     width: 0;
     height: 0;
-    border: 5px solid transparent;
-    top: 50%;
-    transform: translateY(-50%);
+    border-style: solid;
+    border-color: #333 transparent;
 }
 
 .searchChats::before {
-    right: 12px;
-    border-top: 7px solid #333;
-    border-bottom: none;
+    top: 8px;
+    left: 10px;
+    border-width: 6px 6px 0 6px;
 }
 
 .searchChats::after {
-    right: 8px;
-    border-top: none;
-    border-bottom: 7px solid #333;
+    bottom: 8px;
+    left: 10px;
+    border-width: 0 6px 6px 6px;
 }
-
-.searchChats:focus::before {
-    border-top: none;
-    border-bottom: 7px solid #333;
-}
-
-.searchChats:focus::after {
-    border-top: 7px solid #333;
-    border-bottom: none;
-}
-
-.prev,
-.next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #333;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 1;
-}
-
-.prev {
-    left: 4px;
-    display: none;
-}
-
-.next {
-    right: 4px;
-    display: none;
-}
-
-.highlight {
-    background-color: yellow;
-}
-
-
 
