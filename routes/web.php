@@ -23,10 +23,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'messages'])->name('messages');
-Route::post('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'respond']);
+
 Route::middleware('auth')->group(function () {
+    Route::get('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'messages'])->name('messages');
+    Route::post('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'respond']);
     Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users');
+    Route::get('user/{customer}/toggle', [\App\Http\Controllers\UserController::class, 'toggle'])->name('toggle');
     Route::get('chat', [\App\Http\Controllers\CustomerController::class, 'chat'])->name('chat');
     Route::get('event/{customer}', [\App\Http\Controllers\CustomerController::class, 'event']);
     Route::view('page1','page1');
@@ -35,6 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return redirect('customer/1/chat');
     })->middleware(['verified'])->name('dashboard');
+
+
 
 //    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 //    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -10,6 +10,10 @@ use ProtoneMedia\Splade\SpladeTable;
 
 class UserController extends Controller
 {
+    public function toggle(Customer $customer){
+        $customer->active = !$customer->active;
+        $customer->save();
+    }
     public function index(){
 //        for ($i =0 ; $i<5; $i++ ){
 //            Customer::all()->map(function ($item){

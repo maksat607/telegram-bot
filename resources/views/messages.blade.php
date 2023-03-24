@@ -11,3 +11,4 @@
         <span class="timestamp">{{ $message->created_at }}</span>
     </div>
 @endforeach
+

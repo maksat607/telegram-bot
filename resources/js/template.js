@@ -60,6 +60,10 @@ $(document).ready(function () {
     });
 });
 $(document).ready(function () {
+    $('body').on('click', '.option.block', function () {
+        var customer = $('.chatButton.active').data('id');
+        axios.get(`${APP_URL}/user/${customer}/toggle`)
+    });
     $('body').on('click', '.chatButton', function () {
         $('.chatButton').removeClass('active');
         $(this).addClass('active');
