@@ -1035,4 +1035,23 @@ div[class~="onTop"] > .count {
     left: 10px;
     border-width: 0 6px 6px 6px;
 }
+.audio {
+    /* Your default button styles here */
+}
 
+.audio:active {
+    background-color: red;
+    animation: blink 1s ease infinite;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    10% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
+    }
+}

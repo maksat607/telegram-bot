@@ -11,6 +11,7 @@ use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Monolog\Handler\TelegramBotHandler;
+use Illuminate\Support\Facades\File;
 
 class CustomerController extends Controller
 {
@@ -39,6 +40,7 @@ class CustomerController extends Controller
         $customers = Customer::with('notifications')->get();
         return view('chat', compact('customers'));
     }
+
 
     public function respond(Request $request, Customer $customer, Telegram $telegramBot)
     {

@@ -235,3 +235,60 @@ window.Echo.private('user-1')
     })
 ;
 
+setInterval(function() {
+    $(".audio.active").toggleClass("blink");
+}, 500);
+$(document).ready(function() {
+    var recording = false;
+    var audioChunks = [];
+    var mediaRecorder;
+
+    $('.audio').mousedown(function() {
+        $(this).addClass("active");
+        recording = true;
+        audioChunks = [];
+
+        navigator.mediaDevices.getUserMedia({audio: true})
+            .then(function(stream) {
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.addEventListener("dataavailable", function(event) {
+                    audioChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener("stop", function() {
+                    var audioBlob = new Blob(audioChunks);
+                    var formData = new FormData();
+                    formData.append('audio', audioBlob);
+                    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                    formData.append('_token', csrfToken);
+                    $.ajax({
+                        url: '/upload-audio',
+
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+
+                    }).done(function (data) {
+                        console.log(data)
+
+                    })
+                        .fail(function (data) {
+                            console.log(data)
+                        });
+                });
+
+                mediaRecorder.start();
+            });
+    });
+
+    $('.audio').mouseup(function() {
+        if (recording) {
+            recording = false;
+            mediaRecorder.stop();
+            $(this).removeClass("active");
+        }
+    });
+});
+

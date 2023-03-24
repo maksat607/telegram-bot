@@ -14,7 +14,40 @@ use Telegram\Bot\Api;
 
 class TelegramController extends Controller
 {
+    public function uploadAudio(Request $request, Customer $customer, Telegram $telegram) {
+        if ($request->hasFile('audio')) {
+            $audio = $request->file('audio');
+            $audioName = time().'.ogg';
+            $audio->move(public_path('uploads'), $audioName);
 
+            $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/voice.png');
+            $url = Storage::disk('uploads')->url($audioName);
+            $data = [
+                'user_id' => auth()->id(),
+                'curomer_id' => $customer->id,
+                'message' => '_file',
+                'thumbnail_url'=>$thumbnail_url,
+                'url'=>$url,
+                'self' => 0
+            ];
+            $customer->notify(new UserNotifications($data));
+            $customer->load('notifications');
+            event(new ApplicationChat($customer, $data));
+
+            $telegram->sendFile($customer->telegram_id,public_path('uploads').'/'.basename($url));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Audio uploaded successfully!',
+                'audio_url' => asset('uploads/'.$audioName.'.ogg')
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No audio file uploaded.'
+            ]);
+        }
+    }
     public function handle(Request $request)
     {
         $message = $request->input('message.text');
