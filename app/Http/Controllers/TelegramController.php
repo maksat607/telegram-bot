@@ -45,6 +45,7 @@ class TelegramController extends Controller
                 Storage::disk('uploads')->put(basename($file_path), file_get_contents($file_url));
                 $url = Storage::disk('uploads')->url( basename($file_path));
 
+
                 $path_parts = pathinfo($file_url);
                 $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/unknown.svg');
 
