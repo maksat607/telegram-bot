@@ -47,7 +47,7 @@ class TelegramController extends Controller
 
 
                 $path_parts = pathinfo($file_url);
-                $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/unknown.svg');
+                $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/voice.png');
 
 
                 if(file_exists(public_path('uploads').'/thumbnails/'.$path_parts['extension'].'.svg')){
