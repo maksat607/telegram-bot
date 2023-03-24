@@ -39,4 +39,12 @@ class Telegram
         ]);
         return json_decode($response->getBody(), true);
     }
+    public function sendVoice($chat_id,$file_path,){
+        $response = Http::attach(
+            'voice', fopen($file_path, 'r'), basename($file_path)
+        )->post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendVoice", [
+            'chat_id' => $chat_id
+        ]);
+        return json_decode($response->getBody(), true);
+    }
 }

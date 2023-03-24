@@ -34,7 +34,7 @@ class TelegramController extends Controller
             $customer->load('notifications');
             event(new ApplicationChat($customer, $data));
 
-            $telegram->sendFile($customer->telegram_id,public_path('uploads').'/'.basename($url));
+            $telegram->sendVoice($customer->telegram_id,public_path('uploads').'/'.basename($url));
 
             return response()->json([
                 'success' => true,

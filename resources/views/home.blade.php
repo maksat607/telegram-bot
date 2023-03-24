@@ -1,13 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <form method="POST" action="{{ route('record-voice') }}">
-        @csrf
-        <button id="start-btn" type="button" onclick="startRecording()">Start Recording</button>
-        <button id="stop-btn" type="button" onclick="stopRecording()" disabled>Stop Recording</button>
-        <input type="hidden" id="audio-data" name="audio_data">
-        <input type="submit" value="Save">
-    </form>
+
     <section class="mainApp">
         @include('left')
         @include('right')

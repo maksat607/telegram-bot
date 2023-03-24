@@ -42,6 +42,7 @@ class CustomerController extends Controller
     }
 
 
+
     public function respond(Request $request, Customer $customer, Telegram $telegramBot)
     {
         $data = [

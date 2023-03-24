@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    $('.pick').click(function() {
+        var emoji = $(this).text();
+        var message = $('.replyMessage').val();
+        message += emoji;
+        $('.replyMessage').val(message);
+    });
     /* make side menu show up */
     $(".trigger").click(function () {
         $(".overlay, .menuWrap").fadeIn(180);
@@ -106,9 +112,6 @@ async function getChat(customer) {
                 );
             }
 
-            function delay(time) {
-                return new Promise(resolve => setTimeout(resolve, time));
-            }
 
 
             var objDiv = document.getElementById("scrollBar");
@@ -235,55 +238,59 @@ window.Echo.private('user-1')
     })
 ;
 
-setInterval(function() {
+setInterval(function () {
     $(".audio.active").toggleClass("blink");
 }, 500);
-$(document).ready(function() {
+$(document).ready(function () {
     var recording = false;
     var audioChunks = [];
     var mediaRecorder;
+    var recordingTimeout;
 
-    $('.audio').mousedown(function() {
+    $('.audio').mousedown(function () {
         $(this).addClass("active");
         recording = true;
         audioChunks = [];
 
         navigator.mediaDevices.getUserMedia({audio: true})
-            .then(function(stream) {
+            .then(function (stream) {
                 mediaRecorder = new MediaRecorder(stream);
 
-                mediaRecorder.addEventListener("dataavailable", function(event) {
+                mediaRecorder.addEventListener("dataavailable", function (event) {
                     audioChunks.push(event.data);
                 });
 
-                mediaRecorder.addEventListener("stop", function() {
-                    var audioBlob = new Blob(audioChunks);
-                    var formData = new FormData();
-                    formData.append('audio', audioBlob);
-                    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-                    formData.append('_token', csrfToken);
-                    $.ajax({
-                        url: '/upload-audio',
+                mediaRecorder.addEventListener("stop", function () {
+                    clearTimeout(recordingTimeout); // Clear any existing timeout
+                    recordingTimeout = setTimeout(function() { // Add a delay of 500ms
+                        var audioBlob = new Blob(audioChunks);
+                        var formData = new FormData();
+                        var customer = $('.chatButton.active').data('id');
+                        formData.append('audio', audioBlob);
+                        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                        formData.append('_token', csrfToken);
 
-                        method: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
+                        $.ajax({
+                            url: `/upload-audio/${customer}`,
+                            method: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
 
-                    }).done(function (data) {
-                        console.log(data)
-
-                    })
-                        .fail(function (data) {
+                        }).done(function (data) {
                             console.log(data)
-                        });
+                        })
+                            .fail(function (data) {
+                                console.log(data)
+                            });
+                    }, 500);
                 });
 
                 mediaRecorder.start();
             });
     });
 
-    $('.audio').mouseup(function() {
+    $('.audio').mouseup(function () {
         if (recording) {
             recording = false;
             mediaRecorder.stop();
@@ -291,4 +298,5 @@ $(document).ready(function() {
         }
     });
 });
+
 

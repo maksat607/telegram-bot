@@ -31,31 +31,42 @@
         <input type="text" class="replyMessage" placeholder="Type your message...">
 
         <div class="emojiBar" style="display: none;">
-            <div class="emoticonType">
-                <button id="panelEmoji">Emoji</button>
-                <button id="panelStickers">Stickers</button>
-                <button id="panelGIFs">GIFs</button>
-            </div>
-
 
             <!-- Emoji panel -->
             <div class="emojiList">
-                <button id="smileface" class="pick">
-                </button>
-                <button id="grinningface" class="pick"></button>
-                <button id="tearjoyface" class="pick"></button>
-                <button id="rofl" class="pick"></button>
-                <button id="somface" class="pick"></button>
-                <button id="swfface" class="pick"></button>
+                <button class="pick" title="Smiling Face with Smiling Eyes">😊</button>
+                <button class="pick" title="Face with Tears of Joy">😂</button>
+                <button class="pick" title="Red Heart">❤️</button>
+                <button class="pick" title="OK Hand">👌</button>
+                <button class="pick" title="Thumbs Up">👍</button>
+                <button class="pick" title="Thinking Face">🤔</button>
+                <button class="pick" title="Hugging Face">🤗</button>
+                <button class="pick" title="Folded Hands">🙏</button>
+                <button class="pick" title="Party Popper">🎉</button>
+                <button class="pick" title="Sparkling Heart">💖</button>
+                <button class="pick" title="Fire">🔥</button>
+                <button class="pick" title="Face with Rolling Eyes">🙄</button>
+                <button class="pick" title="Face with Heart-Eyes">😍</button>
+                <button class="pick" title="Smiling Face with Sunglasses">😎</button>
+                <button class="pick" title="Face Blowing a Kiss">😘</button>
+                <button class="pick" title="Thumbs Down">👎</button>
+                <button class="pick" title="Waving Hand">👋</button>
+                <button class="pick" title="OK Hand with Fingers Crossed">🤞</button>
+                <button class="pick" title="Face with Medical Mask">😷</button>
+                <button class="pick" title="Crying Face">😢</button>
+                <button class="pick" title="Smiling Face with Heart-Eyes">😍</button>
+                <button class="pick" title="Smiling Face with Halo">😇</button>
+                <button class="pick" title="Face with Rolling Eyes">🙄</button>
+                <button class="pick" title="Pensive Face">😔</button>
+                <button class="pick" title="Angry Face">😠</button>
+                <button class="pick" title="Sleepy Face">😴</button>
+                <button class="pick" title="Face with Symbols on Mouth">🤬</button>
+                <button class="pick" title="Party Popper">🎉</button>
+                <button class="pick" title="Birthday Cake">🎂</button>
+                <button class="pick" title="Heart Suit">♥️</button>
             </div>
 
-            <!-- the best part of telegram ever: STICKERS!! -->
-            <div class="stickerList">
-                <button id="smileface" class="pick">
-                </button>
-                <button id="grinningface" class="pick"></button>
-                <button id="tearjoyface" class="pick"></button>
-            </div>
+
         </div>
 
         <div class="otherTools">
