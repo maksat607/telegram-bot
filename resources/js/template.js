@@ -283,7 +283,7 @@ $(document).ready(function () {
                             .fail(function (data) {
                                 console.log(data)
                             });
-                    }, 900);
+                    }, 1000);
                 });
 
                 mediaRecorder.start();
