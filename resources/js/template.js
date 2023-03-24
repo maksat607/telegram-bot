@@ -262,28 +262,27 @@ $(document).ready(function () {
 
                 mediaRecorder.addEventListener("stop", function () {
                     clearTimeout(recordingTimeout); // Clear any existing timeout
-                    recordingTimeout = setTimeout(function() { // Add a delay of 2 seconds
-                        var audioBlob = new Blob(audioChunks);
-                        var formData = new FormData();
-                        var customer = $('.chatButton.active').data('id');
-                        formData.append('audio', audioBlob);
-                        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-                        formData.append('_token', csrfToken);
 
-                        $.ajax({
-                            url: `/upload-audio/${customer}`,
-                            method: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
+                    var audioBlob = new Blob(audioChunks);
+                    var formData = new FormData();
+                    var customer = $('.chatButton.active').data('id');
+                    formData.append('audio', audioBlob);
+                    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                    formData.append('_token', csrfToken);
 
-                        }).done(function (data) {
+                    $.ajax({
+                        url: `/upload-audio/${customer}`,
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+
+                    }).done(function (data) {
+                        console.log(data)
+                    })
+                        .fail(function (data) {
                             console.log(data)
-                        })
-                            .fail(function (data) {
-                                console.log(data)
-                            });
-                    }, 2000); // increase the delay to 2 seconds
+                        });
                 });
 
                 mediaRecorder.start();
@@ -293,10 +292,10 @@ $(document).ready(function () {
     $('.audio').mouseup(function () {
         if (recording) {
             recording = false;
-            setTimeout(function() {
-                mediaRecorder.stop();
-            }, 2000); // increase the delay to 2 seconds
             $(this).removeClass("active");
+            recordingTimeout = setTimeout(function () {
+                mediaRecorder.stop();
+            }, 3000); // Increase the delay to 3 seconds
         }
     });
 });
