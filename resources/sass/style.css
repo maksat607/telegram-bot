@@ -531,7 +531,7 @@ header {
     position: absolute;
     width: 55px;
     height: 55px;
-    background: #DDD url(https://pbs.twimg.com/profile_images/378800000822867536/3f5a00acf72df93528b6bb7cd0a4fd0c.jpeg) no-repeat center;
+    background: url("/public/fon.jpeg") 100% center;
     background-size: cover;
     border-radius: 100%;
     margin: 13px 13px;
@@ -684,6 +684,9 @@ div[class~="onTop"] > .count {
     background: #DDD;
 }
 
+.highlight{
+    background: #419fd9 !important;
+}
 
 /* THE CONVERSATION HISTORY CSS */
 
@@ -691,14 +694,14 @@ div[class~="onTop"] > .count {
     float: left;
     position: relative;
     width: 100%;
-    height: calc(100vh - 180px);
+    height: calc(100vh - 160px);
     background: #333;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
 .userBg {
-    background: url("/public/fon.jpg") 100% center;
+    background: url("/public/fon.jpeg") 100% center;
 }
 
 .msg {
@@ -1005,5 +1008,83 @@ div[class~="onTop"] > .count {
         transform: rotate(360deg);
     }
 }
+
+.search-container {
+    position: relative;
+}
+
+.searchChats {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 36px 8px 12px;
+    font-size: 16px;
+}
+
+.searchChats::before,
+.searchChats::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.searchChats::before {
+    right: 12px;
+    border-top: 7px solid #333;
+    border-bottom: none;
+}
+
+.searchChats::after {
+    right: 8px;
+    border-top: none;
+    border-bottom: 7px solid #333;
+}
+
+.searchChats:focus::before {
+    border-top: none;
+    border-bottom: 7px solid #333;
+}
+
+.searchChats:focus::after {
+    border-top: 7px solid #333;
+    border-bottom: none;
+}
+
+.prev,
+.next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #333;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.prev {
+    left: 4px;
+    display: none;
+}
+
+.next {
+    right: 4px;
+    display: none;
+}
+
+.highlight {
+    background-color: yellow;
+}
+
 
 

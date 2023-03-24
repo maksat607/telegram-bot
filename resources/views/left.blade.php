@@ -8,14 +8,10 @@
 
         <input class="searchChats" type="search" placeholder="Search...">
     </header>
-    <div class="chats">
 
-        @foreach($customers as $customer)
-            <div id="customer-{{$customer->id}}">
-                @include('customer')
-            </div>
-
-        @endforeach
-
+    <div class="chats" id="customers">
+        @include('ajaxcontent')
     </div>
 </div>
+
+

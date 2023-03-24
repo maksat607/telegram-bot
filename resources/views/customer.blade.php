@@ -15,7 +15,11 @@
                 {{ $customer->fullname }}
             </p>
             {{--                @dd($customer->notifications->first()->data)--}}
-            <p style="margin-bottom: unset;" class="message">{{ substr($customer->notifications()->first()?->data['message'], 0, 10) }} ...</p>
+            @if(!isset($search))
+                <p style="margin-bottom: unset;" class="message">{{ substr($customer->notifications()->first()?->data['message'], 0, 10) }} ...</p>
+            @else
+                <p style="margin-bottom: unset;" class="message">{{ substr($customer->notifications()->where('data','like','%'.$search.'%')->first()?->data['message'], 0, 10) }} ...</p>
+            @endif
         </div>
 
         <div class="status onTop">

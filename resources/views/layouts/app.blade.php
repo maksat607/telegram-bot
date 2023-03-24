@@ -64,7 +64,7 @@
 
     delay(500).then(() => {
             $('.chats div .chatButton:first').trigger('click');
-            const audio = $('#sound')[0]; // Get the audio element
+            // const audio = $('#sound')[0]; // Get the audio element
         audio.play();
     });
 

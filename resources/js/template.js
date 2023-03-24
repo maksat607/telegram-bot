@@ -72,9 +72,9 @@ async function getChat(customer) {
     await axios.get(`${APP_URL}/customer/${customer}/chat`)
         .then(response => {
 
-            if ( $(`#${response.data.customer_id} .chatButton`).length ) {
+            if ($(`#${response.data.customer_id} .chatButton`).length) {
                 var active = false;
-                if ($(`#${response.data.customer_id} .chatButton`).hasClass('active')){
+                if ($(`#${response.data.customer_id} .chatButton`).hasClass('active')) {
                     active = true;
                     $('.convHistory.userBg').empty();
                     $('.convHistory.userBg').append(response.data.messages);
@@ -82,10 +82,10 @@ async function getChat(customer) {
 
                 $(`#${response.data.customer_id}`).empty();
                 $(`#${response.data.customer_id}`).append(response.data.customer)
-                if(active){
+                if (active) {
                     $(`#${response.data.customer_id} .chatButton`).addClass('active');
                 }
-            }else {
+            } else {
                 $('.chats').prepend(
                     `<div id="${response.data.customer_id}">
                         ${response.data.customer}
@@ -102,15 +102,51 @@ async function getChat(customer) {
             objDiv.scrollTop = objDiv.scrollHeight;
 
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 var objDiv = $("#scrollBar");
                 var images = $("img");
 
-                images.on("load", function() {
+                images.on("load", function () {
                     objDiv.scrollTop(objDiv[0].scrollHeight);
+
+                    if ($('.searchChats').val().length > 0) {
+                        var keyword = $('.searchChats').val();
+                        // Find all the messages
+                        var messages = $(".convHistory").find(".msg");
+
+                        timer = setTimeout(function () {
+
+                        // Loop through all the messages
+                        messages.each(function () {
+                            // Get the message text
+                            var messageText = $(this).text();
+
+                            // Check if the keyword is present in the message text
+
+                            if (messageText.indexOf(keyword) >= 0) {
+
+                                // Add a highlight class to the message
+                                $(this).addClass("highlight");
+
+                                // Scroll to the message
+                                console.log($(this).offset().top)
+                                // var objDiv = document.getElementById("scrollBar");
+                                // objDiv.scrollTop = objDiv.scrollHeight;
+                                // objDiv.scrollTop = $(this).offset().top;
+
+
+                                var $scrollBar = $('#scrollBar');
+                                $scrollBar.animate({
+                                    scrollTop: $(this).offset().top - $scrollBar.offset().top + $scrollBar.scrollTop()
+                                }, 500);
+                            }
+                        });
+                        }, 1300);
+                    }
+
+
                 });
             });
-
 
 
         }).catch(error => {
@@ -145,10 +181,41 @@ $(document).ready(function () {
     });
 });
 
+var timer;
+$('.searchChats').on('input', function () {
+
+    clearTimeout(timer); // clear the timer on every input event
+
+
+    var query = $(this).val();
+
+    let formValue = {
+        _token: $('meta[name="csrf-token"]').attr('content'),
+        value: query,
+    }
+    $.ajax({
+        url: `/?search=${query}`,
+        type: 'get',
+    })
+        .done(function (data) {
+            // console.log(data)
+            $('#customers').empty();
+            $('#customers').append(data);
+            timer = setTimeout(function () {
+                $('.chats div .chatButton:first').trigger('click');
+            }, 300);
+
+        })
+        .fail(function (data) {
+
+        });
+
+
+});
 
 
 window.Echo.private('user-1')
-    .listen('ApplicationChat',(response) => {
+    .listen('ApplicationChat', (response) => {
         getChat(response.id);
         var objDiv = document.getElementById("scrollBar");
         objDiv.scrollTop = objDiv.scrollHeight;

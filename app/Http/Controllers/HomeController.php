@@ -26,9 +26,15 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $customers = Customer::with('notifications')->orderBy('created_at','desc')->get();
-        if ($request->has('search')){
-            $notifications = Notification::where('data','like',"%{$request->get('search')}%")->get();
+        if($request->has('search')){
+            $search = $request->search;
+            $customers = Customer::whereHas('notifications', function($query) use ($request) {
+                $query->where('data', 'like', "%$request->search%")
+                    ->orWhereNull('data');
+            })->orderBy('created_at', 'desc')->get();
+            return view('ajaxcontent',compact('customers','search'));
         }
+
         return view('home',compact('customers'));
     }
 }
