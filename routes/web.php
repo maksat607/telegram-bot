@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::post('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'respond']);
     Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users');
     Route::get('user/{customer}/toggle', [\App\Http\Controllers\UserController::class, 'toggle'])->name('toggle');
+    Route::get('user/{customer}/delete', [\App\Http\Controllers\UserController::class, 'delete'])->name('delete');
     Route::get('chat', [\App\Http\Controllers\CustomerController::class, 'chat'])->name('chat');
     Route::get('event/{customer}', [\App\Http\Controllers\CustomerController::class, 'event']);
     Route::view('page1','page1');

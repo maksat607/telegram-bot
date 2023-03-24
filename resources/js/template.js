@@ -62,7 +62,16 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('body').on('click', '.option.block', function () {
         var customer = $('.chatButton.active').data('id');
-        axios.get(`${APP_URL}/user/${customer}/toggle`)
+        axios.get(`${APP_URL}/user/${customer}/toggle`).then(response => {
+            location.reload();
+        });
+    });
+    $('body').on('click', '.option.delete', function () {
+        var customer = $('.chatButton.active').data('id');
+        axios.get(`${APP_URL}/user/${customer}/delete`).then(response => {
+            location.reload();
+        });
+
     });
     $('body').on('click', '.chatButton', function () {
         $('.chatButton').removeClass('active');

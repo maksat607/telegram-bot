@@ -14,6 +14,9 @@ class UserController extends Controller
         $customer->active = !$customer->active;
         $customer->save();
     }
+    public function delete(Customer $customer){
+        $customer->delete();
+    }
     public function index(){
 //        for ($i =0 ; $i<5; $i++ ){
 //            Customer::all()->map(function ($item){
