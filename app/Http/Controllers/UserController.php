@@ -15,6 +15,7 @@ class UserController extends Controller
         $customer->save();
     }
     public function delete(Customer $customer){
+        $customer->notifications()->delete();
         $customer->delete();
     }
     public function index(){
