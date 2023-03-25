@@ -61,7 +61,7 @@ class TelegramController extends Controller
         }
         return $customer;
     }
-    public function handleVoice(,Request $request,$dataR){
+    public function handleVoice(Request $request,$dataR){
         extract($this->getInfo($request));
         $voice = $dataR['message']['voice'];
         $file_id = $voice['file_id'];
