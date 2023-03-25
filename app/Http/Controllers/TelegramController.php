@@ -201,6 +201,7 @@ class TelegramController extends Controller
         $first_name = $request->input('message.chat.first_name');
         $last_name = $request->input('message.chat.last_name');
         $username = $request->input('message.chat.username');
+        $chatId = $chatId==null ? $request->input('callback_query.message.chat.id') : $chatId;
         return compact('message','chatId','first_name','last_name','username');
     }
     public function handleButtons(Request $request,$data){
