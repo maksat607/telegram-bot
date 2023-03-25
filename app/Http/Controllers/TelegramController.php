@@ -210,7 +210,7 @@ class TelegramController extends Controller
     }
     public function handleTextMessages(Request $request){
         extract($this->getInfo($request));
-        $customer = $this->firstOrCreate($request,);
+        $customer = $this->firstOrCreate($request,$chatId);
         $data = [
             'user_id' => 0,
             'curomer_id' => $customer->id,
