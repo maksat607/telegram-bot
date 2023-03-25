@@ -48,175 +48,51 @@ class TelegramController extends Controller
             ]);
         }
     }
-    public function handle(Request $request)
-    {
-        $message = $request->input('message.text');
-        $chatId = $request->input('message.chat.id');
-        $first_name = $request->input('message.chat.first_name');
-        $last_name = $request->input('message.chat.last_name');
-        $username = $request->input('message.chat.username');
-        $dataR = json_decode($request->getContent(), true);
-        Storage::disk('local')->append('json.txt', json_encode(($dataR)));
-
-        if (isset($dataR['message']['voice'])) {
-            $voice = $dataR['message']['voice'];
-            $file_id = $voice['file_id'];
-            $file_size = $voice['file_size'];
-
-            // Download the voice recording using the Telegram Bot API
-            $bot_token =env('TELEGRAM_BOT_TOKEN');
-            $url = "https://api.telegram.org/bot{$bot_token}/getFile?file_id={$file_id}";
-            $response = file_get_contents($url);
-            $data = json_decode($response, true);
-
-            if (isset($data['result']['file_path'])) {
-                $file_path = $data['result']['file_path'];
-                $file_url = "https://api.telegram.org/file/bot{$bot_token}/{$file_path}";
-
-                // Save the voice recording to disk
-                $destination_path = storage_path("app/voice/{$file_id}.ogg");
-                Storage::disk('uploads')->put(basename($file_path), file_get_contents($file_url));
-                $url = Storage::disk('uploads')->url( basename($file_path));
-
-
-                $path_parts = pathinfo($file_url);
-                $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/voice.png');
-
-
-                if(file_exists(public_path('uploads').'/thumbnails/'.$path_parts['extension'].'.svg')){
-                    $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/'.$path_parts['extension'].'.svg');
-                }
-                $customer = Customer::where('telegram_id', $chatId)->first();
-                if (!$customer) {
-                    $customer = Customer::create([
-                        'telegram_id' => $chatId,
-                        'fullname' => $first_name . ' ' . $last_name,
-                        'telegram_id' => $chatId,
-                        'username' => $username,
-                    ]);
-                }
-
-
-                $data = [
-                    'user_id' => 0,
-                    'curomer_id' => $customer->id,
-                    'message' => '_file',
-                    'thumbnail_url'=>$thumbnail_url,
-                    'url'=>$url,
-                    'self' => 1
-                ];
-                $customer->notify(new UserNotifications($data));
-                $customer->load('notifications');
-                event(new ApplicationChat($customer, $data));
-
-                return 'OK';
-
-            }
+    public function firstOrCreate($chatId){
+        extract($this->getInfo);
+        $customer = Customer::where('telegram_id', $chatId)->first();
+        if (!$customer) {
+            $customer = Customer::create([
+                'telegram_id' => $chatId,
+                'fullname' => $first_name . ' ' . $last_name,
+                'telegram_id' => $chatId,
+                'username' => $username,
+            ]);
         }
+        return $customer;
+    }
+    public function handleVoice($dataR){
+        extract($this->getInfo);
+        $voice = $dataR['message']['voice'];
+        $file_id = $voice['file_id'];
+        $file_size = $voice['file_size'];
 
-        if (isset($dataR['message']['document']['file_id'])) {
-            // Get the document file ID
-            $fileId = $dataR['message']['document']['file_id'];
+        // Download the voice recording using the Telegram Bot API
+        $bot_token =env('TELEGRAM_BOT_TOKEN');
+        $url = "https://api.telegram.org/bot{$bot_token}/getFile?file_id={$file_id}";
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
 
-            Storage::disk('local')->append('file_id.txt', $fileId);
-            // Download the document file from Telegram
-            $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/getFile?file_id=$fileId");
-            $data = json_decode($response, true);
-            Storage::disk('local')->append('response.txt', $response);
-            $filePath = $data['result']['file_path'];
-            $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
+        if (isset($data['result']['file_path'])) {
+            $file_path = $data['result']['file_path'];
+            $file_url = "https://api.telegram.org/file/bot{$bot_token}/{$file_path}";
 
-            Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
-//            Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
-//                $constraint->aspectRatio();
-//            })->save(public_path(). '/uploads/thumbnails/' . basename($fileUrl));
-
-            $url = Storage::disk('uploads')->url( basename($fileUrl));
-
-
-            $path_parts = pathinfo($fileUrl);
-
-//            echo $path_parts['basename']; // output: file.txt
+            // Save the voice recording to disk
+            $destination_path = storage_path("app/voice/{$file_id}.ogg");
+            Storage::disk('uploads')->put(basename($file_path), file_get_contents($file_url));
+            $url = Storage::disk('uploads')->url( basename($file_path));
 
 
+            $path_parts = pathinfo($file_url);
+            $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/voice.png');
 
 
-            $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/unknown.svg');
             if(file_exists(public_path('uploads').'/thumbnails/'.$path_parts['extension'].'.svg')){
                 $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/'.$path_parts['extension'].'.svg');
             }
 
-            $chatId = $request->input('message.chat.id');
-            $customer = Customer::where('telegram_id', $chatId)->first();
-            if (!$customer) {
-                $customer = Customer::create([
-                    'telegram_id' => $chatId,
-                    'fullname' => $first_name . ' ' . $last_name,
-                    'telegram_id' => $chatId,
-                    'username' => $username,
-                ]);
-            }
-            $data = [
-                'user_id' => 0,
-                'curomer_id' => $customer->id,
-                'message' => '_file',
-                'thumbnail_url'=>$thumbnail_url,
-                'url'=>$url,
-                'self' => 1
-            ];
-            $customer->notify(new UserNotifications($data));
-            $customer->load('notifications');
-            event(new ApplicationChat($customer, $data));
 
-
-            $filename = 'your_filename_here';
-
-//            Storage::disk('local')->append('doc.txt', file_get_contents($fileData));
-//            Storage::disk('local')->append('fileUrl.txt', file_get_contents($fileUrl));
-//            Storage::disk('uploads')->put(time() . '_' .$dataR['message']['document']['file_name'], file_get_contents($fileData));
-
-
-            return response('OK', 200);
-        }
-
-
-        $photos = $request->input('message.photo');
-
-        if ($photos) {
-            // Get the largest version of the photo
-            $photo = end($photos);
-
-            // Get the filename and extension of the photo
-            $file_id = $photo['file_id'];
-
-            $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/getFile?file_id=$file_id");
-            $data = json_decode($response, true);
-            Storage::disk('local')->append('response.txt', $response);
-            $filePath = $data['result']['file_path'];
-            $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
-
-            Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
-
-
-            $filename = basename($fileUrl);
-            Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
-                $constraint->aspectRatio();
-
-            })->save(public_path(). '/uploads/thumbnails/' . $filename);
-            $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
-            $url = Storage::disk('uploads')->url( $filename);
-
-            $customer = Customer::where('telegram_id', $chatId)->first();
-            if (!$customer) {
-                $customer = Customer::create([
-                    'telegram_id' => $chatId,
-                    'fullname' => $first_name . ' ' . $last_name,
-                    'telegram_id' => $chatId,
-                    'username' => $username,
-                ]);
-            }
-
-
+            $customer = $this->firstOrCreate($chatId);
             $data = [
                 'user_id' => 0,
                 'curomer_id' => $customer->id,
@@ -231,10 +107,142 @@ class TelegramController extends Controller
 
             return 'OK';
 
-            // Do something with the saved photo, e.g. send it to a user or store its path in a database
+        }
+    }
+    public function handleDocument(Request $request,$dataR){
+        extract($this->getInfo);
+        // Get the document file ID
+        $fileId = $dataR['message']['document']['file_id'];
+
+        $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/getFile?file_id=$fileId");
+        $data = json_decode($response, true);
+        Storage::disk('local')->append('response.txt', $response);
+        $filePath = $data['result']['file_path'];
+        $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
+
+        Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
+
+        $url = Storage::disk('uploads')->url( basename($fileUrl));
+        $path_parts = pathinfo($fileUrl);
+        $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/unknown.svg');
+        if(file_exists(public_path('uploads').'/thumbnails/'.$path_parts['extension'].'.svg')){
+            $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/'.$path_parts['extension'].'.svg');
+        }
+
+        $chatId = $request->input('message.chat.id');
+        $customer = Customer::where('telegram_id', $chatId)->first();
+        if (!$customer) {
+            $customer = Customer::create([
+                'telegram_id' => $chatId,
+                'fullname' => $first_name . ' ' . $last_name,
+                'telegram_id' => $chatId,
+                'username' => $username,
+            ]);
+        }
+        $data = [
+            'user_id' => 0,
+            'curomer_id' => $customer->id,
+            'message' => '_file',
+            'thumbnail_url'=>$thumbnail_url,
+            'url'=>$url,
+            'self' => 1
+        ];
+        $customer->notify(new UserNotifications($data));
+        $customer->load('notifications');
+        event(new ApplicationChat($customer, $data));
+
+
+        $filename = 'your_filename_here';
+
+//            Storage::disk('local')->append('doc.txt', file_get_contents($fileData));
+//            Storage::disk('local')->append('fileUrl.txt', file_get_contents($fileUrl));
+//            Storage::disk('uploads')->put(time() . '_' .$dataR['message']['document']['file_name'], file_get_contents($fileData));
+
+
+        return response('OK', 200);
+    }
+    public function handlePhoto(Request $request,$photos){
+        $photo = end($photos);
+        extract($this->getInfo);
+
+        // Get the filename and extension of the photo
+        $file_id = $photo['file_id'];
+
+        $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/getFile?file_id=$file_id");
+        $data = json_decode($response, true);
+        Storage::disk('local')->append('response.txt', $response);
+        $filePath = $data['result']['file_path'];
+        $fileUrl = "https://api.telegram.org/file/bot".env('TELEGRAM_BOT_TOKEN')."/".$filePath;
+
+        Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
+
+
+        $filename = basename($fileUrl);
+        Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
+            $constraint->aspectRatio();
+
+        })->save(public_path(). '/uploads/thumbnails/' . $filename);
+        $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
+        $url = Storage::disk('uploads')->url( $filename);
+
+        $customer = Customer::where('telegram_id', $chatId)->first();
+        if (!$customer) {
+            $customer = Customer::create([
+                'telegram_id' => $chatId,
+                'fullname' => $first_name . ' ' . $last_name,
+                'telegram_id' => $chatId,
+                'username' => $username,
+            ]);
         }
 
 
+        $data = [
+            'user_id' => 0,
+            'curomer_id' => $customer->id,
+            'message' => '_file',
+            'thumbnail_url'=>$thumbnail_url,
+            'url'=>$url,
+            'self' => 1
+        ];
+        $customer->notify(new UserNotifications($data));
+        $customer->load('notifications');
+        event(new ApplicationChat($customer, $data));
+
+        return 'OK';
+
+    }
+    public function getInfo(Request $request){
+        $message = $request->input('message.text');
+        $chatId = $request->input('message.chat.id');
+        $first_name = $request->input('message.chat.first_name');
+        $last_name = $request->input('message.chat.last_name');
+        $username = $request->input('message.chat.username');
+        return compact('message','chatId','first_name','last_name','username');
+    }
+    public function handle(Request $request)
+    {
+        extract($this->getInfo);
+        $dataR = json_decode($request->getContent(), true);
+        Storage::disk('local')->append('json.txt', json_encode(($dataR)));
+
+        if (isset($dataR['message']['voice'])) {
+            $this->handleVoice($dataR);
+        }
+
+        if (isset($dataR['message']['document']['file_id'])) {
+            $this->handleDocument( $request,$dataR);
+        }
+
+
+
+
+        if ($photos =$request->input('message.photo')) {
+
+           $this->handlePhoto($request,$photos);
+            // Do something with the saved photo, e.g. send it to a user or store its path in a database
+        }
+
+        extract($this->getInfo);
 
 
 
@@ -251,7 +259,6 @@ class TelegramController extends Controller
                 'username' => $username,
             ]);
         }
-
 
         $data = [
             'user_id' => 0,
