@@ -48,4 +48,69 @@ class Telegram
         ]);
         return $response->json();
     }
+
+
+    public function handleButton(Request $request)
+    {
+        $chatId = $request->input('message.chat.id');
+        $button = $request->input('data');
+
+        // Handle the user's button selection
+    }
+
+    public function sendMessageWithButtons($chatId=555264497, $message='Choose an option:')
+    {
+
+        $buttons = [
+            [
+                [
+                    'text' => 'Button 1',
+                    'callback_data' => 'button_1'
+                ],
+                [
+                    'text' => 'Button 2',
+                    'callback_data' => 'button_2'
+                ]
+            ],
+            [
+                [
+                    'text' => 'Button 3',
+                    'callback_data' => 'button_3'
+                ],
+                [
+                    'text' => 'Button 4',
+                    'callback_data' => 'button_4'
+                ]
+            ]
+        ];
+        $url = 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/sendMessage';
+
+        $keyboard = [
+            'inline_keyboard' => $buttons,
+        ];
+
+        $data = [
+            'chat_id' => $chatId,
+            'text' => $message,
+            'reply_markup' => json_encode($keyboard),
+        ];
+
+        $response = Http::post($url, $data);
+
+        return $response->json();
+
+//        $keyboard = [
+//            'inline_keyboard' => $buttons,
+//        ];
+//
+//        $data = [
+//            'chat_id' => $chatId,
+//            'text' => $message,
+//            'reply_markup' => json_encode($keyboard),
+//        ];
+//
+//        $response = Http::post($this->api_url . 'sendMessage', $data);
+
+//        return $response;
+    }
 }

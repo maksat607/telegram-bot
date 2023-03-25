@@ -202,7 +202,7 @@ class TelegramController extends Controller
         $username = $request->input('message.chat.username');
         return compact('message','chatId','first_name','last_name','username');
     }
-    public function handle(Request $request)
+    public function handle(Request $request, Telegram $telegram)
     {
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
@@ -237,12 +237,14 @@ class TelegramController extends Controller
             $customer->load('notifications');
             event(new ApplicationChat($customer, $data));
 
-            return 'OK';
-
-
-
+//            $telegram->sendMessageWithButtons($customer->telegram_id);
 
         Storage::disk('local')->append('example.txt', json_encode($request->all()));
+        return 'OK';
+
+
+
+
 
 
 
