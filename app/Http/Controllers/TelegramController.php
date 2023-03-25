@@ -209,11 +209,11 @@ class TelegramController extends Controller
             Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
         if (isset($dataR['message']['voice'])) {
-            $this->handleVoice($request,$dataR);
+            return $this->handleVoice($request,$dataR);
         }
 
         if (isset($dataR['message']['document']['file_id'])) {
-            $this->handleDocument( $request,$dataR);
+            return $this->handleDocument( $request,$dataR);
         }
 
 
@@ -221,11 +221,11 @@ class TelegramController extends Controller
 
         if ($photos =$request->input('message.photo')) {
 
-           $this->handlePhoto($request,$photos);
+           return $this->handlePhoto($request,$photos);
             // Do something with the saved photo, e.g. send it to a user or store its path in a database
         }
 
-        else{
+
             $customer = $this->firstOrCreate($chatId);
             $data = [
                 'user_id' => 0,
@@ -238,7 +238,7 @@ class TelegramController extends Controller
             event(new ApplicationChat($customer, $data));
 
             return 'OK';
-        }
+
 
 
 
