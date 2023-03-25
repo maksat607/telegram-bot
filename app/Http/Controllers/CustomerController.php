@@ -54,51 +54,12 @@ class CustomerController extends Controller
         $customer->notify(new UserNotifications($data));
         $customer->load('notifications');
         event(new ApplicationChat($customer, $data));
-
-        //        $url = URL::to('/uploads') . '/' . $file;
-//        file_put_contents($upload_dir, $image_base64);
-//        chmod(public_path() . '/uploads/' . $file, 0777);
-
-
-//        $data = [
-//            'chat_id' => $customer->telegram_id,
-//            'text' => $request->message
-//        ];
-//        try {
-//            $response = file_get_contents("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage?" . http_build_query($data) );
-//        }catch(Exception $e) {
-//            echo 'Message: ' .$e->getMessage();
-//        }
-//
-//
-//        return true;
-
-
-
-
-
-
-// Create a multipart form request with the file
-
-
-
-
-
-
-
-// Handle the response
-
-
         $response = $telegramBot->sendMessage( $customer->telegram_id, $request->message);
-
-
 
     }
 
     public function messages(Customer $customer)
     {
-
-
         $customerView = view('customer', ['customer' => $customer])->render();
         $messagesView = view('messages', ['messages' => $customer->notifications->sortBy('created_at')])->render();
         return [
@@ -107,10 +68,5 @@ class CustomerController extends Controller
             'customer_id' => 'customer-' . $customer->id,
             'messages' => $messagesView
         ];
-
-
-//        $content = view('messages',compact('messages','customers','customer'))->render();
-//        $header = view('message-header',compact('customer'))->render();
-//        return compact('content','header');
     }
 }
