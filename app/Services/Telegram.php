@@ -21,6 +21,9 @@ class Telegram
     }
     public function sendMessage(string $chat_id, string $text)
     {
+        if($chat_id==null){
+            return null;
+        }
         $response = Http::post($this->api_url . 'sendMessage', [
             'chat_id' => $chat_id,
             'text' => $text,
@@ -31,6 +34,9 @@ class Telegram
 
     public function sendFile(string $chat_id, string $file_path)
     {
+        if($chat_id==null){
+            return null;
+        }
         $response = Http::attach(
             'document', fopen($file_path, 'r'), basename($file_path)
         )->post($this->api_url . 'sendDocument', [
@@ -41,6 +47,9 @@ class Telegram
 
     public function sendVoice(string $chat_id, string $file_path)
     {
+        if($chat_id==null){
+            return null;
+        }
         $response = Http::attach(
             'voice', fopen($file_path, 'r'), basename($file_path)
         )->post($this->api_url . 'sendVoice', [
@@ -60,6 +69,9 @@ class Telegram
 
     public function sendMessageWithButtons($chatId=555264497, $message='Choose an option:')
     {
+        if($chatId==null){
+            return null;
+        }
 
         $buttons = [
             [

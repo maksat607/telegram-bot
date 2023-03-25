@@ -8,6 +8,15 @@ use Illuminate\Notifications\Notifiable;
 
 class Customer extends Model
 {
-    use HasFactory,Notifiable;
+    use HasFactory, Notifiable;
+
     protected $guarded = [];
+
+    public function getTelegramIdAttribute($value)
+    {
+        if ($this->active != 1) {
+            return null;
+        }
+        return ($value); // Convert the name to title case
+    }
 }
