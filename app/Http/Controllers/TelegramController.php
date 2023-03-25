@@ -14,7 +14,7 @@ use Telegram\Bot\Api;
 
 class TelegramController extends Controller
 {
-    public function uploadAudio(Request $request, Customer $customer, Telegram $telegram) {
+    public function uploadAudio(Request $request, Customer $customer ) {
         if ($request->hasFile('audio')) {
             $audio = $request->file('audio');
             $audioName = time().'.ogg';
@@ -34,7 +34,7 @@ class TelegramController extends Controller
             $customer->load('notifications');
             event(new ApplicationChat($customer, $data));
 
-            $telegram->sendVoice($customer->telegram_id,public_path('uploads').'/'.basename($url));
+            $this->telegram->sendVoice($customer->telegram_id,public_path('uploads').'/'.basename($url));
 
             return response()->json([
                 'success' => true,
@@ -203,9 +203,9 @@ class TelegramController extends Controller
         $username = $request->input('message.chat.username');
         return compact('message','chatId','first_name','last_name','username');
     }
-    public function handleButtons(Request $request,$data,Telegram $telegram){
+    public function handleButtons(Request $request,$data){
         extract($this->getInfo($request));
-        $telegram->sendMessage($chatId,'clicked: '.$data);
+        $this->telegram->sendMessage($chatId,'clicked: '.$data);
         return 'ok';
     }
     public function handleTextMessages(Request $request){
