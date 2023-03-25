@@ -14,14 +14,11 @@ use Telegram\Bot\Api;
 
 class TelegramController extends Controller
 {
-    public function notify(Request $request,Customer $customer, $data){
+    public function notify(Customer $customer, $data){
         $customer->notify(new UserNotifications($data));
         $customer->load('notifications');
         event(new ApplicationChat($customer, $data));
-        if( $message = $request->input('message.caption')){
-            $data['message'] = $message;
-            $this->notify($customer,$data);
-        }
+
     }
     public function getInfo(Request $request){
         $message = $request->input('message.text');
@@ -154,7 +151,10 @@ class TelegramController extends Controller
             'self' => 1
         ];
         $this->notify($customer,$data);
-
+        if( $message = $request->input('message.caption')){
+            $data['message'] = $message;
+            $this->notify($customer,$data);
+        }
 
         $filename = 'your_filename_here';
 
@@ -200,8 +200,11 @@ class TelegramController extends Controller
             'url'=>$url,
             'self' => 1
         ];
-        $this->notify($request,$customer,$data);
-
+        $this->notify($customer,$data);
+        if( $message = $request->input('message.caption')){
+            $data['message'] = $message;
+            $this->notify($customer,$data);
+        }
         return 'OK';
 
     }
