@@ -153,7 +153,8 @@ class TelegramController extends Controller
 
         return response('OK', 200);
     }
-    public function handlePhoto(Request $request,$photos){
+    public function handlePhoto(Request $request,$photos)
+    {
         $photo = end($photos);
         extract($this->getInfo($request));
 
@@ -202,52 +203,43 @@ class TelegramController extends Controller
         $username = $request->input('message.chat.username');
         return compact('message','chatId','first_name','last_name','username');
     }
+    public function handleButtons(Request $request,$data,Telegram $telegram){
+        extract($this->getInfo($request));
+        $telegram->sendMessage($chatId,'clicked: '.$data);
+        return 'ok';
+    }
+    public function handleTextMessages(Request $request){
+        extract($this->getInfo($request));
+        $customer = $this->firstOrCreate($request);
+        $data = [
+            'user_id' => 0,
+            'curomer_id' => $customer->id,
+            'message' => $message,
+            'self' => 1
+        ];
+        $customer->notify(new UserNotifications($data));
+        $customer->load('notifications');
+        event(new ApplicationChat($customer, $data));
+    }
     public function handle(Request $request, Telegram $telegram)
     {
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
-            Storage::disk('local')->append('json.txt', json_encode(($dataR)));
+        Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
-        if (isset($dataR['message']['voice'])) {
-            return $this->handleVoice($request,$dataR);
+        switch (true) {
+            case isset($dataR['message']['voice']):
+                return $this->handleVoice($request, $dataR);
+            case isset($dataR['message']['document']['file_id']):
+                return $this->handleDocument($request, $dataR);
+            case $photos = $request->input('message.photo'):
+                return $this->handlePhoto($request, $photos);
+            case $callbackQuery = $request->input('callback_query'):
+                return $this->handleButtons($request,$callbackQuery['data']);
+            default:
+                return $this->handleTextMessages($request);
         }
-
-        if (isset($dataR['message']['document']['file_id'])) {
-            return $this->handleDocument( $request,$dataR);
-        }
-
-
-
-
-        if ($photos =$request->input('message.photo')) {
-
-           return $this->handlePhoto($request,$photos);
-            // Do something with the saved photo, e.g. send it to a user or store its path in a database
-        }
-
-
-            $customer = $this->firstOrCreate($request,$chatId);
-            $data = [
-                'user_id' => 0,
-                'curomer_id' => $customer->id,
-                'message' => $message,
-                'self' => 1
-            ];
-            $customer->notify(new UserNotifications($data));
-            $customer->load('notifications');
-            event(new ApplicationChat($customer, $data));
-
-//            $telegram->sendMessageWithButtons($customer->telegram_id);
-
-        Storage::disk('local')->append('example.txt', json_encode($request->all()));
-        return 'OK';
-
-
-
-
-
-
-
+        return 'Error';
 
     }
     private function getExtensionFromMimeType($mime_type)
