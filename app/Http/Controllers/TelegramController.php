@@ -48,7 +48,7 @@ class TelegramController extends Controller
             ]);
         }
     }
-    public function firstOrCreate($chatId){
+    public function firstOrCreate($request,$chatId){
         extract($this->getInfo($request));
         $customer = Customer::where('telegram_id', $chatId)->first();
         if (!$customer) {
@@ -92,7 +92,7 @@ class TelegramController extends Controller
             }
 
 
-            $customer = $this->firstOrCreate($chatId);
+            $customer = $this->firstOrCreate($request,$chatId);
             $data = [
                 'user_id' => 0,
                 'curomer_id' => $customer->id,
@@ -130,7 +130,7 @@ class TelegramController extends Controller
         }
 
         $chatId = $request->input('message.chat.id');
-        $customer = $this->firstOrCreate($chatId);
+        $customer = $this->firstOrCreate($request,$chatId);
         $data = [
             'user_id' => 0,
             'curomer_id' => $customer->id,
@@ -177,7 +177,7 @@ class TelegramController extends Controller
         $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
         $url = Storage::disk('uploads')->url( $filename);
 
-        $customer = $this->firstOrCreate($chatId);
+        $customer = $this->firstOrCreate($request,$chatId);
 
         $data = [
             'user_id' => 0,
@@ -226,7 +226,7 @@ class TelegramController extends Controller
         }
 
 
-            $customer = $this->firstOrCreate($chatId);
+            $customer = $this->firstOrCreate($request,$chatId);
             $data = [
                 'user_id' => 0,
                 'curomer_id' => $customer->id,
