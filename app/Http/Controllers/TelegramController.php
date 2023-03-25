@@ -49,7 +49,7 @@ class TelegramController extends Controller
         }
     }
     public function firstOrCreate($chatId){
-        extract($this->getInfo);
+        extract($this->getInfo($request));
         $customer = Customer::where('telegram_id', $chatId)->first();
         if (!$customer) {
             $customer = Customer::create([
@@ -62,7 +62,7 @@ class TelegramController extends Controller
         return $customer;
     }
     public function handleVoice($dataR){
-        extract($this->getInfo);
+        extract($this->getInfo($request));
         $voice = $dataR['message']['voice'];
         $file_id = $voice['file_id'];
         $file_size = $voice['file_size'];
@@ -110,7 +110,7 @@ class TelegramController extends Controller
         }
     }
     public function handleDocument(Request $request,$dataR){
-        extract($this->getInfo);
+        extract($this->getInfo($request));
         // Get the document file ID
         $fileId = $dataR['message']['document']['file_id'];
 
@@ -163,7 +163,7 @@ class TelegramController extends Controller
     }
     public function handlePhoto(Request $request,$photos){
         $photo = end($photos);
-        extract($this->getInfo);
+        extract($this->getInfo($request));
 
         // Get the filename and extension of the photo
         $file_id = $photo['file_id'];
@@ -221,7 +221,7 @@ class TelegramController extends Controller
     }
     public function handle(Request $request)
     {
-        extract($this->getInfo);
+        extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
@@ -242,7 +242,7 @@ class TelegramController extends Controller
             // Do something with the saved photo, e.g. send it to a user or store its path in a database
         }
 
-        extract($this->getInfo);
+        extract($this->getInfo($request));
 
 
 
