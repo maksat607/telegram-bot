@@ -6,7 +6,7 @@
             <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="">
                 <img src="{{  str_replace('\\', '', $message->data['thumbnail_url']) }}" alt="Document"  width="200" height="200">
             </a>
-            {{ basename($message->data['url']) }}
+            <span>{{ basename($message->data['url']) }}</span>
         @endif
         <i class="material-icons readStatus">done</i>
         <span class="timestamp">{{ $message->created_at->format('d.m.Y H:i') }}</span>
