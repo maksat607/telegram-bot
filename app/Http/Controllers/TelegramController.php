@@ -61,7 +61,7 @@ class TelegramController extends Controller
         }
         return $customer;
     }
-    public function handleVoice($dataR){
+    public function handleVoice(,Request $request,$dataR){
         extract($this->getInfo($request));
         $voice = $dataR['message']['voice'];
         $file_id = $voice['file_id'];
@@ -130,15 +130,7 @@ class TelegramController extends Controller
         }
 
         $chatId = $request->input('message.chat.id');
-        $customer = Customer::where('telegram_id', $chatId)->first();
-        if (!$customer) {
-            $customer = Customer::create([
-                'telegram_id' => $chatId,
-                'fullname' => $first_name . ' ' . $last_name,
-                'telegram_id' => $chatId,
-                'username' => $username,
-            ]);
-        }
+        $customer = $this->firstOrCreate($chatId);
         $data = [
             'user_id' => 0,
             'curomer_id' => $customer->id,
@@ -185,16 +177,7 @@ class TelegramController extends Controller
         $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
         $url = Storage::disk('uploads')->url( $filename);
 
-        $customer = Customer::where('telegram_id', $chatId)->first();
-        if (!$customer) {
-            $customer = Customer::create([
-                'telegram_id' => $chatId,
-                'fullname' => $first_name . ' ' . $last_name,
-                'telegram_id' => $chatId,
-                'username' => $username,
-            ]);
-        }
-
+        $customer = $this->firstOrCreate($chatId);
 
         $data = [
             'user_id' => 0,
@@ -223,10 +206,10 @@ class TelegramController extends Controller
     {
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
-        Storage::disk('local')->append('json.txt', json_encode(($dataR)));
+            Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
         if (isset($dataR['message']['voice'])) {
-            $this->handleVoice($dataR);
+            $this->handleVoice($request,$dataR);
         }
 
         if (isset($dataR['message']['document']['file_id'])) {
@@ -242,7 +225,20 @@ class TelegramController extends Controller
             // Do something with the saved photo, e.g. send it to a user or store its path in a database
         }
 
-        extract($this->getInfo($request));
+        else{
+            $customer = $this->firstOrCreate($chatId);
+            $data = [
+                'user_id' => 0,
+                'curomer_id' => $customer->id,
+                'message' => $message,
+                'self' => 1
+            ];
+            $customer->notify(new UserNotifications($data));
+            $customer->load('notifications');
+            event(new ApplicationChat($customer, $data));
+
+            return 'OK';
+        }
 
 
 
@@ -250,27 +246,7 @@ class TelegramController extends Controller
 
 
 
-        $customer = Customer::where('telegram_id', $chatId)->first();
-        if (!$customer) {
-            $customer = Customer::create([
-                'telegram_id' => $chatId,
-                'fullname' => $first_name . ' ' . $last_name,
-                'telegram_id' => $chatId,
-                'username' => $username,
-            ]);
-        }
 
-        $data = [
-            'user_id' => 0,
-            'curomer_id' => $customer->id,
-            'message' => $message,
-            'self' => 1
-        ];
-        $customer->notify(new UserNotifications($data));
-        $customer->load('notifications');
-        event(new ApplicationChat($customer, $data));
-
-        return 'OK';
     }
     private function getExtensionFromMimeType($mime_type)
     {
