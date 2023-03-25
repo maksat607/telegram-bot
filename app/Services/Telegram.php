@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 
 class Telegram
@@ -16,35 +15,37 @@ class Telegram
         $this->api_key = env('TELEGRAM_BOT_TOKEN');
         $this->api_url = "https://api.telegram.org/bot{$this->api_key}/";
     }
-
-    public function sendMessage($chat_id, $text)
+    public function username(){
+        $response =  Http::get( $this->api_url.'getMe');
+        return $response['result']['username'];
+    }
+    public function sendMessage(string $chat_id, string $text)
     {
-        $client = new Client();
-        $endpoint = $this->api_url . 'sendMessage';
-
-        $response = $client->post($endpoint, [
-            'form_params' => [
-                'chat_id' => $chat_id,
-                'text' => $text,
-            ],
+        $response = Http::post($this->api_url . 'sendMessage', [
+            'chat_id' => $chat_id,
+            'text' => $text,
         ]);
 
-        return json_decode($response->getBody(), true);
+        return $response->json();
     }
-    public function sendFile($chat_id,$file_path,){
+
+    public function sendFile(string $chat_id, string $file_path)
+    {
         $response = Http::attach(
             'document', fopen($file_path, 'r'), basename($file_path)
-        )->post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendDocument", [
+        )->post($this->api_url . 'sendDocument', [
             'chat_id' => $chat_id
         ]);
-        return json_decode($response->getBody(), true);
+        return $response->json();
     }
-    public function sendVoice($chat_id,$file_path,){
+
+    public function sendVoice(string $chat_id, string $file_path)
+    {
         $response = Http::attach(
             'voice', fopen($file_path, 'r'), basename($file_path)
-        )->post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendVoice", [
+        )->post($this->api_url . 'sendVoice', [
             'chat_id' => $chat_id
         ]);
-        return json_decode($response->getBody(), true);
+        return $response->json();
     }
 }

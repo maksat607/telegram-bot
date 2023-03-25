@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Notification;
+use App\Services\Telegram;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
@@ -23,7 +25,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request)
+    public function index(Request $request,Telegram $telegram)
     {
         $customers = Customer::with('notifications')->orderBy('created_at','desc')->get();
         if($request->has('search')){
@@ -34,7 +36,8 @@ class HomeController extends Controller
             })->orderBy('created_at', 'desc')->get();
             return view('ajaxcontent',compact('customers','search'));
         }
-
-        return view('home',compact('customers'));
+        $username = $telegram->username();
+        $phone = '';
+        return view('home',compact('customers','username','phone'));
     }
 }

@@ -20,13 +20,7 @@
         <!-- PROFILE INFO SECTION -->
         <p style="margin-bottom: unset;" class="confTitle">Your Info</p>
 
-        <div class="information">
-            <ul>
-                <li>Phone Number: <span class="blue phone">+1 12 1234 5678</span></li>
-                <li>Username: <span class="blue username">@USERNAME</span></li>
-                <li>Profile: <span class="blue">https://t.me/USERNAME</span></li>
-            </ul>
-        </div>
+        @include('botinfo')
 
         <!-- NOTIFICATIONS SECTION -->
         <p style="margin-bottom: unset;" class="confTitle">Notifications</p>

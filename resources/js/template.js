@@ -241,6 +241,8 @@ window.Echo.private('user-1')
 setInterval(function () {
     $(".audio.active").toggleClass("blink");
 }, 500);
+
+
 $(document).ready(function () {
     var recording = false;
     var audioChunks = [];
@@ -262,27 +264,32 @@ $(document).ready(function () {
 
                 mediaRecorder.addEventListener("stop", function () {
                     clearTimeout(recordingTimeout); // Clear any existing timeout
+                    recordingTimeout = setTimeout(function() { // Add a delay of 500ms
+                        var audioBlob = new Blob(audioChunks);
+                        var formData = new FormData();
+                        var customer = $('.chatButton.active').data('id');
+                        formData.append('audio', audioBlob);
+                        var csrfToken = $('meta[name="csrf-token"]').attr('content'),
+                            websocketUrl = 'wss://' + window.location.host + '/upload-audio/' + customer;
+                        formData.append('_token', csrfToken);
 
-                    var audioBlob = new Blob(audioChunks);
-                    var formData = new FormData();
-                    var customer = $('.chatButton.active').data('id');
-                    formData.append('audio', audioBlob);
-                    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-                    formData.append('_token', csrfToken);
+                        var ws = new WebSocket(websocketUrl);
+                        ws.onopen = function(event) {
+                            ws.send(audioBlob);
+                        };
 
-                    $.ajax({
-                        url: `/upload-audio/${customer}`,
-                        method: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
+                        ws.onmessage = function(event) {
+                            if (event.data === 'success') {
+                                console.log('Audio upload successful');
+                            } else {
+                                console.log('Audio upload failed');
+                            }
+                        };
 
-                    }).done(function (data) {
-                        console.log(data)
-                    })
-                        .fail(function (data) {
-                            console.log(data)
-                        });
+                        ws.onclose = function(event) {
+                            console.log('WebSocket closed');
+                        };
+                    }, 1000);
                 });
 
                 mediaRecorder.start();
@@ -292,13 +299,10 @@ $(document).ready(function () {
     $('.audio').mouseup(function () {
         if (recording) {
             recording = false;
+            mediaRecorder.stop();
             $(this).removeClass("active");
-            recordingTimeout = setTimeout(function () {
-                mediaRecorder.stop();
-            }, 3000); // Increase the delay to 3 seconds
         }
     });
 });
-
 
 
