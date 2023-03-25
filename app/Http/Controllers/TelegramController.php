@@ -14,6 +14,24 @@ use Telegram\Bot\Api;
 
 class TelegramController extends Controller
 {
+    public function notify(Request $request,Customer $customer, $data){
+        $customer->notify(new UserNotifications($data));
+        $customer->load('notifications');
+        event(new ApplicationChat($customer, $data));
+        if( $message = $request->input('message.caption')){
+            $data['message'] = $message;
+            $this->notify($customer,$data);
+        }
+    }
+    public function getInfo(Request $request){
+        $message = $request->input('message.text');
+        $chatId = $request->input('message.chat.id');
+        $first_name = $request->input('message.chat.first_name');
+        $last_name = $request->input('message.chat.last_name');
+        $username = $request->input('message.chat.username');
+        $chatId = $chatId==null ? $request->input('callback_query.message.chat.id') : $chatId;
+        return compact('message','chatId','first_name','last_name','username');
+    }
     public function uploadAudio(Request $request, Customer $customer ) {
         if ($request->hasFile('audio')) {
             $audio = $request->file('audio');
@@ -30,9 +48,7 @@ class TelegramController extends Controller
                 'url'=>$url,
                 'self' => 0
             ];
-            $customer->notify(new UserNotifications($data));
-            $customer->load('notifications');
-            event(new ApplicationChat($customer, $data));
+            $this->notify($customer,$data);
 
             $this->telegram->sendVoice($customer->telegram_id,public_path('uploads').'/'.basename($url));
 
@@ -101,9 +117,7 @@ class TelegramController extends Controller
                 'url'=>$url,
                 'self' => 1
             ];
-            $customer->notify(new UserNotifications($data));
-            $customer->load('notifications');
-            event(new ApplicationChat($customer, $data));
+            $this->notify($customer,$data);
 
             return 'OK';
 
@@ -139,9 +153,7 @@ class TelegramController extends Controller
             'url'=>$url,
             'self' => 1
         ];
-        $customer->notify(new UserNotifications($data));
-        $customer->load('notifications');
-        event(new ApplicationChat($customer, $data));
+        $this->notify($customer,$data);
 
 
         $filename = 'your_filename_here';
@@ -188,21 +200,10 @@ class TelegramController extends Controller
             'url'=>$url,
             'self' => 1
         ];
-        $customer->notify(new UserNotifications($data));
-        $customer->load('notifications');
-        event(new ApplicationChat($customer, $data));
+        $this->notify($request,$customer,$data);
 
         return 'OK';
 
-    }
-    public function getInfo(Request $request){
-        $message = $request->input('message.text');
-        $chatId = $request->input('message.chat.id');
-        $first_name = $request->input('message.chat.first_name');
-        $last_name = $request->input('message.chat.last_name');
-        $username = $request->input('message.chat.username');
-        $chatId = $chatId==null ? $request->input('callback_query.message.chat.id') : $chatId;
-        return compact('message','chatId','first_name','last_name','username');
     }
     public function handleButtons(Request $request,$data){
         extract($this->getInfo($request));
