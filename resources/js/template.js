@@ -286,6 +286,7 @@ $(document).ready(function() {
         navigator.mediaDevices.getUserMedia({audio: true})
             .then(function(stream) {
                 mediaRecorder = new MediaRecorder(stream);
+                // mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/ogg; codecs=opus' });
 
                 mediaRecorder.addEventListener("dataavailable", function(event) {
                     audioChunks.push(event.data);

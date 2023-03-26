@@ -18,7 +18,7 @@ class TelegramController extends Controller
     {
         if ($request->hasFile('audio')) {
             $audio = $request->file('audio');
-            $audioName = time() . '.ogg';
+            $audioName = time() . '.wav';
             $audio->move(public_path('uploads'), $audioName);
 
             $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/voice.png');
