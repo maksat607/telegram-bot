@@ -265,12 +265,14 @@ class TelegramController extends Controller
 
         Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
 
+        $path_parts = pathinfo($fileUrl);
+        $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/unknown.svg');
+        if (file_exists(public_path('uploads') . '/thumbnails/' . $path_parts['extension'] . '.svg')) {
+            $thumbnail_url = Storage::disk('uploads')->url('/thumbnails/' . $path_parts['extension'] . '.svg');
+        }
 
         $filename = basename($fileUrl);
-        Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
-            $constraint->aspectRatio();
 
-        })->save(public_path() . '/uploads/thumbnails/' . $filename);
         $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
         $url = Storage::disk('uploads')->url($filename);
 
