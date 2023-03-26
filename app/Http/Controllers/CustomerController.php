@@ -62,6 +62,7 @@ class CustomerController extends Controller
     {
         $customerView = view('customer', ['customer' => $customer])->render();
         $messagesView = view('messages', ['messages' => $customer->notifications->sortBy('created_at')])->render();
+        $customer->unreadNotifications->markAsRead();
         return [
             'id' => $customer->id,
             'customer' => $customerView,
