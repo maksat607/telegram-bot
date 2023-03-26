@@ -324,10 +324,10 @@ $(document).ready(function() {
         if (recording) {
             recording = false;
 
-            stopTimeout = setTimeout(function() { // Add a delay of 2 seconds
+            // stopTimeout = setTimeout(function() { // Add a delay of 2 seconds
                 mediaRecorder.stop();
                 $(this).removeClass("active");
-            }.bind(this), 2000);
+            // }.bind(this), 2000);
         }
     });
 });

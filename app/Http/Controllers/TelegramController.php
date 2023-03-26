@@ -26,7 +26,7 @@ class TelegramController extends Controller
             $data = [
                 'user_id' => auth()->id(),
                 'curomer_id' => $customer->id,
-                'message' => '_file',
+                'message' => 'audio',
                 'thumbnail_url' => $thumbnail_url,
                 'url' => $url,
                 'self' => 0
@@ -72,6 +72,8 @@ class TelegramController extends Controller
                 return $this->handleDocument($request, $dataR);
             case $photos = $request->input('message.photo'):
                 return $this->handlePhoto($request, $photos);
+            case $photos = $request->input('message.video'):
+                return $this->handleVideo($request);
             case $callbackQuery = $request->input('callback_query'):
                 return $this->handleButtons($request, $callbackQuery['data']);
             default:
@@ -246,6 +248,48 @@ class TelegramController extends Controller
         }
         return 'OK';
 
+    }
+
+    public function handleVideo(Request $request){
+        extract($this->getInfo($request));
+
+        // Get the filename and extension of the photo
+        $file_id = $request->input('message.video.file_id');
+
+        $response = file_get_contents("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/getFile?file_id=$file_id");
+
+        $data = json_decode($response, true);
+        Storage::disk('local')->append('response.txt', $response);
+        $filePath = $data['result']['file_path'];
+        $fileUrl = "https://api.telegram.org/file/bot" . env('TELEGRAM_BOT_TOKEN') . "/" . $filePath;
+
+        Storage::disk('uploads')->put(basename($fileUrl), file_get_contents($fileUrl));
+
+
+        $filename = basename($fileUrl);
+        Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
+            $constraint->aspectRatio();
+
+        })->save(public_path() . '/uploads/thumbnails/' . $filename);
+        $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
+        $url = Storage::disk('uploads')->url($filename);
+
+        $customer = $this->firstOrCreate($request, $chatId);
+
+        $data = [
+            'user_id' => 0,
+            'curomer_id' => $customer->id,
+            'message' => 'video',
+            'thumbnail_url' => $thumbnail_url,
+            'url' => $url,
+            'self' => 1
+        ];
+        $this->notify($customer, $data);
+        if ($message = $request->input('message.caption') && $customer->active) {
+            $data['message'] = $message;
+            $this->notify($customer, $data);
+        }
+        return 'OK';
     }
 
     public function handleButtons(Request $request, $data)
