@@ -256,6 +256,7 @@ window.Echo.private('user-1')
         getChat(response.id, true);
         if(response.from){
             $('.sound').trigger('click');
+            console.log(response.id);
             flash(response.id);
         }
         var objDiv = document.getElementById("scrollBar");
