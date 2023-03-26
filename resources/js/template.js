@@ -259,7 +259,7 @@ window.Echo.private('user-1')
             $('.sound').trigger('click');
             console.log(response.id);
             setTimeout(function () {
-                $(".audio.active").toggleClass("blink");
+                flash(response.id);
             }, 500);
 
         }
