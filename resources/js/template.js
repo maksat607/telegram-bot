@@ -111,6 +111,7 @@ async function getChat(customer) {
                      </div>`
                 );
             }
+            flash(customer);
 
 
 
@@ -247,7 +248,8 @@ $('.searchChats').on('input', function () {
 window.Echo.private('user-1')
     .listen('ApplicationChat', (response) => {
         getChat(response.id);
-        flash(response.id);
+
+        console.log(response.id)
         var objDiv = document.getElementById("scrollBar");
         objDiv.scrollTop = objDiv.scrollHeight;
     })
