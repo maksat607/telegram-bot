@@ -4,6 +4,9 @@
             <audio controls>
                 <source src="{{  str_replace('\\', '', $message->data['url']) }}" type="audio/ogg">
             </audio>
+            <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="">
+                basename($message->data['url'])
+            </a>
         @elseif(trim($message->data['message'])=='_video')
             <video controls>
                 <source src="{{  str_replace('\\', '', $message->data['url']) }}" type="video">
