@@ -174,6 +174,7 @@ async function getChat(customer, pusher = false) {
 $('.sound').on('click', function() {
     const audio = $('#sound')[0]; // Get the audio element
     audio.play();
+
 })
 function flash(id) {
 
@@ -257,7 +258,10 @@ window.Echo.private('user-1')
         if(response.from){
             $('.sound').trigger('click');
             console.log(response.id);
-            flash(response.id);
+            setInterval(function () {
+                flash(response.id);
+            }, 500);
+
         }
         var objDiv = document.getElementById("scrollBar");
         objDiv.scrollTop = objDiv.scrollHeight;
