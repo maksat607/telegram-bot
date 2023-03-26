@@ -1,8 +1,8 @@
 @if($customer->notifications()->count()>0)
     @php
-        $count = $customer->notifications->filter(function ($notification) {
+        $count = $customer->unreadNotifications->filter(function ($notification) {
                 $data = $notification->data;
-                return $data['self'] == 1 && $notification->read_at==null;/**/
+                return $data['self'] == 1; /**/
             })->count();
 
     @endphp

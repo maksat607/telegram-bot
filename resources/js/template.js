@@ -113,6 +113,7 @@ async function getChat(customer, pusher = false) {
             if (pusher) {
                 flash(customer);
             }
+            axios.post(`${APP_URL}/customer/${customer}/mark`)
 
 
             var objDiv = document.getElementById("scrollBar");

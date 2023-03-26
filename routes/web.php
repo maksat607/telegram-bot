@@ -26,6 +26,7 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 Route::middleware('auth')->group(function () {
     Route::get('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'messages'])->name('messages');
+    Route::get('customer/{customer}/mark', [\App\Http\Controllers\CustomerController::class, 'mark']);
     Route::post('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'respond']);
     Route::post('/upload-audio/{customer}', [\App\Http\Controllers\TelegramController::class, 'uploadAudio'])->name('record-voice');
     Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users');
