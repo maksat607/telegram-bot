@@ -130,7 +130,7 @@ class TelegramController extends Controller
             $data = [
                 'user_id' => 0,
                 'curomer_id' => $customer->id,
-                'message' => '_file',
+                'message' => '_audio',
                 'thumbnail_url' => $thumbnail_url,
                 'url' => $url,
                 'self' => 1

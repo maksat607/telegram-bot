@@ -1,6 +1,6 @@
 @foreach($messages as $message)
     <div class="msg @if($message->data['self'] != 0) messageReceived @else messageSent @endif">
-        @if(trim($message->data['message'])=='audio')
+        @if(trim($message->data['message'])=='_audio')
             <audio controls>
                 <source src="{{  str_replace('\\', '', $message->data['url']) }}" type="audio/ogg">
             </audio>
