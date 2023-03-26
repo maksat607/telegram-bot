@@ -110,8 +110,9 @@ async function getChat(customer) {
                         ${response.data.customer}
                      </div>`
                 );
+                flash(customer);
             }
-            flash(customer);
+
 
 
 
