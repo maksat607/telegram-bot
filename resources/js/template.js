@@ -87,7 +87,7 @@ $(document).ready(function () {
     });
 });
 
-async function getChat(customer) {
+async function getChat(customer,pusher=false) {
     await axios.get(`${APP_URL}/customer/${customer}/chat`)
         .then(response => {
 
@@ -104,12 +104,16 @@ async function getChat(customer) {
                 if (active) {
                     $(`#${response.data.customer_id} .chatButton`).addClass('active');
                 }
+
             } else {
                 $('.chats').prepend(
                     `<div id="${response.data.customer_id}">
                         ${response.data.customer}
                      </div>`
                 );
+
+            }
+            if(pusher){
                 flash(customer);
             }
 
@@ -248,7 +252,7 @@ $('.searchChats').on('input', function () {
 
 window.Echo.private('user-1')
     .listen('ApplicationChat', (response) => {
-        getChat(response.id);
+        getChat(response.id,true);
 
         console.log(response.id)
         var objDiv = document.getElementById("scrollBar");
