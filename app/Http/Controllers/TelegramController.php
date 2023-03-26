@@ -26,7 +26,7 @@ class TelegramController extends Controller
             $data = [
                 'user_id' => auth()->id(),
                 'curomer_id' => $customer->id,
-                'message' => 'audio',
+                'message' => '_audio',
                 'thumbnail_url' => $thumbnail_url,
                 'url' => $url,
                 'self' => 0
