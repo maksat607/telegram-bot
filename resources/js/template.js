@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $('.pick').click(function() {
+    $('.pick').click(function () {
         var emoji = $(this).text();
         var message = $('.replyMessage').val();
         message += emoji;
@@ -87,7 +87,7 @@ $(document).ready(function () {
     });
 });
 
-async function getChat(customer,pusher=false) {
+async function getChat(customer, pusher = false) {
     await axios.get(`${APP_URL}/customer/${customer}/chat`)
         .then(response => {
 
@@ -98,26 +98,21 @@ async function getChat(customer,pusher=false) {
                     $('.convHistory.userBg').empty();
                     $('.convHistory.userBg').append(response.data.messages);
                 }
-
                 $(`#${response.data.customer_id}`).empty();
                 $(`#${response.data.customer_id}`).append(response.data.customer)
                 if (active) {
                     $(`#${response.data.customer_id} .chatButton`).addClass('active');
                 }
-
             } else {
                 $('.chats').prepend(
                     `<div id="${response.data.customer_id}">
                         ${response.data.customer}
                      </div>`
                 );
-
             }
-            if(pusher){
+            if (pusher) {
                 flash(customer);
             }
-
-
 
 
             var objDiv = document.getElementById("scrollBar");
@@ -176,16 +171,18 @@ async function getChat(customer,pusher=false) {
         });
 }
 
-function flash(id){
+function flash(id) {
+    const audio = $('#sound')[0]; // Get the audio element
+    audio.play();
     var $myElement = $(`#customer-${id} .chatButton`);
 
 // start the flashing effect
-    var flashingInterval = setInterval(function() {
+    var flashingInterval = setInterval(function () {
         $myElement.toggleClass('flashing');
     }, 500); // flash every 500ms (0.5 seconds)
 
 // stop the flashing effect after 3 seconds
-    setTimeout(function() {
+    setTimeout(function () {
         clearInterval(flashingInterval);
         $myElement.removeClass('flashing');
     }, 3000); // stop after 3000ms (3 seconds)
@@ -252,7 +249,7 @@ $('.searchChats').on('input', function () {
 
 window.Echo.private('user-1')
     .listen('ApplicationChat', (response) => {
-        getChat(response.id,true);
+        getChat(response.id, true);
 
         console.log(response.id)
         var objDiv = document.getElementById("scrollBar");
@@ -286,7 +283,7 @@ $(document).ready(function () {
 
                 mediaRecorder.addEventListener("stop", function () {
                     clearTimeout(recordingTimeout); // Clear any existing timeout
-                    recordingTimeout = setTimeout(function() { // Add a delay of 500ms
+                    recordingTimeout = setTimeout(function () { // Add a delay of 500ms
                         var audioBlob = new Blob(audioChunks);
                         var formData = new FormData();
                         var customer = $('.chatButton.active').data('id');
@@ -296,11 +293,11 @@ $(document).ready(function () {
                         formData.append('_token', csrfToken);
 
                         var ws = new WebSocket(websocketUrl);
-                        ws.onopen = function(event) {
+                        ws.onopen = function (event) {
                             ws.send(audioBlob);
                         };
 
-                        ws.onmessage = function(event) {
+                        ws.onmessage = function (event) {
                             if (event.data === 'success') {
                                 console.log('Audio upload successful');
                             } else {
@@ -308,7 +305,7 @@ $(document).ready(function () {
                             }
                         };
 
-                        ws.onclose = function(event) {
+                        ws.onclose = function (event) {
                             console.log('WebSocket closed');
                         };
                     }, 1000);
