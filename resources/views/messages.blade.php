@@ -10,7 +10,7 @@
                 <source src="{{  str_replace('\\', '', $message->data['url']) }}" type="video">
             </video>
             <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="">
-                basename($message->data['url'])
+                {{basename($message->data['url'])}}
             </a>
         @elseif($message->data['message']=='_file')
             <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="">
