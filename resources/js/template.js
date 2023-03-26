@@ -170,10 +170,13 @@ async function getChat(customer, pusher = false) {
             console.log(error)
         });
 }
-
-function flash(id) {
+$myElement.on('click', function() {
     const audio = $('#sound')[0]; // Get the audio element
     audio.play();
+})
+function flash(id) {
+    $('.sound').click();
+
     var $myElement = $(`#customer-${id} .chatButton`);
 
 // start the flashing effect
