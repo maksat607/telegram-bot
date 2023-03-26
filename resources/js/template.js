@@ -102,6 +102,7 @@ async function getChat(customer, pusher = false) {
                 $(`#${response.data.customer_id}`).append(response.data.customer)
                 if (active) {
                     $(`#${response.data.customer_id} .chatButton`).addClass('active');
+                    axios.get(`${APP_URL}/customer/${customer}/mark`)
                 }
             } else {
                 $('.chats').prepend(
@@ -113,7 +114,7 @@ async function getChat(customer, pusher = false) {
             if (pusher) {
                 flash(customer);
             }
-            axios.post(`${APP_URL}/customer/${customer}/mark`)
+
 
 
             var objDiv = document.getElementById("scrollBar");
@@ -255,7 +256,6 @@ window.Echo.private('user-1')
     .listen('ApplicationChat', (response) => {
         getChat(response.id, true);
 
-        console.log(response.id)
         var objDiv = document.getElementById("scrollBar");
         objDiv.scrollTop = objDiv.scrollHeight;
     })

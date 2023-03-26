@@ -15,7 +15,7 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public Telegram $telegram)
     {
         $this->middleware('auth');
     }
@@ -25,7 +25,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request,Telegram $telegram)
+    public function index(Request $request)
     {
         $customers = Customer::with('notifications')->orderBy('created_at','desc')->get();
         if($request->has('search')){
@@ -36,7 +36,9 @@ class HomeController extends Controller
             })->orderBy('created_at', 'desc')->get();
             return view('ajaxcontent',compact('customers','search'));
         }
-        $username = $telegram->username();
+        $username = $this->telegram->username();
+
+
         $phone = '';
         return view('home',compact('customers','username','phone'));
     }

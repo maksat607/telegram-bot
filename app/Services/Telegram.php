@@ -17,7 +17,7 @@ class Telegram
     }
     public function username(){
         $response =  Http::get( $this->api_url.'getMe');
-        return $response['result']['username'];
+        return $response['result']['username'] ?? '';
     }
     public function sendMessage(string $chat_id, string $text)
     {
