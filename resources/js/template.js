@@ -170,6 +170,21 @@ async function getChat(customer) {
         });
 }
 
+function flash(id){
+    var $myElement = $(`#customer-${id} .chatButton`);
+
+// start the flashing effect
+    var flashingInterval = setInterval(function() {
+        $myElement.toggleClass('flashing');
+    }, 500); // flash every 500ms (0.5 seconds)
+
+// stop the flashing effect after 3 seconds
+    setTimeout(function() {
+        clearInterval(flashingInterval);
+        $myElement.removeClass('flashing');
+    }, 3000); // stop after 3000ms (3 seconds)
+}
+
 $(document).ready(function () {
     $('.replyMessage').on('keydown', function (event) {
         // Check if Enter key was pressed
@@ -229,10 +244,10 @@ $('.searchChats').on('input', function () {
 
 });
 
-
 window.Echo.private('user-1')
     .listen('ApplicationChat', (response) => {
         getChat(response.id);
+        flash(response.id);
         var objDiv = document.getElementById("scrollBar");
         objDiv.scrollTop = objDiv.scrollHeight;
     })

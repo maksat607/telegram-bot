@@ -1055,3 +1055,7 @@ div[class~="onTop"] > .count {
         opacity: 1;
     }
 }
+
+.flashing {
+    background: orange !important;
+}

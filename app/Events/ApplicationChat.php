@@ -25,13 +25,8 @@ class ApplicationChat implements ShouldBroadcast
 //    }
     public function broadcastWith()
     {
-        $customer = view('customer',['customer'=>$this->customer])->render();
-        $messages = view('messages',['messages'=>$this->customer->notifications->sortBy('created_at')])->render();
         return [
             'id'=>$this->customer->id
-//            'customer'=>$customer,
-//            'id'=>'customer-'.$this->customer->id,
-//            'messages'=>$messages
         ];
     }
 
