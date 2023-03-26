@@ -258,8 +258,8 @@ window.Echo.private('user-1')
         if(response.from){
             $('.sound').trigger('click');
             console.log(response.id);
-            setInterval(function () {
-                flash(response.id);
+            setTimeout(function () {
+                $(".audio.active").toggleClass("blink");
             }, 500);
 
         }
