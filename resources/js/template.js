@@ -170,12 +170,12 @@ async function getChat(customer, pusher = false) {
             console.log(error)
         });
 }
-$myElement.on('click', function() {
+$('.sound').on('click', function() {
     const audio = $('#sound')[0]; // Get the audio element
     audio.play();
 })
 function flash(id) {
-    $('.sound').click();
+    $('.sound').trigger('click');
 
     var $myElement = $(`#customer-${id} .chatButton`);
 
