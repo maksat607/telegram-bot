@@ -103,6 +103,7 @@ async function getChat(customer, pusher = false) {
                 if (active) {
                     $(`#${response.data.customer_id} .chatButton`).addClass('active');
                     axios.get(`${APP_URL}/customer/${customer}/mark`)
+
                 }
             } else {
                 $('.chats').prepend(
@@ -177,7 +178,7 @@ $('.sound').on('click', function() {
     audio.play();
 })
 function flash(id) {
-    $('.sound').trigger('click');
+
 
     var $myElement = $(`#customer-${id} .chatButton`);
 
@@ -255,7 +256,9 @@ $('.searchChats').on('input', function () {
 window.Echo.private('user-1')
     .listen('ApplicationChat', (response) => {
         getChat(response.id, true);
-
+        if(response.from){
+            $('.sound').trigger('click');
+        }
         var objDiv = document.getElementById("scrollBar");
         objDiv.scrollTop = objDiv.scrollHeight;
     })

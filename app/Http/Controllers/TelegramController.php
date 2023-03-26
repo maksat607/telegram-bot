@@ -53,7 +53,7 @@ class TelegramController extends Controller
         if ($customer->active) {
             $customer->notify(new UserNotifications($data));
             $customer->load('notifications');
-            event(new ApplicationChat($customer, $data));
+            event(new ApplicationChat($customer, $data,true));
         }
 
 
@@ -265,9 +265,7 @@ class TelegramController extends Controller
             'message' => $message,
             'self' => 1
         ];
-        $customer->notify(new UserNotifications($data));
-        $customer->load('notifications');
-        event(new ApplicationChat($customer, $data));
+        $this->notify($customer, $data);
     }
 
     public function upload(Request $request, Customer $customer, Telegram $telegram)
@@ -299,9 +297,7 @@ class TelegramController extends Controller
                     'url' => $url,
                     'self' => 0
                 ];
-                $customer->notify(new UserNotifications($data));
-                $customer->load('notifications');
-                event(new ApplicationChat($customer, $data));
+                $this->notify($customer, $data);
 
                 $telegram->sendFile($customer->telegram_id, public_path('uploads') . '/' . basename($url));
 

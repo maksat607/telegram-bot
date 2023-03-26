@@ -10,7 +10,7 @@ use ProtoneMedia\Splade\Facades\Splade;
 
 class ApplicationChat implements ShouldBroadcast
 {
-    public function __construct(public $customer,public $data)
+    public function __construct(public $customer,public $data, public $from = false)
     {
 
     }
@@ -25,8 +25,10 @@ class ApplicationChat implements ShouldBroadcast
 //    }
     public function broadcastWith()
     {
+
         return [
-            'id'=>$this->customer->id
+            'id'=>$this->customer->id,
+            'from'=>$this->from
         ];
     }
 
