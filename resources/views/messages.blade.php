@@ -6,7 +6,7 @@
             </audio>
 
         @elseif(trim($message->data['message'])=='_video')
-            <video controls>
+            <video width="320" height="240" controls>
                 <source src="{{  str_replace('\\', '', $message->data['url']) }}" type="video/mp4">
             </video>
             <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="">
