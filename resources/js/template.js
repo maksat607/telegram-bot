@@ -112,9 +112,7 @@ async function getChat(customer, pusher = false) {
                      </div>`
                 );
             }
-            if (pusher) {
-                flash(customer);
-            }
+
 
 
 
@@ -258,6 +256,7 @@ window.Echo.private('user-1')
         getChat(response.id, true);
         if(response.from){
             $('.sound').trigger('click');
+            flash(response.id);
         }
         var objDiv = document.getElementById("scrollBar");
         objDiv.scrollTop = objDiv.scrollHeight;
