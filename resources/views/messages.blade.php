@@ -1,3 +1,4 @@
+
 @foreach($messages as $message)
     <div class="msg @if($message->data['self'] != 0) messageReceived @else messageSent @endif">
         @if(trim($message->data['message'])=='_audio')
@@ -13,7 +14,8 @@
                 {{basename($message->data['url'])}}
             </a>
         @elseif($message->data['message']=='_file')
-            <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="">
+{{--            <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="" data-fancybox="gallery">--}}
+            <a href="{{  str_replace('\\', '', $message->data['url']) }}" data-fancybox="gallery" >
                 <img src="{{  str_replace('\\', '', $message->data['thumbnail_url']) }}" alt="Document" width="200"
                      height="200">
             </a>
@@ -26,3 +28,11 @@
     </div>
 @endforeach
 
+<!-- Initialize the carousel -->
+
+<script>
+    // lightbox.option({
+    //     'resizeDuration': 200,
+    //     'wrapAround': true
+    // });
+</script>

@@ -16,7 +16,6 @@
     <link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-b4b4269c16397ad2f0f7a01bcdf513a1994f4c94b8af2f191c09eb0d601762b1.svg" color="#111">
 
 
-
     <title>TelegramBot</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,11 +28,14 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+{{--    <link rel="dns-prefetch" href="//fonts.gstatic.com">--}}
+{{-- --}}
 
-    <!-- Scripts -->
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+ <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
+
 </head>
 <audio id="sound" class="d-none">
     <source src="{{ asset('sound.mp3') }}" type="audio/mp3">
@@ -42,6 +44,7 @@
     const APP_URL = {!! json_encode(url('/')) !!};
 
 </script>
+
 <body>
 
     <div id="app">
@@ -57,17 +60,24 @@
 <div class="sound"></div>
 
 
+
 <script>
     function delay(time) {
         return new Promise(resolve => setTimeout(resolve, time));
     }
 
     delay(500).then(() => {
-            $('.chats div .chatButton:first').trigger('click');
+        $('.chats div .chatButton:first').trigger('click');
 
     });
 
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Fancybox -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
 
 
 </html>

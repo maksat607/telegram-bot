@@ -1,3 +1,5 @@
+import $ from 'jquery';
+window.$ = $;
 $(document).ready(function () {
     $('.pick').click(function () {
         var emoji = $(this).text();
@@ -331,3 +333,5 @@ $(document).ready(function() {
         }
     });
 });
+
+
