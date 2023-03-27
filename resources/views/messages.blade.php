@@ -22,7 +22,7 @@
                 <img src="{{  str_replace('\\', '', $message->data['thumbnail_url']) }}" alt="Document" width="200"
                      height="200">
             </a>
-            <span>{{ basename($message->data['url']) }}</span>
+            <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="">{{ basename($message->data['url']) }}</a>
         @else
             {{ $message->data['message'] }}
         @endif
