@@ -15,7 +15,10 @@
             </a>
         @elseif($message->data['message']=='_file')
 {{--            <a href="{{  str_replace('\\', '', $message->data['url']) }}" download="" data-fancybox="gallery">--}}
-            <a href="{{  str_replace('\\', '', $message->data['url']) }}" data-fancybox="gallery" >
+            <a href="{{  str_replace('\\', '', $message->data['url']) }}"
+               @if( in_array(pathinfo($message->data['url'], PATHINFO_EXTENSION),['jpg', 'jpeg', 'png', 'bmp']))
+               data-fancybox="gallery"
+                @endif >
                 <img src="{{  str_replace('\\', '', $message->data['thumbnail_url']) }}" alt="Document" width="200"
                      height="200">
             </a>
