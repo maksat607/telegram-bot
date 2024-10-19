@@ -207,12 +207,11 @@ $(document).ready(function () {
             $(this).val('');
             var customer = $('.chatButton.active').data('id');
 
+            console.log(`${APP_URL}/customer/${customer}/chat`)
             axios.post(`${APP_URL}/customer/${customer}/chat`, {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 'message': message,
-
-            })
-                .then(response => {
+            }).then(response => {
 
                     console.log(response.data)
                 }).catch(error => {
