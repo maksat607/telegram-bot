@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Monolog\Handler\TelegramBotHandler;
 use Illuminate\Support\Facades\File;
 
@@ -44,6 +45,7 @@ class CustomerController extends Controller
 
     public function respond(Request $request, Customer $customer, Telegram $telegramBot)
     {
+        Log::info('responding to customer' . $request->message);
         $data = [
             'user_id' => auth()->id(),
             'curomer_id' => $customer->id,
