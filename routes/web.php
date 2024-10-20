@@ -33,7 +33,7 @@ Route::post('/logout', [\App\Http\Controllers\ApiLoginController::class, 'logout
 // You can also add routes for registration if needed
 
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->group(function () {
     Route::get('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'messages'])->name('messages');
