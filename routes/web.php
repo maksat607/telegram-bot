@@ -48,10 +48,10 @@ Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->group(functio
     Route::view('page1','page1');
     Route::view('page2','page2');
 
-//    Route::get('/dashboard', function () {
-//        return redirect('customer/1/chat');
-//    })->middleware(['verified'])->name('dashboard');
-//
+    Route::get('/dashboard', function () {
+        return redirect('customer/1/chat');
+    })->middleware(\App\Http\Middleware\CheckAuthenticated::class)->name('dashboard');
+
 
 
 //    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
