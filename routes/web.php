@@ -24,8 +24,8 @@ Route::delete('/logs/{filename}', [LogController::class, 'destroy']);
 
 
 // Custom login routes
-Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->get('/login', [\App\Http\Controllers\ApiLoginController::class, 'showLoginForm'])->name('login');
-Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->post('/login', [\App\Http\Controllers\ApiLoginController::class, 'login'])->name('login.post');
+Route::get('/login', [\App\Http\Controllers\ApiLoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\ApiLoginController::class, 'login'])->name('login.post');
 
 // Custom logout route
 Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->post('/logout', [\App\Http\Controllers\ApiLoginController::class, 'logout'])->name('logout.post');
