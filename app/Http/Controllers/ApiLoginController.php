@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class ApiLoginController extends Controller
@@ -24,6 +25,7 @@ class ApiLoginController extends Controller
             'password' => 'required|min:6',
         ]);
 
+        Log::info('User is trying to log in: ' ,$request->all());
         $response = Http::withHeaders(
             [
                 'Content-Type' => 'application/json',
@@ -37,8 +39,10 @@ class ApiLoginController extends Controller
         ]);
 
         $data = $response->json();
+        Log::info('Response: ' ,$data);
 
         if ($response->successful() && isset($data['token'])) {
+            Log::info('User logged in: ' . $data['token']);
 
             Session::put('token', $data['token']);
 
