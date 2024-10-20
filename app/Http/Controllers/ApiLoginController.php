@@ -14,6 +14,7 @@ class ApiLoginController extends Controller
     // Show custom login form
     public function showLoginForm()
     {
+
         return view('auth.login'); // Point to your custom login view
     }
 
@@ -50,7 +51,7 @@ class ApiLoginController extends Controller
             Log::info('Session data after login:', Session::all());
 
 
-            return redirect()->intended(RouteServiceProvider::HOME); // Redirect to the intended page
+            return redirect()->intended('/'); // Redirect to the intended page
         }
 
         return redirect()->back()->withErrors([
