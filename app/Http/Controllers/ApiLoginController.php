@@ -46,6 +46,9 @@ class ApiLoginController extends Controller
 
             Session::put('token', $data['token']);
 
+            Log::info('Session data after login:', Session::all());
+
+
             return redirect()->intended('/');
         }
 
