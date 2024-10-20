@@ -13,18 +13,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\LogController;
+
+Route::get('/logs', [LogController::class, 'index']);
+Route::get('/logs/{filename}', [LogController::class, 'show']);
+Route::delete('/logs/{filename}', [LogController::class, 'destroy']);
 
 
 
 
-Auth::routes();
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Custom login routes
+Route::get('/login', [\App\Http\Controllers\ApiLoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\ApiLoginController::class, 'login'])->name('login.post');
 
-Route::middleware('auth')->group(function () {
+// Custom logout route
+Route::post('/logout', [\App\Http\Controllers\ApiLoginController::class, 'logout'])->name('logout.post');
+
+// You can also add routes for registration if needed
+
+
+Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->group(function () {
     Route::get('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'messages'])->name('messages');
     Route::get('customer/{customer}/mark', [\App\Http\Controllers\CustomerController::class, 'mark']);
     Route::post('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'respond']);
@@ -39,7 +50,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', function () {
         return redirect('customer/1/chat');
-    })->middleware(['verified'])->name('dashboard');
+    })->name('dashboard');
 
 
 
