@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,7 @@ class ApiLoginController extends Controller
             Log::info('Session data after login:', Session::all());
 
 
-            return redirect()->intended('/dashboard'); // Redirect to the intended page
+            return redirect()->intended(RouteServiceProvider::HOME); // Redirect to the intended page
         }
 
         return redirect()->back()->withErrors([
