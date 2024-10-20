@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+use App\Http\Controllers\LogController;
+
+Route::get('/logs', [LogController::class, 'index'])->middleware('auth'); // To list all log files
+Route::get('/logs/{filename}', [LogController::class, 'show'])->middleware('auth'); // To view a specific log file
+Route::delete('/logs/{filename}', [LogController::class, 'destroy'])->middleware('auth'); // To delete a specific log file
+
 Route::get('/', function () {
     return view('welcome');
 });
