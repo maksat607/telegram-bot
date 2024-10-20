@@ -27,6 +27,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        dd(222);
         $customers = Customer::with('notifications')->orderBy('created_at','desc')->get();
         if($request->has('search')){
             $search = $request->search;

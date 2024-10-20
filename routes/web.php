@@ -24,11 +24,11 @@ Route::delete('/logs/{filename}', [LogController::class, 'destroy']);
 
 
 // Custom login routes
-Route::get('/login', [\App\Http\Controllers\ApiLoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [\App\Http\Controllers\ApiLoginController::class, 'login'])->name('login.post');
+Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->get('/login', [\App\Http\Controllers\ApiLoginController::class, 'showLoginForm'])->name('login');
+Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->post('/login', [\App\Http\Controllers\ApiLoginController::class, 'login'])->name('login.post');
 
 // Custom logout route
-Route::post('/logout', [\App\Http\Controllers\ApiLoginController::class, 'logout'])->name('logout.post');
+Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->post('/logout', [\App\Http\Controllers\ApiLoginController::class, 'logout'])->name('logout.post');
 
 // You can also add routes for registration if needed
 
@@ -48,10 +48,10 @@ Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->group(functio
     Route::view('page1','page1');
     Route::view('page2','page2');
 
-    Route::get('/dashboard', function () {
-        return redirect('customer/1/chat');
-    })->name('dashboard');
-
+//    Route::get('/dashboard', function () {
+//        return redirect('customer/1/chat');
+//    })->name('dashboard');
+//
 
 
 //    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
