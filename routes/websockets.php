@@ -4,7 +4,7 @@ use App\WebSocket\MyWebSocketHandler;
 Broadcast::routes(['middleware' => ['auth:api']]);
 
 Broadcast::channel('my-channel', function ($user) {
-return $user->id === 1;
+return true;
 });
 
 Broadcast::channel('my-private-channel', function ($user) {
