@@ -8,7 +8,7 @@ use App\Notifications\UserNotifications;
 use App\Services\Telegram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Laravel\Facades\Image;
 use Telegram\Bot\Api;
 
 
