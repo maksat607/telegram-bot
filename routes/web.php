@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\LogController;
 
-Route::get('/logs', [LogController::class, 'index'])->middleware('auth'); // To list all log files
-Route::get('/logs/{filename}', [LogController::class, 'show'])->middleware('auth'); // To view a specific log file
-Route::delete('/logs/{filename}', [LogController::class, 'destroy'])->middleware('auth'); // To delete a specific log file
+Route::get('/logs', [LogController::class, 'index'])->middleware(\App\Http\Middleware\CheckAuthenticated::class); // To list all log files
+Route::get('/logs/{filename}', [LogController::class, 'show'])->middleware(\App\Http\Middleware\CheckAuthenticated::class); // To view a specific log file
+Route::delete('/logs/{filename}', [LogController::class, 'destroy'])->middleware(\App\Http\Middleware\CheckAuthenticated::class); // To delete a specific log file
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,11 +26,19 @@ Route::get('/', function () {
 
 
 
-Auth::routes();
+// Custom login routes
+Route::get('/login', [\App\Http\Controllers\ApiLoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\ApiLoginController::class, 'login'])->name('login.post');
+
+// Custom logout route
+Route::post('/logout', [\App\Http\Controllers\ApiLoginController::class, 'logout'])->name('logout.post');
+
+// You can also add routes for registration if needed
+
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->group(function () {
     Route::get('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'messages'])->name('messages');
     Route::get('customer/{customer}/mark', [\App\Http\Controllers\CustomerController::class, 'mark']);
     Route::post('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'respond']);
