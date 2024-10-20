@@ -49,7 +49,7 @@ class ApiLoginController extends Controller
             Log::info('Session data after login:', Session::all());
 
 
-            return redirect()->intended('/');
+            return redirect()->intended('/dashboard
         }
 
         return redirect()->back()->withErrors([
