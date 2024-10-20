@@ -13,6 +13,7 @@ $(`body`).on('change', `#file`, function (e) {
     $('#loading').append(`<div id="spinner" class="hidden">
           <div class="spinner-inner"></div>
        </div>`);
+
     $.ajax({
         url: `api/${id}/upload`,
         headers: {
