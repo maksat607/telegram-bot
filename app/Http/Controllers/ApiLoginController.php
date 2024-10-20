@@ -20,7 +20,7 @@ class ApiLoginController extends Controller
     {
         // Validate the request
         $request->validate([
-            'phone' => 'required|phone',
+            'phone' => 'required',
             'password' => 'required|min:6',
         ]);
 
