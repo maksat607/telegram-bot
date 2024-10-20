@@ -8,7 +8,7 @@ return true;
 });
 
 Broadcast::channel('my-private-channel', function ($user) {
-return $user->id === 1;
-}, ['guards' => ['api']]);
+return true;
+});
 
 Route::webSocket('/upload-audio/2', [MyWebSocketHandler::class,'onMessage']);
