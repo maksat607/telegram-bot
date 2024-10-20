@@ -224,9 +224,10 @@ class TelegramController extends Controller
 
 
         $filename = basename($fileUrl);
-        $originalImagePath = public_path('/uploads/' . $filename);
-        $this->resizeImage($originalImagePath, public_path('/uploads/thumbnails/' . $filename), 300);
+        Image::make(file_get_contents($fileUrl))->resize(300, null, function ($constraint) {
+            $constraint->aspectRatio();
 
+        })->save(public_path() . '/uploads/thumbnails/' . $filename);
         $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $filename);
         $url = Storage::disk('uploads')->url($filename);
 
@@ -321,13 +322,10 @@ class TelegramController extends Controller
 
                 $fileName = time() . '_' . $singleFile->getClientOriginalName();
                 Storage::disk('uploads')->put($fileName, file_get_contents($singleFile));
-                $originalImagePath = public_path('/uploads/' . $fileName);
-
                 if (in_array(strtolower($singleFile->getClientOriginalExtension()), ['jpg', 'jpeg', 'png', 'bmp'])) {
-//                    Image::make($singleFile->path())->resize(300, null, function ($constraint) {
-//                        $constraint->aspectRatio();
-//                    })->save(public_path() . '/uploads/thumbnails/' . $fileName);
-                    $this->resizeImage($originalImagePath, public_path('/uploads/thumbnails/' . $fileName), 300);
+                    Image::make($singleFile->path())->resize(300, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save(public_path() . '/uploads/thumbnails/' . $fileName);
                     $thumbnail_url = Storage::disk('uploads')->url('thumbnails/' . $fileName);
                     $url = Storage::disk('uploads')->url($fileName);
                 } else {
@@ -388,29 +386,6 @@ class TelegramController extends Controller
 
         Telegram::sendMessage($data);
     }
-    protected function resizeImage($filePath, $destinationPath, $width)
-    {
-        // Load the image
-        $image = imagecreatefromjpeg($filePath); // Change this based on your image type
 
-        // Get original dimensions
-        list($originalWidth, $originalHeight) = getimagesize($filePath);
-
-        // Calculate the new height while maintaining aspect ratio
-        $height = ($originalHeight / $originalWidth) * $width;
-
-        // Create a new true color image
-        $newImage = imagecreatetruecolor($width, $height);
-
-        // Resize the image
-        imagecopyresampled($newImage, $image, 0, 0, 0, 0, $width, $height, $originalWidth, $originalHeight);
-
-        // Save the resized image
-        imagejpeg($newImage, $destinationPath, 100); // Change to imagepng for PNG images
-
-        // Free up memory
-        imagedestroy($image);
-        imagedestroy($newImage);
-    }
 
 }
