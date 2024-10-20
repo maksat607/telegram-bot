@@ -17,7 +17,7 @@ class HomeController extends Controller
      */
     public function __construct(public Telegram $telegram)
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
     }
 
     /**
