@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\LogController;
 
-Route::get('/logs', [LogController::class, 'index'])->middleware(\App\Http\Middleware\CheckAuthenticated::class); // To list all log files
-Route::get('/logs/{filename}', [LogController::class, 'show'])->middleware(\App\Http\Middleware\CheckAuthenticated::class); // To view a specific log file
-Route::delete('/logs/{filename}', [LogController::class, 'destroy'])->middleware(\App\Http\Middleware\CheckAuthenticated::class); // To delete a specific log file
+Route::get('/logs', [LogController::class, 'index']);
+Route::get('/logs/{filename}', [LogController::class, 'show']);
+Route::delete('/logs/{filename}', [LogController::class, 'destroy']);
 
 Route::get('/', function () {
     return view('welcome');
