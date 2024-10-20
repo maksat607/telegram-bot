@@ -46,7 +46,7 @@ class ApiLoginController extends Controller
 
             Session::put('token', $data['token']);
 
-            return redirect()->intended('/home');
+            return redirect()->intended('/');
         }
 
         return redirect()->back()->withErrors([
