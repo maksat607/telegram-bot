@@ -4,8 +4,8 @@
             <div class="image"></div>
 
             <div class="myinfo">
-                <p style="margin-bottom: unset;" class="name"> logged in User</p>
-                <p style="margin-bottom: unset;" class="phone">+1 12 1234 5678</p>
+                <p style="margin-bottom: unset;" class="name">{{ auth()->user()->name }}</p>
+                <p style="margin-bottom: unset;" class="phone">{{  auth()->user()->phone }}</p>
             </div>
 
             <button class="cloud">

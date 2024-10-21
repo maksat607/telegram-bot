@@ -6,7 +6,7 @@
             <div class="image"></div>
 
             <div class="side">
-                <p style="margin-bottom: unset;" class="name"> logged in User</p>
+                <p style="margin-bottom: unset;" class="name">{{ auth()->user()->phone }}</p>
                 <p style="margin-bottom: unset;" class="pStatus">Online</p>
             </div>
 
