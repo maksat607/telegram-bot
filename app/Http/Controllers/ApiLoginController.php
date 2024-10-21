@@ -48,7 +48,28 @@ class ApiLoginController extends Controller
 
             Session::put('token', $data['token']);
 
-            Log::info('Session data after login:', Session::all());
+            $user = $data['user'] ?? null;
+
+            if ($user) {
+                // Create a temporary user in the database or session (Example: using database)
+                $tempUser = \App\Models\User::firstOrCreate(
+                    ['phone' => $user['phone']], // Ensure it's unique by phone or any other unique field
+                    [
+                        'email' => $user['phone'] ?? null, // if provided
+                        'password' => bcrypt(str_random(10)), // Set a random password
+                    ]
+                );
+
+                // Log the user in
+                Auth::login($tempUser);
+
+                // Store the token in the session or cache
+                Session::put('token', $data['token']);
+
+                Log::info('Session data after login:', Session::all());
+
+                return redirect()->intended('/'); // Redirect to the intended page
+            }
 
 
             return redirect()->intended('/'); // Redirect to the intended page
