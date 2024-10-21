@@ -1,7 +1,7 @@
 <?php
 use App\WebSocket\MyWebSocketHandler;
 
-Broadcast::routes(['middleware' => [\App\Http\Middleware\CheckAuthenticated::class]]);
+Broadcast::routes();
 
 Broadcast::channel('my-channel', function ($user) {
 return true;

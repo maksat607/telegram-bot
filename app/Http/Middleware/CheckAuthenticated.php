@@ -20,6 +20,9 @@ class CheckAuthenticated
         if (!Session::has('token')) {
             Log::info('User is not authenticated');
             // Redirect to login if user is not authenticated
+            if ($request->is('broadcasting/auth')) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
             return redirect()->route('login.get');
         }
         return $next($request);
