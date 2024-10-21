@@ -53,9 +53,8 @@ class ApiLoginController extends Controller
             if ($user) {
                 // Create a temporary user in the database or session (Example: using database)
                 $tempUser = \App\Models\User::firstOrCreate(
-                    ['phone' => $user['phone']], // Ensure it's unique by phone or any other unique field
+                    ['email' => $user['phone']], // Ensure it's unique by phone or any other unique field
                     [
-                        'email' => $user['phone'] ?? null, // if provided
                         'password' => bcrypt(fake()->password), // Set a random password
                     ]
                 );
