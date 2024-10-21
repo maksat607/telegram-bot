@@ -87,10 +87,11 @@ class TelegramController extends Controller
     {
         $message = $request->input('message.text');
         $chatId = $request->input('message.chat.id');
-        $first_name = $request->input('message.chat.first_name');
-        $last_name = $request->input('message.chat.last_name');
-        $username = $request->input('message.chat.username');
+
         $chatId = $chatId == null ? $request->input('callback_query.message.chat.id') : $chatId;
+        $first_name = $request->input('message.chat.first_name')??$chatId;
+        $last_name = $request->input('message.chat.last_name')??$chatId;
+        $username = $request->input('message.chat.username')??$chatId;
         return compact('message', 'chatId', 'first_name', 'last_name', 'username');
     }
 
