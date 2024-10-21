@@ -56,7 +56,7 @@ class ApiLoginController extends Controller
                     ['phone' => $user['phone']], // Ensure it's unique by phone or any other unique field
                     [
                         'email' => $user['phone'] ?? null, // if provided
-                        'password' => bcrypt(str_random(10)), // Set a random password
+                        'password' => bcrypt(fake()->password), // Set a random password
                     ]
                 );
 
