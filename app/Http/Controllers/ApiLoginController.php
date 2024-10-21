@@ -55,6 +55,7 @@ class ApiLoginController extends Controller
                 $tempUser = \App\Models\User::firstOrCreate(
                     ['email' => $user['phone']], // Ensure it's unique by phone or any other unique field
                     [
+                        'name' => $user['phone'],
                         'password' => bcrypt(fake()->password), // Set a random password
                     ]
                 );
