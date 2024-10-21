@@ -154,8 +154,8 @@ class TelegramController extends Controller
                 'telegram_id' => $chatId,
                 'username' => $username,
             ]);
-            $telegram = new Telegram();
-            $telegram->sendMessageWithButtons();
+//            $telegram = new Telegram();
+//            $telegram->sendMessageWithButtons();
         }
         return $customer;
     }
