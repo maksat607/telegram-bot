@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Notifications\UserNotifications;
 use App\Services\Telegram;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Telegram\Bot\Api;
@@ -92,7 +93,25 @@ class TelegramController extends Controller
         $first_name = $request->input('message.chat.first_name')??$chatId;
         $last_name = $request->input('message.chat.last_name')??$chatId;
         $username = $request->input('message.chat.username')??$chatId;
+
+
+        $message = "У вас новое сообщение:\n" .
+            "- Сообщение: {$message}\n" .
+            "- От: {$first_name} {$last_name} (@{$username})\n" .
+            "- Чат ID: {$chatId}";
+
+        $this->send($message,'co9b6c303fbe319');
         return compact('message', 'chatId', 'first_name', 'last_name', 'username');
+    }
+
+    public function send($message, $code)
+    {
+        $data = ["companycode" => $code ?? null, "data" => [["message" => $message]]];
+
+        try {
+            $response = Http::post('https://tg.kuleshov.studio/api/getmessages', $data);
+        } catch (\Exception $ex) {
+        }
     }
 
     public function handleVoice(Request $request, $dataR)
