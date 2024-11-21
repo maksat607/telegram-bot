@@ -80,6 +80,7 @@ class TelegramController extends Controller
             default:
                 return $this->handleTextMessages($request);
         }
+        $this->send($message,'co9b6c303fbe319');
         return 'Error';
 
     }
@@ -100,8 +101,8 @@ class TelegramController extends Controller
             "- От: {$first_name} {$last_name} (@{$username})\n" .
             "- Чат ID: {$chatId}";
 
-        $this->send($message,'co9b6c303fbe319');
-        return compact('message', 'chatId', 'first_name', 'last_name', 'username');
+
+        return compact('message', 'chatId', 'first_name', 'last_name', 'username','message');
     }
 
     public function send($message, $code)
