@@ -65,7 +65,7 @@ class TelegramController extends Controller
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
-
+        $this->send($message??null,'co9b6c303fbe319');
         switch (true) {
             case isset($dataR['message']['voice']):
                 return $this->handleVoice($request, $dataR);
@@ -80,7 +80,7 @@ class TelegramController extends Controller
             default:
                 return $this->handleTextMessages($request);
         }
-        $this->send($message,'co9b6c303fbe319');
+
         return 'Error';
 
     }
@@ -107,6 +107,10 @@ class TelegramController extends Controller
 
     public function send($message, $code)
     {
+        if ($message===null)
+        {
+            return;
+        }
         $data = ["companycode" => $code ?? null, "data" => [["message" => $message]]];
 
         try {
