@@ -99,7 +99,9 @@ class TelegramController extends Controller
         $message = "У вас новое сообщение:\n" .
             "- Сообщение: {$message}\n" .
             "- От: {$first_name} {$last_name} (@{$username})\n" .
-            "- Чат ID: {$chatId}";
+            "- Чат ID: {$chatId}\n"
+            ."https://vinzapp.ru"
+        ;
 
 
         return compact('message', 'chatId', 'first_name', 'last_name', 'username','message');
