@@ -32,8 +32,8 @@ class HomeController extends Controller
             $search = $request->search;
             $customers = Customer::whereHas('notifications', function($query) use ($request) {
                 $query->where('data', 'like', "%$request->search%")
-                    ->orWhereNull('data');
-            })->orderBy('created_at', 'asc')->get();
+                    ->orWhereNull('data')->orderBy('created_at', 'asc');
+            })->get();
             return view('ajaxcontent',compact('customers','search'));
         }
         $username = $this->telegram->username();
