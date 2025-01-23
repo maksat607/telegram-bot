@@ -34,18 +34,18 @@ class HomeController extends Controller
                 }
             ])
             ->with(['notifications' => function ($query) {
-                $query->orderBy('created_at', 'desc'); // Order notifications by created_at
+                $query->orderBy('read_at', 'asc') // Unread first (NULL values first)
+                ->orderBy('created_at', 'desc'); // Most recent notifications next
             }])
-            ->orderByDesc('has_unread') // Prioritize customers with unread notifications
             ->orderByDesc(
-                Notification::selectRaw('CASE WHEN read_at IS NULL THEN created_at ELSE read_at END')
+                Notification::selectRaw('MAX(created_at)')
                     ->whereColumn('notifiable_id', 'customers.id')
                     ->where('notifiable_type', Customer::class)
-                    ->latest()
-                    ->take(1)
-            ) // Sort by `created_at` for unread, `read_at` for read
-            ->orderByDesc('customers.created_at') // Fallback to customer creation date
+            ) // Sort by the most recent notification's created_at
+            ->orderByDesc('has_unread') // Sort by whether the customer has unread notifications
+            ->orderByDesc('customers.created_at') // Fallback to the customer's creation date
             ->get();
+
 
 
 
