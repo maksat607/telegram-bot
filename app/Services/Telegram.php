@@ -21,6 +21,7 @@ class Telegram
     }
     public function sendMessage(string $chat_id, string $text)
     {
+
         if($chat_id==null){
             return null;
         }

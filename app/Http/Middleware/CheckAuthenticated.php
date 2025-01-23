@@ -16,9 +16,9 @@ class CheckAuthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
-        Log::info('Session in middleware:', Session::all());
+//        Log::info('Session in middleware:', Session::all());
         if (!Session::has('token')) {
-            Log::info('User is not authenticated');
+//            Log::info('User is not authenticated');
             // Redirect to login if user is not authenticated
             if ($request->is('broadcasting/auth')) {
                 return response()->json(['message' => 'Unauthorized'], 401);
