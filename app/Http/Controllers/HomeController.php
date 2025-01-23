@@ -28,10 +28,10 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $customers = Customer::with(['notifications' => function ($query) {
-            $query->orderByRaw('CASE WHEN read_at IS NULL THEN 1 ELSE 0 END')
+            $query->orderByRaw('CASE WHEN read_at IS NULL THEN 0 ELSE 1 END')
                 ->orderBy('created_at', 'desc');
         }])
-            ->orderBy('created_at', 'desc') // To keep the customers sorted by their own creation time
+            ->orderBy('created_at', 'desc') // Sorting customers by their own creation date
             ->get();
         if($request->has('search')){
             $search = $request->search;
