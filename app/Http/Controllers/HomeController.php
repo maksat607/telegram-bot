@@ -27,13 +27,18 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $customers = Customer::with('notifications')->orderBy('created_at','desc')->get();
+        $customers = Customer::with(['notifications' => function ($query) {
+            $query->orderByRaw('CASE WHEN read_at IS NULL THEN 1 ELSE 0 END')
+                ->orderBy('created_at', 'desc');
+        }])
+            ->orderBy('created_at', 'desc') // To keep the customers sorted by their own creation time
+            ->get();
         if($request->has('search')){
             $search = $request->search;
             $customers = Customer::whereHas('notifications', function($query) use ($request) {
                 $query->where('data', 'like', "%$request->search%")
-                    ->orWhereNull('data')->orderBy('created_at', 'asc');
-            })->get();
+                    ->orWhereNull('data');
+            })->orderBy('created_at', 'asc')->get();
             return view('ajaxcontent',compact('customers','search'));
         }
         $username = $this->telegram->username();
