@@ -27,12 +27,19 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $customers = Customer::with(['notifications' => function ($query) {
-            $query->orderByRaw('CASE WHEN read_at IS NULL THEN 0 ELSE 1 END')
-                ->orderBy('created_at', 'desc');
-        }])
-            ->orderBy('created_at', 'desc') // Sorting customers by their own creation date
+        $customers = Customer::query()
+            ->leftJoin('notifications', 'customers.id', '=', 'notifications.customer_id')
+            ->select('customers.*')
+            ->selectRaw('MAX(CASE WHEN notifications.read_at IS NULL THEN 1 ELSE 0 END) as has_unread')
+            ->selectRaw('MAX(notifications.created_at) as latest_notification')
+            ->groupBy('customers.id')
+            ->orderByDesc('has_unread') // Unread notifications first
+            ->orderByDesc('latest_notification') // Most recent notification next
+            ->orderByDesc('customers.created_at') // Fallback to customer creation date
+            ->with('notifications') // Eager load notifications
             ->get();
+
+
         if($request->has('search')){
             $search = $request->search;
             $customers = Customer::whereHas('notifications', function($query) use ($request) {
