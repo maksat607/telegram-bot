@@ -65,7 +65,7 @@ class TelegramController extends Controller
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
-        $this->send($note??null,'co9b6c303fbe319');
+        $this->send($note??null,'co9b6c303fbe319',$empty);
         switch (true) {
             case isset($dataR['message']['voice']):
                 return $this->handleVoice($request, $dataR);
@@ -95,6 +95,8 @@ class TelegramController extends Controller
         $last_name = $request->input('message.chat.last_name')??$chatId;
         $username = $request->input('message.chat.username')??$chatId;
 
+        $empty = empty($message);
+
 
         $note = "У вас новое сообщение:\n" .
             "- Сообщение: {$message}\n" .
@@ -104,12 +106,12 @@ class TelegramController extends Controller
         ;
 
 
-        return compact('message', 'chatId', 'first_name', 'last_name', 'username','note');
+        return compact('message', 'chatId', 'first_name', 'last_name', 'username','note','empty');
     }
 
-    public function send($message, $code)
+    public function send($message, $code,$empty)
     {
-        if ($message===null)
+        if ($empty)
         {
             return;
         }
