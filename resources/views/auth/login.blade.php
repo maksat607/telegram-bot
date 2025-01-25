@@ -59,7 +59,6 @@
                 });
 
                 if (response.data.token) {
-                    alert(response.data.token);
                     localStorage.setItem('token', response.data.token);
 
                     if (response.data.token) {

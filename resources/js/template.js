@@ -203,7 +203,6 @@ $(document).ready(function () {
             const message = $(this).val();
             // Log the message to the console
             console.log(message);
-            console.log( $('meta[name="csrf-token"]').attr('content'));
 
             // Clear the input field
             $(this).val('');

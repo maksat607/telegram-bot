@@ -14,10 +14,6 @@ class CheckAuthenticated
     {
         $token = $request->header('Authorization') ?? $this->getTokenFromCookies($request);
 
-        // Log headers and extracted token for debugging
-        Log::info('Headers: ', $request->headers->all());
-        Log::info('Extracted token: ' . $token);
-
 
         if (!$token) {
             return response()->json(['error' => 'Unauthorized!'], 401);
@@ -33,7 +29,7 @@ class CheckAuthenticated
     private function getTokenFromCookies(Request $request)
     {
         $cookieHeader = $request->headers->get('cookie');
-        Log::info('Cookie header: ' . $cookieHeader);
+
 
         if (!$cookieHeader) {
             return null; // No cookies present
