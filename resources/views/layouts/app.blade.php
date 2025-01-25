@@ -41,7 +41,7 @@
 </audio>
 <script type="text/javascript">
     const URL = {!! json_encode(url('/')) !!};
-    const API_URL = URL + '/api'; // Assuming the API is under the `/api` prefix
+    const APP_URL = URL + '/api'; // Assuming the API is under the `/api` prefix
 </script>
 
 <body>
