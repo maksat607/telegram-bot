@@ -40,8 +40,8 @@
     <source src="{{ asset('sound.mp3') }}" type="audio/mp3">
 </audio>
 <script type="text/javascript">
-    const APP_URL = {!! json_encode(url('/')) !!};
-    const API_URL = APP_URL + '/api'; // Assuming the API is under the `/api` prefix
+    const URL = {!! json_encode(url('/')) !!};
+    const API_URL = URL + '/api'; // Assuming the API is under the `/api` prefix
 </script>
 
 <body>
