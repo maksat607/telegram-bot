@@ -16,12 +16,12 @@ class CheckAuthenticated
 
 
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized!'], 401);
+            return redirect()->route('login.get');
         }
 
 
         if (!Cache::has($token)) {
-            return response()->json(['error' => 'Invalid or expired token'], 401);
+            return redirect()->route('login.get');
         }
 
         return $next($request);
