@@ -77,10 +77,7 @@ class ApiLoginController extends Controller
             Cache::forget($token);
         }
 
-        return response()->json([
-            'message' => 'Logged out successfully',
-            'status' => 'success'
-        ], 200);
+        return redirect()->route('login.get');
     }
 
     private function getTokenFromCookies(Request $request)
