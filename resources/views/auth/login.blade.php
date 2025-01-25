@@ -1,73 +1,108 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Login</div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login.post') }}">
-                        @csrf
-
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('phone') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="phone" type="phone" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
+                    <div class="card-body">
+                        <div id="error-message" class="alert alert-danger d-none"></div>
+                        <form id="loginForm">
+                            <div class="row mb-3">
+                                <label for="phone" class="col-md-4 col-form-label text-md-end">Phone</label>
+                                <div class="col-md-6">
+                                    <input id="phone" type="phone" class="form-control" name="phone" required autofocus>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
+                            <div class="row mb-3">
+                                <label for="password" class="col-md-4 col-form-label text-md-end">Password</label>
+                                <div class="col-md-6">
+                                    <input id="password" type="password" class="form-control" name="password" required>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6 offset-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                                        <label class="form-check-label" for="remember">Remember Me</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-0">
+                                <div class="col-md-8 offset-md-4">
+                                    <button type="submit" class="btn btn-primary">Login</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.classList.add('d-none');
+
+            try {
+                const response = await axios.post('/login', {
+                    phone: document.getElementById('phone').value,
+                    password: document.getElementById('password').value,
+                });
+
+                if (response.data.token) {
+                    alert(response.data.token);
+                    localStorage.setItem('token', response.data.token);
+
+                    if (response.data.token) {
+                        const token = response.data.token;
+
+                        // Store token in localStorage and cookies
+                        localStorage.setItem('token', token);
+                        document.cookie = `token=${token}; path=/`;
+
+                        // Set default Axios Authorization header
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+                        // Redirect to the home page
+                        window.location.href = '/';
+                    }
+
+
+                    // document.cookie = `token=${response.data.token}; path=/`;
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                errorDiv.textContent = error.response?.data?.error || 'Login failed';
+                errorDiv.classList.remove('d-none');
+            }
+        });
+
+        axios.interceptors.request.use(config => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+            return config;
+        });
+
+        axios.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.response?.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                }
+                return Promise.reject(error);
+            }
+        );
+    </script>
 @endsection

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -21,72 +23,63 @@ class ApiLoginController extends Controller
     // Handle login form submission
     public function login(Request $request)
     {
-        // Validate the request
         $request->validate([
             'phone' => 'required',
             'password' => 'required|min:6',
         ]);
 
-        Log::info('User is trying to log in: ' ,$request->all());
-        $response = Http::withHeaders(
-            [
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'Project-Security-Key' => '803b8a72-ca68-11ee-a2ca-52540011aef0'
-            ]
-        )->post('https://cars.vinz.ru/api/auth/login', [
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'Project-Security-Key' => '803b8a72-ca68-11ee-a2ca-52540011aef0'
+        ])->post('https://cars.vinz.ru/api/auth/login', [
             'phone' => $request->phone,
             'password' => $request->password,
             'server' => 'prod',
         ]);
 
         $data = $response->json();
-        Log::info('Response: ' ,$data);
 
         if ($response->successful() && isset($data['token'])) {
-            Log::info('User logged in: ' . $data['token']);
-
-            Session::put('token', $data['token']);
-
             $user = $data['user'] ?? null;
 
             if ($user) {
-                // Create a temporary user in the database or session (Example: using database)
-                $tempUser = \App\Models\User::firstOrCreate(
-                    ['email' => $user['phone']], // Ensure it's unique by phone or any other unique field
+                $tempUser = User::firstOrCreate(
+                    ['email' => $user['phone']],
                     [
                         'name' => $user['phone'],
-                        'password' => bcrypt(fake()->password), // Set a random password
+                        'password' => bcrypt(fake()->password),
                     ]
                 );
-
-                // Log the user in
                 Auth::login($tempUser);
 
-                // Store the token in the session or cache
-                Session::put('token', $data['token']);
+                // Save the token in the cache
+                $token = $data['token'];
+                Cache::put($token, $tempUser->id, now()->addHours(122)); // Save the token for 1 hour
 
-                Log::info('Session data after login:', Session::all());
 
-                return redirect()->intended('/'); // Redirect to the intended page
+                return response()->json([
+                    'token' => $data['token'],
+                    'user' => $tempUser
+                ]);
             }
-
-
-            return redirect()->intended('/'); // Redirect to the intended page
         }
 
-        return redirect()->back()->withErrors([
-            'phone' => 'The provided credentials are incorrect.',
-        ]);
+        Log::error($response->body());
+        return response()->json(['error' => 'Invalid credentials'], 401);
     }
 
-    // Handle logout
     public function logout(Request $request)
     {
-        // Clear the session or logout the user
-        Session::flush(); // Clear all session data
-        Auth::logout();   // Optionally logout if using local authentication
+        $token = str_replace('Bearer ', '', $request->header('Authorization'));
 
-        return redirect('/login');
+        if ($token) {
+            Cache::forget($token);
+        }
+
+        return response()->json([
+            'message' => 'Logged out successfully',
+            'status' => 'success'
+        ], 200);
     }
 }

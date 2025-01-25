@@ -1,4 +1,5 @@
 
+import axios from './axios';
 import './bootstrap';
 import './pusher'
 import './template'

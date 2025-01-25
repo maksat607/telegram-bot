@@ -15,7 +15,6 @@
 
     <link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-b4b4269c16397ad2f0f7a01bcdf513a1994f4c94b8af2f191c09eb0d601762b1.svg" color="#111">
 
-
     <title>TelegramBot</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -42,7 +41,7 @@
 </audio>
 <script type="text/javascript">
     const APP_URL = {!! json_encode(url('/')) !!};
-
+    const API_URL = APP_URL + '/api'; // Assuming the API is under the `/api` prefix
 </script>
 
 <body>

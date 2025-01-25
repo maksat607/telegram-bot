@@ -55,7 +55,7 @@ class AuthenticateAccessTokenRemote
             {
                 $responseData = json_decode($response->getBody() , true);
 
-                $user = User::where('phone', $responseData['phone'])->first();
+                $user = User::where('email', $responseData['phone'])->first();
 
 
                 if (!$user)
