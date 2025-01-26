@@ -15,12 +15,12 @@ class CheckAuthenticated
         $token = $request->header('Authorization') ?? $this->getTokenFromCookies($request);
 
 
-        if (!$token) {
+        if (!$token || !auth()->check()) {
             return redirect()->route('login.get');
         }
 
 
-        if (!Cache::has($token)) {
+        if (!Cache::has($token) && !auth()->check()) {
             return redirect()->route('login.get');
         }
 
