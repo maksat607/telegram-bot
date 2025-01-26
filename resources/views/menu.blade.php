@@ -58,6 +58,18 @@
                 </a>
 
             </button>
+            <script>
+                document.getElementById('logout-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    // Clear token from storage and cookies
+                    localStorage.removeItem('token');
+                    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
+                    // Submit the form to complete logout
+                    this.submit();
+                });
+            </script>
 
 
             <form id="logout-form" action="{{ route('logout.post') }}" method="POST" class="d-none">

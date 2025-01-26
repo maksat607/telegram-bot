@@ -53,6 +53,11 @@ class ApiLoginController extends Controller
                 );
                 Auth::login($tempUser);
 
+                Log::info(\auth()->user());
+
+
+
+
                 // Save the token in the cache
                 $token = $data['token'];
                 Cache::put($token, $tempUser->id, now()->addHours(122)); // Save the token for 1 hour
