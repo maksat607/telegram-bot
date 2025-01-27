@@ -1,3 +1,6 @@
+@if(!auth()->user())
+    <script>window.location.href = "{{ route('login.get') }}";</script>
+@endif
 <section class="menuWrap">
     <div class="menu">
         <div class="me userBg">
