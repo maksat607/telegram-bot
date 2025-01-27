@@ -27,6 +27,9 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        if (auth()->guest()) {
+            return redirect()->route('login.get');
+        }
         $customers = Customer::query()
             ->withCount([
                 'notifications as has_unread' => function ($query) {
