@@ -8,6 +8,7 @@ use App\Notifications\UserNotifications;
 use App\Services\Telegram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Telegram\Bot\Api;
@@ -68,16 +69,22 @@ class TelegramController extends Controller
 //        $this->send($note??null,'co9b6c303fbe319',$empty);
         switch (true) {
             case isset($dataR['message']['voice']):
+                Log::info('Voice');
                 return $this->handleVoice($request, $dataR);
             case isset($dataR['message']['document']['file_id']):
+                Log::info('Document');
                 return $this->handleDocument($request, $dataR);
             case $photos = $request->input('message.photo'):
+                Log::info('Photo');
                 return $this->handlePhoto($request, $photos);
             case $photos = $request->input('message.video'):
+                Log::info('Video');
                 return $this->handleVideo($request);
             case $callbackQuery = $request->input('callback_query'):
+                Log::info('Button');
                 return $this->handleButtons($request, $callbackQuery['data']);
             default:
+                Log::info('Text');
                 return $this->handleTextMessages($request);
         }
 
@@ -333,6 +340,7 @@ class TelegramController extends Controller
     public function handleTextMessages(Request $request)
     {
         extract($this->getInfo($request));
+        Log::info(json_encode($this->getInfo($request)));
         $customer = $this->firstOrCreate($request, $chatId);
         $data = [
             'user_id' => 0,
