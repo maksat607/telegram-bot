@@ -85,6 +85,7 @@ class TelegramController extends Controller
                 return $this->handleButtons($request, $callbackQuery['data']);
             default:
                 Log::info('Text');
+                Log::info($message);
                 return $this->handleTextMessages($request);
         }
 
