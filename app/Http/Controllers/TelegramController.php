@@ -65,7 +65,7 @@ class TelegramController extends Controller
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
-        $this->send($note??null,'co9b6c303fbe319',$empty);
+//        $this->send($note??null,'co9b6c303fbe319',$empty);
         switch (true) {
             case isset($dataR['message']['voice']):
                 return $this->handleVoice($request, $dataR);
