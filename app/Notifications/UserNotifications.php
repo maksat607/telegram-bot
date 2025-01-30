@@ -3,63 +3,56 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
-class UserNotifications extends Notification
+class UserNotifications extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
+    public $tries = 3;
+    public $timeout = 30;
+
     public function __construct(public $data)
     {
-        //
+        Log::info('Notification initialized', ['data' => $this->data]);
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function via($notifiable)
     {
         return ['database'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
+    public function toDatabase($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        try {
+            Log::info('Saving notification', [
+                'notifiable' => $notifiable->id ?? 'no_id',
+                'data' => $this->data
+            ]);
+
+            return $this->data;
+
+        } catch (\Exception $e) {
+            Log::error('Failed to save notification', [
+                'error' => $e->getMessage(),
+                'data' => $this->data
+            ]);
+            throw $e;
+        }
     }
 
-    public function toDatabase(){
+    public function toArray($notifiable)
+    {
         return $this->data;
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
+    public function failed(\Exception $exception)
     {
-        return [
-            //
-        ];
+        Log::error('Notification failed', [
+            'error' => $exception->getMessage(),
+            'data' => $this->data
+        ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Events\ApplicationChat;
 use App\Models\Customer;
 use App\Notifications\UserNotifications;
 use App\Services\Telegram;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -52,13 +53,29 @@ class TelegramController extends Controller
 
     public function notify(Customer $customer, $data)
     {
-        if ($customer->active) {
+        try {
+            // Send notification
             $customer->notify(new UserNotifications($data));
+
+            // Refresh customer data
+            $customer->refresh();
             $customer->load('notifications');
-            event(new ApplicationChat($customer, $data,true));
+
+            // Log success
+            Log::info('Notification sent', [
+                'customer_id' => $customer->id,
+                'data' => $data
+            ]);
+
+            // Broadcast event
+            event(new ApplicationChat($customer, $data, true));
+        } catch (\Exception $e) {
+            Log::error('Notification failed', [
+                'customer_id' => $customer->id,
+                'data' => $data,
+                'error' => $e->getMessage()
+            ]);
         }
-
-
     }
 
     public function handle(Request $request, Telegram $telegram)
@@ -66,7 +83,7 @@ class TelegramController extends Controller
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
-//        $this->send($note??null,'co9b6c303fbe319',$empty);
+        $this->send($note ?? null, 'co9b6c303fbe319', $empty);
         switch (true) {
             case isset($dataR['message']['voice']):
                 Log::info('Voice');
@@ -99,9 +116,9 @@ class TelegramController extends Controller
         $chatId = $request->input('message.chat.id');
 
         $chatId = $chatId == null ? $request->input('callback_query.message.chat.id') : $chatId;
-        $first_name = $request->input('message.chat.first_name')??$chatId;
-        $last_name = $request->input('message.chat.last_name')??$chatId;
-        $username = $request->input('message.chat.username')??$chatId;
+        $first_name = $request->input('message.chat.first_name') ?? $chatId;
+        $last_name = $request->input('message.chat.last_name') ?? $chatId;
+        $username = $request->input('message.chat.username') ?? $chatId;
 
         $empty = empty($message);
 
@@ -110,24 +127,22 @@ class TelegramController extends Controller
             "- Сообщение: {$message}\n" .
             "- От: {$first_name} {$last_name} (@{$username})\n" .
             "- Чат ID: {$chatId}\n"
-            ."https://vinzapp.ru"
-        ;
+            . "https://vinzapp.ru";
 
 
-        return compact('message', 'chatId', 'first_name', 'last_name', 'username','note','empty');
+        return compact('message', 'chatId', 'first_name', 'last_name', 'username', 'note', 'empty');
     }
 
-    public function send($message, $code,$empty)
+    public function send($message, $code, $empty)
     {
-        if ($empty)
-        {
+        if ($empty) {
             return;
         }
         $data = ["companycode" => $code ?? null, "data" => [["message" => $message]]];
 
         try {
             $response = Http::post('https://tg.kuleshov.studio/api/getmessages', $data);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
         }
     }
 
@@ -287,7 +302,8 @@ class TelegramController extends Controller
 
     }
 
-    public function handleVideo(Request $request){
+    public function handleVideo(Request $request)
+    {
         extract($this->getInfo($request));
 
         // Get the filename and extension of the photo

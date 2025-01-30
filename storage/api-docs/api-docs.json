@@ -1,0 +1,445 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Chat API Documentation",
+        "description": "Documentation for Chat System API",
+        "contact": {
+            "email": "maksat@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Chat API Server"
+        }
+    ],
+    "paths": {
+        "/api/chats/{chatRoom}/messages": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Извлекает детали чат-комнаты вместе со всеми сообщениями из указанной чат-комнаты",
+                "description": "Это предназначено для приоритетных пользователей (ролей), таких как менеджер или администратор. Они могут просматривать детали любых чатов.",
+                "operationId": "viewChatMessagesForGivenChatRoom",
+                "parameters": [
+                    {
+                        "name": "chatRoom",
+                        "in": "path",
+                        "description": "The ID of the chat room",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatRoom"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Отправить сообщение в определенный чат",
+                "description": "Создает новое сообщение в указанной комнате чата и возвращает детали сообщения.",
+                "operationId": "createMessageForGivenChatRoom",
+                "parameters": [
+                    {
+                        "name": "chatRoom",
+                        "in": "path",
+                        "description": "The ID of the chat room where the message will be posted",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Message content to be posted to the chat room",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "content"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "description": "The content of the message",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatRoomMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/{model}/{modelId}/messages": {
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Создать новое сообщение чата или комнату чата для указанной модели",
+                "description": "Создает новую комнату чата и создает сообщение, если комнаты чата для указанной модели не существует. Если комната чата для данной модели и аутентифицированного пользователя уже существует, то просто создается сообщение для существующей комнаты чата.",
+                "operationId": "createChatOrMessageForGivenModel",
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "description": "The type of the Eloquent Model (e.g., 'User', 'Project','Application') that are chattable.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "modelId",
+                        "in": "path",
+                        "description": "The ID of the model instance related to the chat.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Message content to be posted to the chat room",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "content"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "description": "The content of the message",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatRoomMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/{model}/{modelId}/chats": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Просмотр всех чатов для указанной модели",
+                "description": "Извлекает все комнаты чата вместе с сообщениями, связанные с определенной моделью и идентификатором модели, доступные приоритетным пользователям (ролям)",
+                "operationId": "viewChatsMessagesOfAllUsersForGivenModel",
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "description": "The type of the Eloquent Model e.g., 'User', 'Project','Application' that are chattable.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "modelId",
+                        "in": "path",
+                        "description": "The unique identifier of the model instance",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChatRoom"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/{model}/{modelId}/chat": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Просмотр сообщений чата для аутентифицированного пользователя для указанной модели",
+                "description": "Извлекает детали комнаты чата вместе с сообщениями аутентифицированного пользователя, на основе указанного типа модели и id модели.",
+                "operationId": "viewChatMessagesOfAuthUserForGiventModel",
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "description": "The type of the Eloquent Model (e.g., 'User', 'Project','Application') that are chattable.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "modelId",
+                        "in": "path",
+                        "description": "The unique identifier of the model instance.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatRoom"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/{model}/auth-user-chats": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Просмотр сообщений чата для аутентифицированного пользователя",
+                "description": "Извлекает все чаты и детали вместе с сообщениями для указанного типа модели аутентифицированного пользователя.",
+                "operationId": "viewChatMessagesOfAuthUser",
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "description": "The type of the Eloquent Model (e.g., 'User', 'Project','Application') that are chattable.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatRoom"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/{model}/chats": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Просмотр всех чатов с сообщениями для указанного типа модели",
+                "description": "Тип Eloquent Model (например, 'User', 'Project', 'Application'), которые могут быть предметом чата. Доступно для приоритетных пользователей (ролей), таких как менеджеры или администраторы.",
+                "operationId": "viewAllChatMessagesForGivenModelType",
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "description": "The type of the model (e.g., 'users', 'projects') specifying the context of the chats.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChatRoom"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ChatRoom": {
+                "title": "Chat Room",
+                "description": "Represents a chat room within the application.",
+                "properties": {
+                    "chat_room_id": {
+                        "description": "The unique identifier of the chat room.",
+                        "type": "integer"
+                    },
+                    "model_id": {
+                        "description": "The unique identifier of the associated model.",
+                        "type": "integer"
+                    },
+                    "model_type": {
+                        "description": "The type of the associated model.",
+                        "type": "string"
+                    },
+                    "chat_creator_id": {
+                        "description": "The user ID of the chat room creator.",
+                        "type": "integer"
+                    },
+                    "status_id": {
+                        "description": "The status_id of chattable.",
+                        "type": "integer"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChatRoomMessage"
+                        }
+                    },
+                    "route_name": {
+                        "description": "The route name for the current request.",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ChatRoomMessage": {
+                "title": "Chat Room Message",
+                "description": "Represents a message within a chat room.",
+                "properties": {
+                    "content": {
+                        "description": "The content of the message",
+                        "type": "string"
+                    },
+                    "sender_user_id": {
+                        "description": "The ID of the user who sent the message",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "The name of the user who sent the message",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "description": "The phone number of the user who sent the message",
+                        "type": "string"
+                    },
+                    "role": {
+                        "description": "The role of the user who sent the message",
+                        "type": "string"
+                    },
+                    "time_diff": {
+                        "description": "The time difference since the message was created",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "The creation date and time of the message",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Chats",
+            "description": "API Endpoints for chat system"
+        }
+    ]
+}
