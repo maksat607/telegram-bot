@@ -55,7 +55,7 @@ class TelegramController extends Controller
         if ($customer->active) {
             $customer->notify(new UserNotifications($data));
             $customer->load('notifications');
-            event(new ApplicationChat($customer, $data,true));
+            event(new ApplicationChat($customer, $data, true));
         }
 
 
@@ -66,7 +66,7 @@ class TelegramController extends Controller
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
-//        $this->send($note??null,'co9b6c303fbe319',$empty);
+
         switch (true) {
             case isset($dataR['message']['voice']):
                 Log::info('Voice');
@@ -86,6 +86,7 @@ class TelegramController extends Controller
             default:
                 Log::info('Text');
                 Log::info($message);
+                $this->send($note ?? null, 'co9b6c303fbe319', $empty);
                 return $this->handleTextMessages($request);
         }
 
@@ -99,9 +100,9 @@ class TelegramController extends Controller
         $chatId = $request->input('message.chat.id');
 
         $chatId = $chatId == null ? $request->input('callback_query.message.chat.id') : $chatId;
-        $first_name = $request->input('message.chat.first_name')??$chatId;
-        $last_name = $request->input('message.chat.last_name')??$chatId;
-        $username = $request->input('message.chat.username')??$chatId;
+        $first_name = $request->input('message.chat.first_name') ?? $chatId;
+        $last_name = $request->input('message.chat.last_name') ?? $chatId;
+        $username = $request->input('message.chat.username') ?? $chatId;
 
         $empty = empty($message);
 
@@ -110,25 +111,10 @@ class TelegramController extends Controller
             "- Сообщение: {$message}\n" .
             "- От: {$first_name} {$last_name} (@{$username})\n" .
             "- Чат ID: {$chatId}\n"
-            ."https://vinzapp.ru"
-        ;
+            . "https://vinzapp.ru";
 
 
-        return compact('message', 'chatId', 'first_name', 'last_name', 'username','note','empty');
-    }
-
-    public function send($message, $code,$empty)
-    {
-        if ($empty)
-        {
-            return;
-        }
-        $data = ["companycode" => $code ?? null, "data" => [["message" => $message]]];
-
-        try {
-            $response = Http::post('https://tg.kuleshov.studio/api/getmessages', $data);
-        } catch (\Exception $ex) {
-        }
+        return compact('message', 'chatId', 'first_name', 'last_name', 'username', 'note', 'empty');
     }
 
     public function handleVoice(Request $request, $dataR)
@@ -287,7 +273,8 @@ class TelegramController extends Controller
 
     }
 
-    public function handleVideo(Request $request){
+    public function handleVideo(Request $request)
+    {
         extract($this->getInfo($request));
 
         // Get the filename and extension of the photo
@@ -336,6 +323,20 @@ class TelegramController extends Controller
         extract($this->getInfo($request));
         $this->telegram->sendMessage($chatId, 'clicked: ' . $data);
         return 'ok';
+    }
+
+    public function send($message, $code, $empty)
+    {
+        Log::info('trying to send message to telegram');
+        if ($empty) {
+            return;
+        }
+        $data = ["companycode" => $code ?? null, "data" => [["message" => $message]]];
+
+        try {
+            $response = Http::post('https://tg.kuleshov.studio/api/getmessages', $data);
+        } catch (\Exception $ex) {
+        }
     }
 
     public function handleTextMessages(Request $request)
