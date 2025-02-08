@@ -57,6 +57,7 @@
                     phone: document.getElementById('phone').value,
                     password: document.getElementById('password').value,
                 });
+                console.log(response);
 
                 if (response.data.token) {
                     localStorage.setItem('token', response.data.token);
