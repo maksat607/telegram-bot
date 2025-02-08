@@ -25,13 +25,13 @@ class ApiLoginController extends Controller
     public function login(Request $request)
     {
         Log::info('login');
-        Log::info(json_encode($request->all()));
+//        Log::info(json_encode($request->all()));
         $request->validate([
             'phone' => 'required',
             'password' => 'required|min:6',
         ]);
 
-        Log::info(json_encode($request->all()));
+//        Log::info(json_encode($request->all()));
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
