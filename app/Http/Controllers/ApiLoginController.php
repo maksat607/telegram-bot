@@ -28,6 +28,8 @@ class ApiLoginController extends Controller
             'password' => 'required|min:6',
         ]);
 
+        Log::info(json_encode($request->all()));
+
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
@@ -39,6 +41,7 @@ class ApiLoginController extends Controller
         ]);
 
         $data = $response->json();
+        Log::info($data);
 
         if ($response->successful() && isset($data['token'])) {
             $user = $data['user'] ?? null;
