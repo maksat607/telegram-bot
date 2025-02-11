@@ -92,10 +92,15 @@ $(document).ready(function () {
 
 async function getChat(customer, pusher = false) {
     console.log(`${APP_URL}/customer/${customer}/chat`);
-    await axios.get(`${APP_URL}/customer/${customer}/chat`)
+    const token = localStorage.getItem('token');
+    await axios.get(`${APP_URL}/customer/${customer}/chat`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             console.log('response.data');
-            const token = localStorage.getItem('token');
+
             console.log('token', token);
             console.log(response.data);
 
