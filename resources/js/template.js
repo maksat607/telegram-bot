@@ -94,7 +94,7 @@ $(document).ready(function () {
 async function getChat(customer, pusher = false) {
     try {
         const token = localStorage.getItem('token');
-        console.log('Using token:', token);
+        // console.log('Using token:', token);
 
         const response = await axios.get(`${APP_URL}/customer/${customer}/chat`, {
             headers: {
