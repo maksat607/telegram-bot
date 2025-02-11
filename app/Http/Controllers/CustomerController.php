@@ -65,7 +65,6 @@ class CustomerController extends Controller
     }
     public function messages(Customer $customer)
     {
-        return 77777777;
         $customerView = view('customer', ['customer' => $customer])->render();
         $messagesView = view('messages', ['messages' => $customer->notifications->sortBy('created_at')])->render();
 
