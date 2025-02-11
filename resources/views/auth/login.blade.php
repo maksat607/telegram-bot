@@ -53,30 +53,30 @@
             errorDiv.classList.add('d-none');
 
             try {
-                const response = await axios.post('/api/login', {
+                const response = await axios.post('/login', {
                     phone: document.getElementById('phone').value,
                     password: document.getElementById('password').value,
                 });
-
-                // Log the full response for debugging
-                console.log('Full response:', response);
-                console.log('Response data:', response.data);
+                console.log(response);
 
                 if (response.data.token) {
-                    const token = response.data.token;
+                    localStorage.setItem('token', response.data.token);
 
-                    // Store token in localStorage and cookies
-                    localStorage.setItem('token', token);
-                    document.cookie = `token=${token}; path=/`;
+                    if (response.data.token) {
+                        const token = response.data.token;
 
-                    // Set default Axios Authorization header
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                        // Store token in localStorage and cookies
+                        localStorage.setItem('token', token);
+                        document.cookie = `token=${token}; path=/`;
 
-                    // Single redirect
-                    window.location.href = '/';
+                        // Set default Axios Authorization header
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+                        // Redirect to the home page
+                        window.location.href = '/';
+                    }
                 }
             } catch (error) {
-                console.error('Login error:', error);
                 errorDiv.textContent = error.response?.data?.error || 'Login failed';
                 errorDiv.classList.remove('d-none');
             }
