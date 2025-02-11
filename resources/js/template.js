@@ -86,7 +86,6 @@ $(document).ready(function () {
         $(this).addClass('active');
         var id = $(this).data('id');
         console.log('id', id);
-        console.log(`${APP_URL}/customer/${id}/chat`);
         getChat(id);
     });
 });
@@ -95,6 +94,7 @@ async function getChat(customer, pusher = false) {
     console.log(`${APP_URL}/customer/${customer}/chat`);
     await axios.get(`${APP_URL}/customer/${customer}/chat`)
         .then(response => {
+            console.log(response.data);
 
             if ($(`#${response.data.customer_id} .chatButton`).length) {
                 var active = false;
