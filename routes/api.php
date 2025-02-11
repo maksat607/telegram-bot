@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [\App\Http\Controllers\Auth\AuthController::class, 'login']);
 
 //Route::group(['middleware' => \App\Http\Middleware\CheckAuthenticated::class], function ($router) {
-Route::group(['middleware' => 'auth:sanctum'], function ($router) {
+//Route::group(['middleware' => 'auth:sanctum'], function ($router) {
     Route::get('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'messages'])->name('api.messages');
     Route::get('customer/{customer}/mark', [\App\Http\Controllers\CustomerController::class, 'mark'])->name('api.mark');
     Route::post('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'respond'])->name('api.respond');
@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($router) {
     Route::get('user/{customer}/delete', [\App\Http\Controllers\UserController::class, 'delete'])->name('api.delete');
     Route::get('chat', [\App\Http\Controllers\CustomerController::class, 'chat'])->name('api.chat');
     Route::get('event/{customer}', [\App\Http\Controllers\CustomerController::class, 'event'])->name('api.event');
-});
+//});
 
 
 Route::post('/telegram-bot', [\App\Http\Controllers\TelegramController::class, 'handle']);
