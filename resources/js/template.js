@@ -107,6 +107,7 @@ async function getChat(customer, pusher = false) {
 
         // Check if response matches expected structure
         const data = response.data;
+        console.log('Data:', data);
         if (!data || !data.customer_id || !data.customer || !data.messages) {
             throw new Error('Invalid response structure');
         }
