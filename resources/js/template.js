@@ -256,6 +256,7 @@ $('.searchChats').on('input', function () {
 
 window.Echo.private('user-1')
     .listen('ApplicationChat', (response) => {
+        console.log(response);
         getChat(response.id, true);
         if(response.from){
             $('.sound').trigger('click');
