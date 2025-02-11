@@ -95,7 +95,8 @@ async function getChat(customer, pusher = false) {
     const token = localStorage.getItem('token');
     await axios.get(`${APP_URL}/customer/${customer}/chat`, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Accept': 'application/json',  // Explicitly request JSON
+            'Authorization': `Bearer ${token}`,
         }
     })
         .then(response => {
