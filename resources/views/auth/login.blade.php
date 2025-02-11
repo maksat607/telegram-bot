@@ -53,34 +53,30 @@
             errorDiv.classList.add('d-none');
 
             try {
-                const response = await axios.post('/login', {
+                const response = await axios.post('/api/login', {
                     phone: document.getElementById('phone').value,
                     password: document.getElementById('password').value,
                 });
-                console.log(response);
+
+                // Log the full response for debugging
+                console.log('Full response:', response);
+                console.log('Response data:', response.data);
 
                 if (response.data.token) {
-                    localStorage.setItem('token', response.data.token);
+                    const token = response.data.token;
 
-                    if (response.data.token) {
-                        const token = response.data.token;
+                    // Store token in localStorage and cookies
+                    localStorage.setItem('token', token);
+                    document.cookie = `token=${token}; path=/`;
 
-                        // Store token in localStorage and cookies
-                        localStorage.setItem('token', token);
-                        document.cookie = `token=${token}; path=/`;
+                    // Set default Axios Authorization header
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-                        // Set default Axios Authorization header
-                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-                        // Redirect to the home page
-                        window.location.href = '/';
-                    }
-
-
-                    // document.cookie = `token=${response.data.token}; path=/`;
+                    // Single redirect
                     window.location.href = '/';
                 }
             } catch (error) {
+                console.error('Login error:', error);
                 errorDiv.textContent = error.response?.data?.error || 'Login failed';
                 errorDiv.classList.remove('d-none');
             }
