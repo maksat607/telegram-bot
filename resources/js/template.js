@@ -86,6 +86,7 @@ $(document).ready(function () {
         $(this).addClass('active');
         var id = $(this).data('id');
         console.log('id', id);
+        console.log(`${APP_URL}/customer/${id}/chat`);
         getChat(id);
     });
 });
