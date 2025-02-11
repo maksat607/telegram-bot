@@ -94,6 +94,7 @@ async function getChat(customer, pusher = false) {
     console.log(`${APP_URL}/customer/${customer}/chat`);
     await axios.get(`${APP_URL}/customer/${customer}/chat`)
         .then(response => {
+            console.log('response.data');
             console.log(response.data);
 
             if ($(`#${response.data.customer_id} .chatButton`).length) {
