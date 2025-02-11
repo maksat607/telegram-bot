@@ -10,7 +10,7 @@
     </header>
 
     <div class="chats" id="customers">
-{{--        @include('ajaxcontent')--}}
+        @include('ajaxcontent')
     </div>
 </div>
 

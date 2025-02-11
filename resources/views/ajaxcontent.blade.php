@@ -1,4 +1,5 @@
 
+@dump($customers)
 @foreach($customers as $customer)
     <div id="customer-{{$customer->id}}">
         @include('customer')
