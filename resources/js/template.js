@@ -91,99 +91,77 @@ $(document).ready(function () {
 });
 
 async function getChat(customer, pusher = false) {
-    console.log(`${APP_URL}/customer/${customer}/chat`);
-    const token = localStorage.getItem('token');
-    await axios.get(`${APP_URL}/customer/${customer}/chat`, {
-        headers: {
-            'Accept': 'application/json',  // Explicitly request JSON
-            'Authorization': `Bearer ${token}`,
+    try {
+        const token = localStorage.getItem('token');
+        console.log('Request URL:', `${APP_URL}/customer/${customer}/chat`);
+        console.log('Using token:', token);
+
+        const response = await axios.get(`${APP_URL}/customer/${customer}/chat`, {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.data) {
+            throw new Error('No data received from server');
         }
-    })
-        .then(response => {
-            console.log('response.data');
 
-            console.log('token', token);
-            console.log(response.data);
+        console.log('Chat response:', response.data);
 
-            if ($(`#${response.data.customer_id} .chatButton`).length) {
-                var active = false;
-                if ($(`#${response.data.customer_id} .chatButton`).hasClass('active')) {
-                    active = true;
-                    $('.convHistory.userBg').empty();
-                    $('.convHistory.userBg').append(response.data.messages);
-                }
-                $(`#${response.data.customer_id}`).empty();
-                $(`#${response.data.customer_id}`).append(response.data.customer)
-                if (active) {
-                    $(`#${response.data.customer_id} .chatButton`).addClass('active');
-                    axios.get(`${APP_URL}/customer/${customer}/mark`)
+        if ($(`#${response.data.customer_id} .chatButton`).length) {
+            const isActive = $(`#${response.data.customer_id} .chatButton`).hasClass('active');
 
-                }
-            } else {
-                $('.chats').prepend(
-                    `<div id="${response.data.customer_id}">
-                        ${response.data.customer}
-                     </div>`
-                );
+            if (isActive) {
+                $('.convHistory.userBg').empty();
+                $('.convHistory.userBg').append(response.data.messages);
             }
 
+            $(`#${response.data.customer_id}`).empty();
+            $(`#${response.data.customer_id}`).append(response.data.customer);
 
-
-
-            var objDiv = document.getElementById("scrollBar");
-            objDiv.scrollTop = objDiv.scrollHeight;
-
-
-            $(document).ready(function () {
-                var objDiv = $("#scrollBar");
-                var images = $("img");
-
-                images.on("load", function () {
-                    objDiv.scrollTop(objDiv[0].scrollHeight);
-
-                    // if ($('.searchChats').val().length > 0) {
-                    //     var keyword = $('.searchChats').val();
-                    //     // Find all the messages
-                    //     var messages = $(".convHistory").find(".msg");
-                    //
-                    //     timer = setTimeout(function () {
-                    //
-                    //     // Loop through all the messages
-                    //     messages.each(function () {
-                    //         // Get the message text
-                    //         var messageText = $(this).text();
-                    //
-                    //         // Check if the keyword is present in the message text
-                    //
-                    //         if (messageText.indexOf(keyword) >= 0) {
-                    //
-                    //             // Add a highlight class to the message
-                    //             $(this).addClass("highlight");
-                    //
-                    //             // Scroll to the message
-                    //             console.log($(this).offset().top)
-                    //             // var objDiv = document.getElementById("scrollBar");
-                    //             // objDiv.scrollTop = objDiv.scrollHeight;
-                    //             // objDiv.scrollTop = $(this).offset().top;
-                    //
-                    //
-                    //             var $scrollBar = $('#scrollBar');
-                    //             $scrollBar.animate({
-                    //                 scrollTop: $(this).offset().top - $scrollBar.offset().top + $scrollBar.scrollTop()
-                    //             }, 500);
-                    //         }
-                    //     });
-                    //     }, 10);
-                    // }
-
-
+            if (isActive) {
+                $(`#${response.data.customer_id} .chatButton`).addClass('active');
+                await axios.get(`${APP_URL}/customer/${customer}/mark`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
+            }
+        } else {
+            $('.chats').prepend(`
+                <div id="${response.data.customer_id}">
+                    ${response.data.customer}
+                </div>
+            `);
+        }
+
+        // Handle scrolling
+        const scrollBar = document.getElementById("scrollBar");
+        if (scrollBar) {
+            scrollBar.scrollTop = scrollBar.scrollHeight;
+        }
+
+        // Handle image loading
+        const images = $("#scrollBar img");
+        if (images.length) {
+            images.on("load", function() {
+                const scrollBar = $("#scrollBar");
+                if (scrollBar.length) {
+                    scrollBar.scrollTop(scrollBar[0].scrollHeight);
+                }
             });
+        }
 
-
-        }).catch(error => {
-            console.log(error)
-        });
+    } catch (error) {
+        console.error('Chat error:', error);
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+    }
 }
 $('.sound').on('click', function() {
     const audio = $('#sound')[0]; // Get the audio element
