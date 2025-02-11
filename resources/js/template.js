@@ -90,50 +90,70 @@ $(document).ready(function () {
     });
 });
 
+
 async function getChat(customer, pusher = false) {
     try {
-        const token = localStorage.getItem('token');
         console.log('Request URL:', `${APP_URL}/customer/${customer}/chat`);
+        const token = localStorage.getItem('token');
         console.log('Using token:', token);
 
-        const response = await axios.get(`${APP_URL}/customer/${customer}/chat`, {
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const response = await axios({
+            method: 'GET',
+            url: `${APP_URL}/customer/${customer}/chat`,
             headers: {
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            validateStatus: function (status) {
+                return status < 500; // Handle all status codes but server errors
             }
         });
 
-        if (!response.data) {
-            throw new Error('No data received from server');
+        if (response.status === 401) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+            return;
         }
 
-        console.log('Chat response:', response.data);
+        if (!response.data || typeof response.data === 'string') {
+            throw new Error('Invalid response format');
+        }
 
-        if ($(`#${response.data.customer_id} .chatButton`).length) {
-            const isActive = $(`#${response.data.customer_id} .chatButton`).hasClass('active');
+        const data = response.data;
+        console.log('Chat response:', data);
 
-            if (isActive) {
-                $('.convHistory.userBg').empty();
-                $('.convHistory.userBg').append(response.data.messages);
+        // Update UI with chat data
+        if ($(`#${data.customer_id} .chatButton`).length) {
+            const active = $(`#${data.customer_id} .chatButton`).hasClass('active');
+            if (active) {
+                $('.convHistory.userBg').empty().append(data.messages);
             }
 
-            $(`#${response.data.customer_id}`).empty();
-            $(`#${response.data.customer_id}`).append(response.data.customer);
+            $(`#${data.customer_id}`)
+                .empty()
+                .append(data.customer);
 
-            if (isActive) {
-                $(`#${response.data.customer_id} .chatButton`).addClass('active');
+            if (active) {
+                $(`#${data.customer_id} .chatButton`).addClass('active');
+                // Mark as read with same auth headers
                 await axios.get(`${APP_URL}/customer/${customer}/mark`, {
                     headers: {
                         'Accept': 'application/json',
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
                 });
             }
         } else {
             $('.chats').prepend(`
-                <div id="${response.data.customer_id}">
-                    ${response.data.customer}
+                <div id="${data.customer_id}">
+                    ${data.customer}
                 </div>
             `);
         }
@@ -145,15 +165,12 @@ async function getChat(customer, pusher = false) {
         }
 
         // Handle image loading
-        const images = $("#scrollBar img");
-        if (images.length) {
-            images.on("load", function() {
-                const scrollBar = $("#scrollBar");
-                if (scrollBar.length) {
-                    scrollBar.scrollTop(scrollBar[0].scrollHeight);
-                }
-            });
-        }
+        $("img").on("load", function() {
+            const scrollBar = $("#scrollBar");
+            if (scrollBar.length) {
+                scrollBar.scrollTop(scrollBar[0].scrollHeight);
+            }
+        });
 
     } catch (error) {
         console.error('Chat error:', error);
@@ -163,6 +180,7 @@ async function getChat(customer, pusher = false) {
         }
     }
 }
+
 $('.sound').on('click', function() {
     const audio = $('#sound')[0]; // Get the audio element
     audio.play();
