@@ -95,6 +95,8 @@ async function getChat(customer, pusher = false) {
     await axios.get(`${APP_URL}/customer/${customer}/chat`)
         .then(response => {
             console.log('response.data');
+            const token = localStorage.getItem('token');
+            console.log('token', token);
             console.log(response.data);
 
             if ($(`#${response.data.customer_id} .chatButton`).length) {
