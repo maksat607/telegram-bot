@@ -103,7 +103,7 @@ async function getChat(customer, pusher = false) {
             }
         });
 
-        console.log('Response data:', response.data);
+        // console.log('Response data:', response.data);
 
         // Check if response matches expected structure
         const data = response.data;
