@@ -93,59 +93,40 @@ $(document).ready(function () {
 
 async function getChat(customer, pusher = false) {
     try {
-        console.log('Request URL:', `${APP_URL}/customer/${customer}/chat`);
         const token = localStorage.getItem('token');
         console.log('Using token:', token);
 
-        if (!token) {
-            window.location.href = '/login';
-            return;
-        }
-
-        const response = await axios({
-            method: 'GET',
-            url: `${APP_URL}/customer/${customer}/chat`,
+        const response = await axios.get(`${APP_URL}/customer/${customer}/chat`, {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            },
-            validateStatus: function (status) {
-                return status < 500; // Handle all status codes but server errors
             }
         });
 
-        if (response.status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
-            return;
-        }
+        console.log('Response data:', response.data);
 
-        if (!response.data || typeof response.data === 'string') {
-            throw new Error('Invalid response format');
-        }
-
+        // Check if response matches expected structure
         const data = response.data;
-        console.log('Chat response:', data);
+        if (!data || !data.customer_id || !data.customer || !data.messages) {
+            throw new Error('Invalid response structure');
+        }
 
-        // Update UI with chat data
-        if ($(`#${data.customer_id} .chatButton`).length) {
-            const active = $(`#${data.customer_id} .chatButton`).hasClass('active');
-            if (active) {
+        // Update chat UI
+        const chatButtonContainer = $(`#${data.customer_id}`);
+        if (chatButtonContainer.length) {
+            const isActive = $(`#${data.customer_id} .chatButton`).hasClass('active');
+
+            if (isActive) {
                 $('.convHistory.userBg').empty().append(data.messages);
             }
 
-            $(`#${data.customer_id}`)
-                .empty()
-                .append(data.customer);
+            chatButtonContainer.empty().append(data.customer);
 
-            if (active) {
+            if (isActive) {
                 $(`#${data.customer_id} .chatButton`).addClass('active');
-                // Mark as read with same auth headers
+                // Mark as read
                 await axios.get(`${APP_URL}/customer/${customer}/mark`, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
                 });
@@ -158,22 +139,19 @@ async function getChat(customer, pusher = false) {
             `);
         }
 
-        // Handle scrolling
+        // Handle scroll
         const scrollBar = document.getElementById("scrollBar");
         if (scrollBar) {
             scrollBar.scrollTop = scrollBar.scrollHeight;
         }
 
-        // Handle image loading
-        $("img").on("load", function() {
-            const scrollBar = $("#scrollBar");
-            if (scrollBar.length) {
-                scrollBar.scrollTop(scrollBar[0].scrollHeight);
-            }
+    } catch (error) {
+        console.error('Chat error:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status
         });
 
-    } catch (error) {
-        console.error('Chat error:', error);
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
             window.location.href = '/login';
