@@ -44,7 +44,6 @@
             </div>
         </div>
     </div>
-
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -57,26 +56,20 @@
                     phone: document.getElementById('phone').value,
                     password: document.getElementById('password').value,
                 });
-                console.log(response);
+                console.log('Response:', response.data);
 
                 if (response.data.token) {
-                    localStorage.setItem('token', response.data.token);
-
-                    if (response.data.token) {
-                        const token = response.data.token;
-
-                        // Store token in localStorage and cookies
-                        localStorage.setItem('token', token);
-                        document.cookie = `token=${token}; path=/`;
-
-                        // Set default Axios Authorization header
-                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-                        // Redirect to the home page
-                        window.location.href = '/';
-                    }
+                    const token = response.data.token;
+                    // Store token in localStorage and cookies
+                    localStorage.setItem('token', token);
+                    document.cookie = `token=${token}; path=/`;
+                    // Set default Axios Authorization header
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    // Redirect to the home page
+                    window.location.href = '/';
                 }
             } catch (error) {
+                console.error('Login error:', error);
                 errorDiv.textContent = error.response?.data?.error || 'Login failed';
                 errorDiv.classList.remove('d-none');
             }
@@ -101,4 +94,60 @@
             }
         );
     </script>
+{{--    <script>--}}
+{{--        document.getElementById('loginForm').addEventListener('submit', async function(e) {--}}
+{{--            e.preventDefault();--}}
+
+{{--            const errorDiv = document.getElementById('error-message');--}}
+{{--            errorDiv.classList.add('d-none');--}}
+
+{{--            try {--}}
+{{--                const response = await axios.post('/login', {--}}
+{{--                    phone: document.getElementById('phone').value,--}}
+{{--                    password: document.getElementById('password').value,--}}
+{{--                });--}}
+{{--                console.log(response);--}}
+
+{{--                if (response.data.token) {--}}
+{{--                    localStorage.setItem('token', response.data.token);--}}
+
+{{--                    if (response.data.token) {--}}
+{{--                        const token = response.data.token;--}}
+
+{{--                        // Store token in localStorage and cookies--}}
+{{--                        localStorage.setItem('token', token);--}}
+{{--                        document.cookie = `token=${token}; path=/`;--}}
+
+{{--                        // Set default Axios Authorization header--}}
+{{--                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;--}}
+
+{{--                        // Redirect to the home page--}}
+{{--                        window.location.href = '/';--}}
+{{--                    }--}}
+{{--                }--}}
+{{--            } catch (error) {--}}
+{{--                errorDiv.textContent = error.response?.data?.error || 'Login failed';--}}
+{{--                errorDiv.classList.remove('d-none');--}}
+{{--            }--}}
+{{--        });--}}
+
+{{--        axios.interceptors.request.use(config => {--}}
+{{--            const token = localStorage.getItem('token');--}}
+{{--            if (token) {--}}
+{{--                config.headers.Authorization = `Bearer ${token}`;--}}
+{{--            }--}}
+{{--            return config;--}}
+{{--        });--}}
+
+{{--        axios.interceptors.response.use(--}}
+{{--            response => response,--}}
+{{--            error => {--}}
+{{--                if (error.response?.status === 401) {--}}
+{{--                    localStorage.removeItem('token');--}}
+{{--                    window.location.href = '/login';--}}
+{{--                }--}}
+{{--                return Promise.reject(error);--}}
+{{--            }--}}
+{{--        );--}}
+{{--    </script>--}}
 @endsection
