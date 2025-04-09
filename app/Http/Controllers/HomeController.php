@@ -27,6 +27,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+
         if (auth()->guest()) {
             return redirect()->route('login.get');
         }

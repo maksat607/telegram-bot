@@ -44,10 +44,13 @@ class ApiLoginController extends Controller
         ]);
 
         $data = $response->json();
-        Log::info($data);
+
 
         if ($response->successful() && isset($data['token'])) {
             $user = $data['user'] ?? null;
+//            Log::info('User data: ' . json_encode($user));
+
+
 
             if ($user) {
                 $tempUser = User::firstOrCreate(
@@ -59,6 +62,7 @@ class ApiLoginController extends Controller
                 );
                 Auth::login($tempUser);
 
+                Log::info('\auth()->user()');
                 Log::info(\auth()->user());
 
 
@@ -66,7 +70,7 @@ class ApiLoginController extends Controller
 
                 // Save the token in the cache
                 $token = $data['token'];
-                Cache::put($token, $tempUser->id, now()->addHours(122)); // Save the token for 1 hour
+                Cache::put($token, $tempUser, now()->addHours(1222)); // Save the token for 1 hour
 
 
                 return response()->json([

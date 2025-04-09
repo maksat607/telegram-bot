@@ -47,12 +47,13 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
+    console.log('Submitting form...')
             const errorDiv = document.getElementById('error-message');
             errorDiv.classList.add('d-none');
 
             try {
-                const response = await axios.post('/login', {
+                console.log('Submitting form...')
+                const response = await axios.post('/api/login', {
                     phone: document.getElementById('phone').value,
                     password: document.getElementById('password').value,
                 });

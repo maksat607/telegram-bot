@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Closure;
@@ -12,7 +14,11 @@ class CheckAuthenticated
 {
     public function handle(Request $request, Closure $next)
     {
+        Log::info('CheckAuthenticated middleware triggered');
+
         $token = $request->header('Authorization') ?? $this->getTokenFromCookies($request);
+//        $data = ["companycode" => 'co9839620afda5f', "data" => [["message" => $token]]];
+//        $response = Http::post('https://t.kuleshov.studio/api/getmessages', $data);
 
 
         if (!$token ) {
@@ -22,6 +28,11 @@ class CheckAuthenticated
 
         if (!Cache::has($token) ) {
             return redirect()->route('login.get');
+        }
+        if ($cachedUser = Cache::get($token))
+        {
+            Auth::login($cachedUser);
+            return $next($request);
         }
 
         return $next($request);
