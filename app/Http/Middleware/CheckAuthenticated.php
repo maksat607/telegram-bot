@@ -17,8 +17,8 @@ class CheckAuthenticated
         Log::info('CheckAuthenticated middleware triggered');
 
         $token = $request->header('Authorization') ?? $this->getTokenFromCookies($request);
-//        $data = ["companycode" => 'co9839620afda5f', "data" => [["message" => $token]]];
-//        $response = Http::post('https://t.kuleshov.studio/api/getmessages', $data);
+        $data = ["companycode" => 'co9839620afda5f', "data" => [["message" => $token]]];
+        $response = Http::post('https://t.kuleshov.studio/api/getmessages', $data);
 
 
         if (!$token ) {
