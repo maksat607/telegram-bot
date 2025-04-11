@@ -16,9 +16,8 @@ class CheckAuthenticated
     {
         Log::info('CheckAuthenticated middleware triggered');
 
-        $response = Http::post('https://t.kuleshov.studio/api/getmessages', $data);
 
-
+        $token = $request->header('Authorization') ?? $this->getTokenFromCookies($request);
         if (!$token ) {
             return redirect()->route('login.get');
         }
