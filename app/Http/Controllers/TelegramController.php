@@ -344,14 +344,17 @@ class TelegramController extends Controller
     {
         extract($this->getInfo($request));
         Log::info(json_encode($this->getInfo($request)));
-        $customer = $this->firstOrCreate($request, $chatId);
-        $data = [
-            'user_id' => 0,
-            'curomer_id' => $customer->id,
-            'message' => $message,
-            'self' => 1
-        ];
-        $this->notify($customer, $data);
+        if ($chatId){
+            $customer = $this->firstOrCreate($request, $chatId);
+            $data = [
+                'user_id' => 0,
+                'curomer_id' => $customer->id,
+                'message' => $message,
+                'self' => 1
+            ];
+            $this->notify($customer, $data);
+        }
+
     }
 
     public function upload(Request $request, Customer $customer, Telegram $telegram)
