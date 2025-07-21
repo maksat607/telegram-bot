@@ -64,6 +64,7 @@ class TelegramController extends Controller
     public function handle(Request $request, Telegram $telegram)
     {
         extract($this->getInfo($request));
+        $this->requestContactForFeatures($request, $telegram);
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
@@ -128,12 +129,8 @@ class TelegramController extends Controller
         $userId = $dataR['message']['contact']['user_id'] ?? null;
         $chatId = $dataR['message']['chat']['id'];
 
-        // Store in database (example)
-//        \App\Models\Contact::create([
-//            'user_id' => $userId,
-//            'phone_number' => $phoneNumber,
-//            'chat_id' => $chatId,
-//        ]);
+        Customer::where('telegram_id', $chatId)
+            ->update(['phone' => $phoneNumber]);
 
         // Send confirmation to user
         $this->telegram->sendMessage([
@@ -164,8 +161,7 @@ class TelegramController extends Controller
         $note = "У вас новое сообщение:\n" .
             "- Сообщение: {$message}\n" .
             "- От: {$first_name} {$last_name} (@{$username})\n" .
-            "- Чат ID: {$chatId}\n" .
-            "- Telegram ID: {$telegramId}\n"
+            "- Чат ID: {$chatId}\n"
             . "https://vinzapp.ru";
 
         return compact('message', 'chatId', 'first_name', 'last_name', 'username', 'note', 'empty', 'telegramId');
@@ -482,6 +478,29 @@ class TelegramController extends Controller
 
 
         Telegram::sendMessage($data);
+    }
+    private function requestContactForFeature()
+    {
+        $keyboard = [
+            [
+                [
+                    'text' => '📱 Показать телефон',
+                    'request_contact' => true
+                ]
+            ]
+        ];
+
+        $phoneReplyMarkup = json_encode([
+            'keyboard' => $keyboard,
+            'resize_keyboard' => true,
+            'one_time_keyboard' => false
+        ]);
+
+        $this->replyWithMessage([
+            'chat_id' => $this->user->telegram_chat_id,
+            'text' => "Эта функция требует верификации номера телефона.",
+            'reply_markup' => $phoneReplyMarkup,
+        ]);
     }
 
 
