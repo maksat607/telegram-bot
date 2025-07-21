@@ -64,7 +64,7 @@ class TelegramController extends Controller
     public function handle(Request $request, Telegram $telegram)
     {
         extract($this->getInfo($request));
-        $this->requestContactForFeature();
+        $this->requestContactForFeature($telegramId);
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
@@ -479,7 +479,7 @@ class TelegramController extends Controller
 
         Telegram::sendMessage($data);
     }
-    private function requestContactForFeature()
+    private function requestContactForFeature($telegram_chat_id)
     {
         $keyboard = [
             [
@@ -497,7 +497,7 @@ class TelegramController extends Controller
         ]);
 
         $this->replyWithMessage([
-            'chat_id' => $this->user->telegram_chat_id,
+            'chat_id' => $telegram_chat_id,
             'text' => "Эта функция требует верификации номера телефона.",
             'reply_markup' => $phoneReplyMarkup,
         ]);
