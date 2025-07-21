@@ -435,7 +435,7 @@
     function displayWebhookInfo(data) {
         console.log('displayWebhookInfo: Displaying webhook info:', data);
         const webhookInfo = document.getElementById('webhook-info');
-        const webhookDetails = document.getElementBy衡量webhook-details');
+        const webhookDetails = document.getElementById('webhook-details');
 
         const hasWebhook = data.url && data.url !== '';
         const statusBadge = hasWebhook ?
