@@ -239,7 +239,7 @@
             <div class="form-group">
                 <label for="webhook-url">Webhook URL</label>
                 <input type="url" id="webhook-url" placeholder="https://yourapp.com/telegram/webhook"
-                       value="{{ url('/telegram/webhook') }}">
+                       value="{{ url('/api/telegram-bot') }}">
             </div>
             <button class="btn btn-primary" onclick="setWebhook()">
                 Set Webhook
