@@ -239,7 +239,7 @@
             <div class="form-group">
                 <label for="webhook-url">Webhook URL</label>
                 <input type="url" id="webhook-url" placeholder="https://yourapp.com/telegram/webhook"
-                       value="{{ url('/telegram/webhook') }}">
+                       value="{{ url('/api/telegram/webhook') }}">
             </div>
             <button class="btn btn-primary" onclick="setWebhook()">
                 Set Webhook
@@ -307,7 +307,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.post('/telegram/set-webhook', {
+            const response = await axios.post('/api/telegram/set-webhook', {
                 webhook_url: webhookUrl
             }, {
                 headers: {
@@ -337,7 +337,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.get('/telegram/get-webhook', {
+            const response = await axios.get('/api/telegram/get-webhook', {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -380,7 +380,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.delete('/telegram/delete-webhook', {
+            const response = await axios.delete('/api/telegram/delete-webhook', {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -472,7 +472,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.get('/telegram/get-webhook', {
+            const response = await axios.get('/api/telegram/get-webhook', {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
