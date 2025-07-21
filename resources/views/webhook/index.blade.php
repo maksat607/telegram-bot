@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
     <script type="text/javascript">
         const URL = {!! json_encode(url('/')) !!};
-        const APP_URL = URL ; // Assuming the API is under the `/api` prefix
+        const APP_URL = URL; // Assuming the API is under the `/api` prefix
     </script>
     <style>
         * {
@@ -276,6 +276,7 @@
     // Get token from localStorage
     const token = localStorage.getItem('token');
     console.log('Using token:', token);
+    console.log('APP_URL:', APP_URL);
 
     function showAlert(message, type = 'success') {
         const alertContainer = document.getElementById('alert-container');
@@ -301,6 +302,7 @@
 
         if (!webhookUrl) {
             showAlert('Please enter a webhook URL', 'error');
+            console.log('setWebhook: No webhook URL provided');
             return;
         }
 
@@ -312,8 +314,8 @@
 
         try {
             showLoading(true);
-            console.log('setWebhook: Sending POST request to /api/telegram/set-webhook with URL:', webhookUrl, 'and token:', token);
-            const response = await axios.post(APP_URL+'/api/telegram/set-webhook', {
+            console.log('setWebhook: Sending POST request to', `${APP_URL}/api/telegram/set-webhook`, 'with URL:', webhookUrl, 'and token:', token);
+            const response = await axios.post(`${APP_URL}/api/telegram/set-webhook`, {
                 webhook_url: webhookUrl
             }, {
                 headers: {
@@ -356,8 +358,8 @@
 
         try {
             showLoading(true);
-            console.log('getWebhookInfo: Sending GET request to /api/telegram/get-webhook with token:', token);
-            const response = await axios.get(APP_URL+'/api/telegram/get-webhook', {
+            console.log('getWebhookInfo: Sending GET request to', `${APP_URL}/api/telegram/get-webhook`, 'with token:', token);
+            const response = await axios.get(`${APP_URL}/api/telegram/get-webhook`, {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -404,8 +406,8 @@
 
         try {
             showLoading(true);
-            console.log('deleteWebhook: Sending DELETE request to /api/telegram/delete-webhook with token:', token);
-            const response = await axios.delete(APP_URL+'/api/telegram/delete-webhook', {
+            console.log('deleteWebhook: Sending DELETE request to', `${APP_URL}/api/telegram/delete-webhook`, 'with token:', token);
+            const response = await axios.delete(`${APP_URL}/api/telegram/delete-webhook`, {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -494,7 +496,7 @@
 
     // Load webhook info on page load
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOMContentLoaded: Initializing webhook info load');
+        console.log('DOMContentLoaded: Initializing webhook info load with APP_URL:', APP_URL);
         getWebhookInfo();
     });
 </script>
