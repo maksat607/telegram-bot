@@ -319,7 +319,7 @@
         try {
             showLoading(true);
             const response = await axios.get('/api/telegram/get-webhook');
-            console.log(response.data);
+
 
             if (response.data.success) {
                 displayWebhookInfo(response.data.data);
