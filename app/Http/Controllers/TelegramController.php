@@ -146,6 +146,11 @@ class TelegramController extends Controller
 
     public function getInfo(Request $request)
     {
+        // Get Telegram ID using request->input style
+        $telegramId = $request->input('message.from.id') ?? $request->input('callback_query.from.id');
+
+        Log::info('Telegram ID: ' . $telegramId);
+
         $message = $request->input('message.text');
         $chatId = $request->input('message.chat.id');
 
@@ -156,15 +161,14 @@ class TelegramController extends Controller
 
         $empty = empty($message);
 
-
         $note = "У вас новое сообщение:\n" .
             "- Сообщение: {$message}\n" .
             "- От: {$first_name} {$last_name} (@{$username})\n" .
-            "- Чат ID: {$chatId}\n"
+            "- Чат ID: {$chatId}\n" .
+            "- Telegram ID: {$telegramId}\n"
             . "https://vinzapp.ru";
 
-
-        return compact('message', 'chatId', 'first_name', 'last_name', 'username', 'note', 'empty');
+        return compact('message', 'chatId', 'first_name', 'last_name', 'username', 'note', 'empty', 'telegramId');
     }
 
     public function handleVoice(Request $request, $dataR)
