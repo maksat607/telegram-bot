@@ -298,7 +298,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.post('/telegram/set-webhook', {
+            const response = await axios.post('/api/telegram/set-webhook', {
                 webhook_url: webhookUrl
             });
 
