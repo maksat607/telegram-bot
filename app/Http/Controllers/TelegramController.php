@@ -64,7 +64,6 @@ class TelegramController extends Controller
     public function handle(Request $request, Telegram $telegram)
     {
         extract($this->getInfo($request));
-        $this->requestContactForFeature($telegramId);
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
@@ -85,7 +84,7 @@ class TelegramController extends Controller
                 Log::info('Video');
                 return $this->handleVideo($request);
             case $callbackQuery = $request->input('callback_query'):
-                Log::info('Button');
+
                 return $this->handleButtons($request, $callbackQuery['data']);
             default:
                 Log::info('Text');
@@ -369,10 +368,15 @@ class TelegramController extends Controller
         return 'OK';
     }
 
-    public function handleButtons(Request $request, $data)
+    public function handleButtons(Request $request, $callbackData,)
     {
-        extract($this->getInfo($request));
-        $this->telegram->sendMessage($chatId, 'clicked: ' . $data);
+        $chatId = $request->input('callback_query.message.chat.id');
+        $this->telegram->sendMessage($chatId, 'clicked: ' . $callbackData);
+
+        switch ($callbackData) {
+            case '/sharecontact':
+                return $this->requestContactForFeature($chatId);
+        }
         return 'ok';
     }
 
