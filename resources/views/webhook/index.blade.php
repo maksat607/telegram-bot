@@ -6,6 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Telegram Bot Webhook Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+    <script type="text/javascript">
+        const URL = {!! json_encode(url('/')) !!};
+        const APP_URL = URL + '/api'; // Assuming the API is under the `/api` prefix
+    </script>
     <style>
         * {
             margin: 0;
