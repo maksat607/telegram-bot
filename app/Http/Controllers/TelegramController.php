@@ -96,12 +96,52 @@ class TelegramController extends Controller
         return 'Error';
 
     }
+    public function sendContactRequest(Request $request)
+    {
+        $chatId = $request->input('chat_id'); // Assume chat_id is passed, e.g., via a command or API call
+        if (!$chatId) {
+            return response()->json(['success' => false, 'message' => 'Требуется идентификатор чата'], 400);
+        }
+
+        try {
+            $this->telegram->sendMessage([
+                'chat_id' => $chatId,
+                'text' => 'Хотите поделиться своим номером телефона?',
+                'reply_markup' => json_encode([
+                    'keyboard' => [
+                        [['text' => 'Поделиться контактом', 'request_contact' => true]],
+                    ],
+                    'one_time_keyboard' => true,
+                    'resize_keyboard' => true,
+                ]),
+            ]);
+            return response()->json(['success' => true, 'message' => 'Запрос на отправку контакта отправлен']);
+        } catch (\Exception $e) {
+            Log::error('Ошибка при отправке запроса на контакт', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Не удалось отправить запрос на контакт'], 500);
+        }
+    }
 
     protected function handleContact(Request $request, array $dataR)
     {
-        // For now, return a response to acknowledge the contact
-        // Add your logic to handle the contact message
-        return response()->json(['status' => 'Contact received']);
+        $phoneNumber = $dataR['message']['contact']['phone_number'];
+        $userId = $dataR['message']['contact']['user_id'] ?? null;
+        $chatId = $dataR['message']['chat']['id'];
+
+        // Store in database (example)
+//        \App\Models\Contact::create([
+//            'user_id' => $userId,
+//            'phone_number' => $phoneNumber,
+//            'chat_id' => $chatId,
+//        ]);
+
+        // Send confirmation to user
+        $this->telegram->sendMessage([
+            'chat_id' => $chatId,
+            'text' => "Thank you for sharing your phone number: $phoneNumber",
+        ]);
+
+        return response()->json(['status' => 'Contact processed']);
     }
 
     public function getInfo(Request $request)
