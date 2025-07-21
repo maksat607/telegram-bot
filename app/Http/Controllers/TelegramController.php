@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\ApplicationChat;
 use App\Models\Customer;
 use App\Notifications\UserNotifications;
-use App\Services\Telegram;
+use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
