@@ -168,8 +168,9 @@ class TelegramController extends Controller
     public function firstOrCreate($request, $chatId)
     {
         extract($this->getInfo($request));
+        Log::info('First or create customer with chatId: ' . $chatId . ' username: ' . $username . ' fullname: ' . $first_name . ' ' . $last_name);
         $customer = Customer::where('telegram_id', $chatId)->first();
-        if (!$customer) {
+        if (!$customer && !empty($chatId))
             $customer = Customer::create([
                 'telegram_id' => $chatId,
                 'fullname' => $first_name . ' ' . $last_name,
