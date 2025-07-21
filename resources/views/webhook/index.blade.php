@@ -269,6 +269,10 @@
     // Setup CSRF token for axios
     axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+    // Get token from localStorage
+    const token = localStorage.getItem('token');
+    console.log('Using token:', token);
+
     function showAlert(message, type = 'success') {
         const alertContainer = document.getElementById('alert-container');
         const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
@@ -296,10 +300,20 @@
             return;
         }
 
+        if (!token) {
+            showAlert('No authentication token found. Please log in.', 'error');
+            return;
+        }
+
         try {
             showLoading(true);
             const response = await axios.post('/telegram/set-webhook', {
                 webhook_url: webhookUrl
+            }, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (response.data.success) {
@@ -316,16 +330,25 @@
     }
 
     async function getWebhookInfo() {
+        if (!token) {
+            showAlert('No authentication token found. Please log in.', 'error');
+            return;
+        }
+
         try {
             showLoading(true);
-            const response = await axios.get('/telegram/get-webhook');
+            const response = await axios.get('/telegram/get-webhook', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
             if (response.data.success) {
                 displayWebhookInfo(response.data.data);
                 showAlert('📊 Webhook information retrieved successfully!');
             } else {
                 showAlert('❌ ' + response.data.message, 'error');
-                // Hide webhook info section if there's an error
                 document.getElementById('webhook-info').style.display = 'none';
             }
         } catch (error) {
@@ -350,9 +373,19 @@
             return;
         }
 
+        if (!token) {
+            showAlert('No authentication token found. Please log in.', 'error');
+            return;
+        }
+
         try {
             showLoading(true);
-            const response = await axios.delete('/telegram/delete-webhook');
+            const response = await axios.delete('/telegram/delete-webhook', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
             if (response.data.success) {
                 showAlert('🗑️ Webhook deleted successfully!');
@@ -430,9 +463,21 @@
 
     // Silent version for initial page load
     async function getWebhookInfoSilent() {
+        if (!token) {
+            showAlert('No authentication token found. Please log in.', 'error');
+            document.getElementById('webhook-info').style.display = 'none';
+            showLoading(false);
+            return;
+        }
+
         try {
             showLoading(true);
-            const response = await axios.get('/telegram/get-webhook');
+            const response = await axios.get('/telegram/get-webhook', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
             if (response.data.success) {
                 displayWebhookInfo(response.data.data);
