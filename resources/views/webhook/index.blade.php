@@ -1,12 +1,4 @@
-// Load webhook info on page load with debug
-document.addEventListener('DOMContentLoaded', function() {
-console.log('🚀 DOM Content Loaded - Starting initial webhook check');
-console.log('📍 Page URL:', window.location.href);
-console.log('⏰ Timestamp:', new Date().toISOString());
-
-// Give a small delay to ensure everything is loaded
-setTimeout(() => {
-consol<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

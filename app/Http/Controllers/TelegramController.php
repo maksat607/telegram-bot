@@ -68,6 +68,9 @@ class TelegramController extends Controller
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
         switch (true) {
+            case isset($dataR['message']['contact']['phone_number']):
+                Log::info('Phone number shared', ['phone_number' => $dataR['message']['contact']['phone_number']]);
+                return $this->handleContact($request, $dataR);
             case isset($dataR['message']['voice']):
                 Log::info('Voice');
                 return $this->handleVoice($request, $dataR);
@@ -92,6 +95,13 @@ class TelegramController extends Controller
 
         return 'Error';
 
+    }
+
+    protected function handleContact(Request $request, array $dataR)
+    {
+        // For now, return a response to acknowledge the contact
+        // Add your logic to handle the contact message
+        return response()->json(['status' => 'Contact received']);
     }
 
     public function getInfo(Request $request)
