@@ -70,7 +70,7 @@ class TelegramController extends Controller
         switch (true) {
             case isset($dataR['message']['contact']['phone_number']):
                 Log::info('Phone number shared', ['phone_number' => $dataR['message']['contact']['phone_number']]);
-                return $this->handleContact($request, $chatId);
+                return $this->handleContact($request, $dataR);
             case isset($dataR['message']['voice']):
                 Log::info('Voice');
                 return $this->handleVoice($request, $dataR);
