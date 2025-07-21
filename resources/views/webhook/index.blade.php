@@ -352,7 +352,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.delete('/telegram/delete-webhook');
+            const response = await axios.delete('/api/telegram/delete-webhook');
 
             if (response.data.success) {
                 showAlert('🗑️ Webhook deleted successfully!');
