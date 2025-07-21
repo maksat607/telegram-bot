@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TelegramWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,18 @@ Route::post('login', [\App\Http\Controllers\ApiLoginController::class, 'login'])
 //});
 
 
-Route::post('/telegram-bot', [\App\Http\Controllers\TelegramController::class, 'handle']);
+Route::post('/telegram-bot', [\App\Http\Controllers\TelegramController::class, 'handle'])->name
+('telegram-webhook');
 Route::post('/{customer}/upload', [\App\Http\Controllers\TelegramController::class, 'upload']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Webhook API endpoints
+Route::middleware('auth:sanctum')->prefix('telegram')->group(function () {
+    Route::post('/set-webhook', [TelegramWebhookController::class, 'setWebhook'])->name('telegram.set-webhook');
+    Route::get('/get-webhook', [TelegramWebhookController::class, 'getWebhook'])->name('telegram.get-webhook');
+    Route::delete('/delete-webhook', [TelegramWebhookController::class, 'deleteWebhook'])->name('telegram.delete-webhook');
+
+  });

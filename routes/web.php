@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\LogController;
 
+Route::get('/hooks', [App\Http\Controllers\HomeController::class, 'hooks']);
 Route::get('/logs', [LogController::class, 'index']);
 Route::get('/logs/{filename}', [LogController::class, 'show']);
 Route::delete('/logs/{filename}', [LogController::class, 'destroy']);
@@ -36,6 +37,8 @@ Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->post('/logout
 Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->get('/',
     [App\Http\Controllers\HomeController::class, 'index']
 )->name('home');
+
+
 //
 //Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->group(function () {
 //    Route::get('customer/{customer}/chat', [\App\Http\Controllers\CustomerController::class, 'messages'])->name('messages');
