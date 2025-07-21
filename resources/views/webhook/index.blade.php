@@ -1,4 +1,12 @@
-<!DOCTYPE html>
+// Load webhook info on page load with debug
+document.addEventListener('DOMContentLoaded', function() {
+console.log('🚀 DOM Content Loaded - Starting initial webhook check');
+console.log('📍 Page URL:', window.location.href);
+console.log('⏰ Timestamp:', new Date().toISOString());
+
+// Give a small delay to ensure everything is loaded
+setTimeout(() => {
+consol<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,10 +14,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Telegram Bot Webhook Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
-    <script type="text/javascript">
-        const URL = {!! json_encode(url('/')) !!};
-        const APP_URL = URL; // Assuming the API is under the `/api` prefix
-    </script>
     <style>
         * {
             margin: 0;
@@ -243,7 +247,7 @@
             <div class="form-group">
                 <label for="webhook-url">Webhook URL</label>
                 <input type="url" id="webhook-url" placeholder="https://yourapp.com/telegram/webhook"
-                       value="{{ url('api/telegram-bot') }}">
+                       value="{{ url('/telegram/webhook') }}">
             </div>
             <button class="btn btn-primary" onclick="setWebhook()">
                 Set Webhook
@@ -273,11 +277,6 @@
     // Setup CSRF token for axios
     axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // Get token from localStorage
-    const token = localStorage.getItem('token');
-    console.log('Using token:', token);
-    console.log('APP_URL:', APP_URL);
-
     function showAlert(message, type = 'success') {
         const alertContainer = document.getElementById('alert-container');
         const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
@@ -302,46 +301,22 @@
 
         if (!webhookUrl) {
             showAlert('Please enter a webhook URL', 'error');
-            console.log('setWebhook: No webhook URL provided');
-            return;
-        }
-
-        if (!token) {
-            showAlert('No authentication token found. Please log in.', 'error');
-            console.log('setWebhook: No token found in localStorage');
             return;
         }
 
         try {
             showLoading(true);
-            console.log('setWebhook: Sending POST request to', `${APP_URL}/api/telegram/set-webhook`, 'with URL:', webhookUrl, 'and token:', token);
-            const response = await axios.post(`${APP_URL}/api/telegram/set-webhook`, {
+            const response = await axios.post('/telegram/set-webhook', {
                 webhook_url: webhookUrl
-            }, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
             });
 
-            console.log('setWebhook: Response received:', response.data);
             if (response.data.success) {
                 showAlert('✅ Webhook set successfully!');
                 getWebhookInfo(); // Refresh webhook info
             } else {
                 showAlert('❌ ' + response.data.message, 'error');
-                console.log('setWebhook: Server returned error:', response.data.message);
             }
         } catch (error) {
-            console.error('setWebhook: Error:', error);
-            console.log('setWebhook: Error details:', {
-                message: error.message,
-                response: error.response ? {
-                    status: error.response.status,
-                    data: error.response.data,
-                    headers: error.response.headers
-                } : 'No response data'
-            });
             showAlert('❌ Error: ' + (error.response?.data?.message || error.message), 'error');
         } finally {
             showLoading(false);
@@ -349,43 +324,29 @@
     }
 
     async function getWebhookInfo() {
-        if (!token) {
-            showAlert('No authentication token found. Please log in.', 'error');
-            console.log('getWebhookInfo: No token found in localStorage');
-            document.getElementById('webhook-info').style.display = 'none';
-            return;
-        }
-
         try {
             showLoading(true);
-            console.log('getWebhookInfo: Sending GET request to', `${APP_URL}/api/telegram/get-webhook`, 'with token:', token);
-            const response = await axios.get(`${APP_URL}/api/telegram/get-webhook`, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await axios.get('/telegram/get-webhook');
 
-            console.log('getWebhookInfo: Response received:', response.data);
             if (response.data.success) {
                 displayWebhookInfo(response.data.data);
                 showAlert('📊 Webhook information retrieved successfully!');
             } else {
                 showAlert('❌ ' + response.data.message, 'error');
-                console.log('getWebhookInfo: Server returned error:', response.data.message);
+                // Hide webhook info section if there's an error
                 document.getElementById('webhook-info').style.display = 'none';
             }
         } catch (error) {
-            console.error('getWebhookInfo: Error:', error);
-            console.log('getWebhookInfo: Error details:', {
-                message: error.message,
-                response: error.response ? {
-                    status: error.response.status,
-                    data: error.response.data,
-                    headers: error.response.headers
-                } : 'No response data'
-            });
-            showAlert('❌ Error: ' + (error.response?.data?.message || error.message), 'error');
+            console.error('Webhook error:', error);
+            let errorMessage = 'Unknown error occurred';
+
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            showAlert('❌ Error: ' + errorMessage, 'error');
             document.getElementById('webhook-info').style.display = 'none';
         } finally {
             showLoading(false);
@@ -394,44 +355,20 @@
 
     async function deleteWebhook() {
         if (!confirm('Are you sure you want to delete the webhook?')) {
-            console.log('deleteWebhook: User cancelled deletion');
-            return;
-        }
-
-        if (!token) {
-            showAlert('No authentication token found. Please log in.', 'error');
-            console.log('deleteWebhook: No token found in localStorage');
             return;
         }
 
         try {
             showLoading(true);
-            console.log('deleteWebhook: Sending DELETE request to', `${APP_URL}/api/telegram/delete-webhook`, 'with token:', token);
-            const response = await axios.delete(`${APP_URL}/api/telegram/delete-webhook`, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await axios.delete('/telegram/delete-webhook');
 
-            console.log('deleteWebhook: Response received:', response.data);
             if (response.data.success) {
                 showAlert('🗑️ Webhook deleted successfully!');
                 document.getElementById('webhook-info').style.display = 'none';
             } else {
                 showAlert('❌ ' + response.data.message, 'error');
-                console.log('deleteWebhook: Server returned error:', response.data.message);
             }
         } catch (error) {
-            console.error('deleteWebhook: Error:', error);
-            console.log('deleteWebhook: Error details:', {
-                message: error.message,
-                response: error.response ? {
-                    status: error.response.status,
-                    data: error.response.data,
-                    headers: error.response.headers
-                } : 'No response data'
-            });
             showAlert('❌ Error: ' + (error.response?.data?.message || error.message), 'error');
         } finally {
             showLoading(false);
@@ -439,7 +376,6 @@
     }
 
     function displayWebhookInfo(data) {
-        console.log('displayWebhookInfo: Displaying webhook info:', data);
         const webhookInfo = document.getElementById('webhook-info');
         const webhookDetails = document.getElementById('webhook-details');
 
@@ -494,11 +430,40 @@
         webhookInfo.style.display = 'block';
     }
 
-    // Load webhook info on page load
+    // Load webhook info on page load with better error handling
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOMContentLoaded: Initializing webhook info load with APP_URL:', APP_URL);
-        getWebhookInfo();
+        // Don't show success message on initial load
+        getWebhookInfoSilent();
     });
+
+    // Silent version for initial page load
+    async function getWebhookInfoSilent() {
+        try {
+            showLoading(true);
+            const response = await axios.get('/telegram/get-webhook');
+
+            if (response.data.success) {
+                displayWebhookInfo(response.data.data);
+            } else {
+                showAlert('⚠️ ' + response.data.message, 'error');
+                document.getElementById('webhook-info').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Initial webhook load error:', error);
+            let errorMessage = 'Failed to connect to Telegram API';
+
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            showAlert('⚠️ ' + errorMessage, 'error');
+            document.getElementById('webhook-info').style.display = 'none';
+        } finally {
+            showLoading(false);
+        }
+    }
 </script>
 </body>
 </html>
