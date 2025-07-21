@@ -11,10 +11,7 @@ use Illuminate\Support\Facades\Http;
 class HomeController extends Controller
 {
 
-    public function hooks()
-    {
-        return view('webhook.index');
-    }
+
     /**
      * Create a new controller instance.
      *

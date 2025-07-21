@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\LogController;
 
-Route::get('/hooks', [App\Http\Controllers\HomeController::class, 'hooks']);
+Route::get('/hooks', [App\Http\Controllers\LogController::class, 'hooks']);
 Route::get('/logs', [LogController::class, 'index']);
 Route::get('/logs/{filename}', [LogController::class, 'show']);
 Route::delete('/logs/{filename}', [LogController::class, 'destroy']);

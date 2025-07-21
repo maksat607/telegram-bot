@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
+    public function hooks()
+    {
+        return view('webhook.index');
+    }
     public function index()
     {
         // Get all log files in the storage/logs directory
