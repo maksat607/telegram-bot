@@ -239,7 +239,7 @@
             <div class="form-group">
                 <label for="webhook-url">Webhook URL</label>
                 <input type="url" id="webhook-url" placeholder="https://yourapp.com/telegram/webhook"
-                       value="{{ url('api/telegram-bot') }}">
+                       value="{{ url('/telegram/webhook') }}">
             </div>
             <button class="btn btn-primary" onclick="setWebhook()">
                 Set Webhook
@@ -298,7 +298,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.post('/api/telegram/set-webhook', {
+            const response = await axios.post('/telegram/set-webhook', {
                 webhook_url: webhookUrl
             });
 
@@ -318,17 +318,28 @@
     async function getWebhookInfo() {
         try {
             showLoading(true);
-            const response = await axios.get('/api/telegram/get-webhook');
-
+            const response = await axios.get('/telegram/get-webhook');
 
             if (response.data.success) {
                 displayWebhookInfo(response.data.data);
                 showAlert('📊 Webhook information retrieved successfully!');
             } else {
                 showAlert('❌ ' + response.data.message, 'error');
+                // Hide webhook info section if there's an error
+                document.getElementById('webhook-info').style.display = 'none';
             }
         } catch (error) {
-            showAlert('❌ Error: ' + (error.response?.data?.message || error.message), 'error');
+            console.error('Webhook error:', error);
+            let errorMessage = 'Unknown error occurred';
+
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            showAlert('❌ Error: ' + errorMessage, 'error');
+            document.getElementById('webhook-info').style.display = 'none';
         } finally {
             showLoading(false);
         }
@@ -341,7 +352,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.delete('/api/telegram/delete-webhook');
+            const response = await axios.delete('/telegram/delete-webhook');
 
             if (response.data.success) {
                 showAlert('🗑️ Webhook deleted successfully!');
@@ -411,10 +422,40 @@
         webhookInfo.style.display = 'block';
     }
 
-    // Load webhook info on page load
+    // Load webhook info on page load with better error handling
     document.addEventListener('DOMContentLoaded', function() {
-        getWebhookInfo();
+        // Don't show success message on initial load
+        getWebhookInfoSilent();
     });
+
+    // Silent version for initial page load
+    async function getWebhookInfoSilent() {
+        try {
+            showLoading(true);
+            const response = await axios.get('/telegram/get-webhook');
+
+            if (response.data.success) {
+                displayWebhookInfo(response.data.data);
+            } else {
+                showAlert('⚠️ ' + response.data.message, 'error');
+                document.getElementById('webhook-info').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Initial webhook load error:', error);
+            let errorMessage = 'Failed to connect to Telegram API';
+
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            showAlert('⚠️ ' + errorMessage, 'error');
+            document.getElementById('webhook-info').style.display = 'none';
+        } finally {
+            showLoading(false);
+        }
+    }
 </script>
 </body>
 </html>
