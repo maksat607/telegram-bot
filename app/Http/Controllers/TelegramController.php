@@ -64,7 +64,7 @@ class TelegramController extends Controller
     public function handle(Request $request, Telegram $telegram)
     {
         extract($this->getInfo($request));
-        $this->requestContactForFeatures($request, $telegram);
+        $this->requestContactForFeature();
         $dataR = json_decode($request->getContent(), true);
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
