@@ -18,14 +18,11 @@ class CheckAuthenticated
 
 
         $token = $request->header('Authorization') ?? $this->getTokenFromCookies($request);
-        Log::info(
-            'CheckAuthenticated middleware - Token found',
-            ['token' => $token]);
 
         if (!$token ) {
             return redirect()->route('login.get');
         }
-
+Log::info(Cache::has($token));
 
         if (!Cache::has($token) ) {
             return redirect()->route('login.get');
