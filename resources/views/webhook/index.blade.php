@@ -298,7 +298,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.post('/telegram/set-webhook', {
+            const response = await axios.post('/api/telegram/set-webhook', {
                 webhook_url: webhookUrl
             });
 
@@ -318,7 +318,7 @@
     async function getWebhookInfo() {
         try {
             showLoading(true);
-            const response = await axios.get('/telegram/get-webhook');
+            const response = await axios.get('/api/telegram/get-webhook');
 
             if (response.data.success) {
                 displayWebhookInfo(response.data.data);
@@ -340,7 +340,7 @@
 
         try {
             showLoading(true);
-            const response = await axios.delete('/telegram/delete-webhook');
+            const response = await axios.delete('/api/telegram/delete-webhook');
 
             if (response.data.success) {
                 showAlert('🗑️ Webhook deleted successfully!');
