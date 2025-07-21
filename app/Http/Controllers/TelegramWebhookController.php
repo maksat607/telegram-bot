@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Exception;
 
@@ -40,6 +41,7 @@ class TelegramWebhookController extends Controller
     {
         try {
             $response = Telegram::getWebhookInfo();
+            Log::info(444444444);
 
             return response()->json([
                 'success' => true,
