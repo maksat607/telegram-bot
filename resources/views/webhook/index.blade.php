@@ -313,7 +313,7 @@
         try {
             showLoading(true);
             console.log('setWebhook: Sending POST request to /api/telegram/set-webhook with URL:', webhookUrl, 'and token:', token);
-            const response = await axios.post('/api/telegram/set-webhook', {
+            const response = await axios.post(APP_URL+'/api/telegram/set-webhook', {
                 webhook_url: webhookUrl
             }, {
                 headers: {
@@ -357,7 +357,7 @@
         try {
             showLoading(true);
             console.log('getWebhookInfo: Sending GET request to /api/telegram/get-webhook with token:', token);
-            const response = await axios.get('/api/telegram/get-webhook', {
+            const response = await axios.get(APP_URL+'/api/telegram/get-webhook', {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -405,7 +405,7 @@
         try {
             showLoading(true);
             console.log('deleteWebhook: Sending DELETE request to /api/telegram/delete-webhook with token:', token);
-            const response = await axios.delete('/api/telegram/delete-webhook', {
+            const response = await axios.delete(APP_URL+'/api/telegram/delete-webhook', {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
