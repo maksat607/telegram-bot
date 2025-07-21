@@ -318,7 +318,7 @@
     async function getWebhookInfo() {
         try {
             showLoading(true);
-            const response = await axios.get('/telegram/get-webhook');
+            const response = await axios.get('/api/telegram/get-webhook');
 
             if (response.data.success) {
                 displayWebhookInfo(response.data.data);
@@ -432,7 +432,7 @@
     async function getWebhookInfoSilent() {
         try {
             showLoading(true);
-            const response = await axios.get('/telegram/get-webhook');
+            const response = await axios.get('/api/telegram/get-webhook');
 
             if (response.data.success) {
                 displayWebhookInfo(response.data.data);
