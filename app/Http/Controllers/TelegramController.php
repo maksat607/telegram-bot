@@ -496,7 +496,7 @@ class TelegramController extends Controller
             'one_time_keyboard' => false
         ]);
 
-        $this->replyWithMessage([
+        Telegram::sendMessage([
             'chat_id' => $telegram_chat_id,
             'text' => "Эта функция требует верификации номера телефона.",
             'reply_markup' => $phoneReplyMarkup,
