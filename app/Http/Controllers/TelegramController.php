@@ -370,6 +370,9 @@ class TelegramController extends Controller
 
     public function handleButtons(Request $request, $callbackData,)
     {
+        Log::info(
+            'handling buttons: ' . json_encode($request->input('callback_query.data')) . ' from: ' . $request->input('callback_query.from.id')
+        );
         $chatId = $request->input('callback_query.message.chat.id');
         $this->telegram->sendMessage($chatId, 'clicked: ' . $callbackData);
 
@@ -485,6 +488,7 @@ class TelegramController extends Controller
     }
     private function requestContactForFeature($telegram_chat_id)
     {
+        Log::info('Requesting contact for feature from Telegram user: ' . $telegram_chat_id);
         $keyboard = [
             [
                 [
