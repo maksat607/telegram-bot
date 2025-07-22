@@ -85,8 +85,8 @@ class TelegramController extends Controller
                 Log::info('Video');
                 return $this->handleVideo($request);
             case $callbackQuery = $request->input('callback_query'):
-
-                return $this->handleButtons($request, $callbackQuery['data']);
+                    return ;
+//                return $this->handleButtons($request, $callbackQuery['data']);
             default:
                 Log::info('Text');
                 Log::info($message);
@@ -402,6 +402,8 @@ class TelegramController extends Controller
     public function handleTextMessages(Request $request)
     {
         extract($this->getInfo($request));
+        $this->checkCommand($message, $chatId);
+
         Log::info(json_encode($this->getInfo($request)));
         if ($chatId){
             $customer = $this->firstOrCreate($request, $chatId);
@@ -415,6 +417,26 @@ class TelegramController extends Controller
         }
 
     }
+    public function checkCommand($message, $chatId)
+    {
+        if (str_starts_with($message, '/')) {
+            $command = explode(' ', $message)[0];
+            switch ($command) {
+                case '/start':
+                    $this->telegram->sendMessage($chatId, 'Welcome to our service! How can I assist you today?');
+                    break;
+                case '/help':
+                    $this->telegram->sendMessage($chatId, 'Here are the commands you can use: /start, /help, /sharecontact');
+                    break;
+                case '/sharecontact':
+                    $this->requestContactForFeature($chatId);
+                    break;
+                default:
+                    $this->telegram->sendMessage($chatId, 'Unknown command. Please try again.');
+            }
+        }
+    }
+
 
     public function upload(Request $request, Customer $customer, Telegram $telegram)
     {
