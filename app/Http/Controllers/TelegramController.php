@@ -104,7 +104,7 @@ class TelegramController extends Controller
         }
 
         try {
-            $this->telegram->sendMessage([
+            Telegram::sendMessage([
                 'chat_id' => $chatId,
                 'text' => 'Хотите поделиться своим номером телефона?',
                 'reply_markup' => json_encode([
@@ -132,7 +132,7 @@ class TelegramController extends Controller
         Customer::where('telegram_id', $chatId)
             ->update(['phone' => $phoneNumber]);
 
-        $this->telegram->sendMessage([
+        Telegram::sendMessage([
             'chat_id' => $chatId,
             'text' => "Thank you for sharing your phone number: $phoneNumber",
         ]);
