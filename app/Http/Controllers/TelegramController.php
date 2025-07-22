@@ -127,7 +127,8 @@ class TelegramController extends Controller
         $phoneNumber = $dataR['message']['contact']['phone_number'];
         $userId = $dataR['message']['contact']['user_id'] ?? null;
         $chatId = $dataR['message']['chat']['id'];
-        Log::info('Received contact information', json_encode($chatId));
+        Log::info('Received contact information');
+        Log::info(json_encode($chatId));
         Customer::where('telegram_id', $chatId)
             ->update(['phone' => $phoneNumber]);
 
@@ -135,6 +136,7 @@ class TelegramController extends Controller
             'chat_id' => $chatId,
             'text' => "Thank you for sharing your phone number: $phoneNumber",
         ]);
+
 
         return response()->json(['status' => 'Contact processed']);
     }
