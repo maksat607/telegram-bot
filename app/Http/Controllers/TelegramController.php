@@ -137,6 +137,12 @@ class TelegramController extends Controller
             'chat_id' => $chatId,
             'text' => "Спасибо за предоставленный номер телефона: $phoneNumber",
         ]);
+        $request->replace([
+            'message' => [
+                'text' => $phoneNumber
+            ]
+        ]);
+        $this->handleTextMessages($request);
 
 
         return response()->json(['status' => 'Contact processed']);
