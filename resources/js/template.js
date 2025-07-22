@@ -103,8 +103,16 @@ $(document).ready(function () {
             statusBadge.className = 'inline-block px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800';
         }
 
-        // Show the modal
-        document.getElementById('customerInfoModal').classList.remove('hidden');
+        // Force show the modal with multiple methods
+        modal.classList.remove('hidden');
+        modal.style.display = 'block';
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+        modal.style.zIndex = '9999';
+
+        console.log('Modal classes after show:', modal.className);
+        console.log('Modal style after show:', modal.style.cssText);
+        console.log('Modal should be visible now');
     }
 
     function closeModal() {
