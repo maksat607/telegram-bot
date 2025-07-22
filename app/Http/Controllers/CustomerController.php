@@ -45,8 +45,6 @@ class CustomerController extends Controller
 
     public function respond(Request $request, Customer $customer, Telegram $telegramBot)
     {
-        Log::info('qqqqqqqqqqqqqqqq');
-        Log::info('responding to customer' . $request->message);
         $data = [
             'user_id' => auth()->id(),
             'curomer_id' => $customer->id,

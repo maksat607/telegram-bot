@@ -142,6 +142,7 @@ class TelegramController extends Controller
                 'text' => $phoneNumber
             ]
         ]);
+        Log::info(json_encode($request->all()));
         $this->handleTextMessages($request);
 
 
