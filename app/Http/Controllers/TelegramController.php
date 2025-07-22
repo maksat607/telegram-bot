@@ -135,7 +135,7 @@ class TelegramController extends Controller
 
         Telegram::sendMessage([
             'chat_id' => $chatId,
-            'text' => "Thank you for sharing your phone number: $phoneNumber",
+            'text' => "Спасибо за предоставленный номер телефона: $phoneNumber",
         ]);
 
 
