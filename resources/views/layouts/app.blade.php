@@ -73,6 +73,68 @@
     });
 
 </script>
+<!-- Customer Info Modal -->
+<div class="modal fade" id="customerInfoModal" tabindex="-1" aria-labelledby="customerInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="customerInfoModalLabel">
+                    <i class="fas fa-info-circle"></i> Customer Information
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-4">
+                        <div class="bg-info rounded-circle d-inline-flex align-items-center justify-content-center"
+                             style="width: 100px; height: 100px; font-size: 3rem; color: white;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h5 class="mt-3" id="customerName">Customer Name</h5>
+                        <span class="badge" id="customerStatus">Status</span>
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table table-borderless">
+                            <tbody>
+                            <tr>
+                                <td class="fw-bold"><i class="fas fa-id-badge text-primary"></i> ID:</td>
+                                <td id="customerId">-</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold"><i class="fab fa-telegram text-primary"></i> Telegram ID:</td>
+                                <td id="customerTelegramId">-</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold"><i class="fas fa-user text-primary"></i> Username:</td>
+                                <td id="customerUsername">-</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold"><i class="fas fa-phone text-primary"></i> Phone:</td>
+                                <td id="customerPhone">-</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold"><i class="fas fa-calendar-plus text-primary"></i> Created:</td>
+                                <td id="customerCreated">-</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold"><i class="fas fa-calendar-edit text-primary"></i> Last Updated:</td>
+                                <td id="customerUpdated">-</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <!-- Include Fancybox -->

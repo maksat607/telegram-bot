@@ -14,6 +14,9 @@ class UserController extends Controller
         $customer->active = !$customer->active;
         $customer->save();
     }
+    public function info(Customer $customer){
+        return $customer;
+    }
     public function delete(Customer $customer){
         $customer->notifications()->delete();
         $customer->delete();

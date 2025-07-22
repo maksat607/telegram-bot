@@ -68,12 +68,62 @@ $(document).ready(function () {
     });
 });
 $(document).ready(function () {
+
+
+    $('body').on('click', '.option.about', function () {
+        var customer = $('.chatButton.active').data('id');
+        axios.get(`${APP_URL}/user/${customer}/info`).then(response => {
+            // Populate modal with customer info
+            showCustomerInfo(response.data);
+        }).catch(error => {
+            console.error('Error fetching customer info:', error);
+        });
+    });
+
+    function showCustomerInfo(customer) {
+        // Populate modal fields
+        document.getElementById('customerId').textContent = customer.id || '-';
+        document.getElementById('customerTelegramId').textContent = customer.telegram_id || '-';
+        document.getElementById('customerName').textContent = customer.fullname || 'Unknown Customer';
+        document.getElementById('customerPhone').textContent = customer.phone || 'No phone number';
+        document.getElementById('customerUsername').textContent = customer.username ? '@' + customer.username : 'No username';
+        document.getElementById('customerCreated').textContent = formatDate(customer.created_at);
+        document.getElementById('customerUpdated').textContent = formatDate(customer.updated_at);
+
+        // Update status badge
+        const statusBadge = document.getElementById('customerStatus');
+        if (customer.active) {
+            statusBadge.textContent = 'Active';
+            statusBadge.className = 'badge bg-success';
+        } else {
+            statusBadge.textContent = 'Inactive';
+            statusBadge.className = 'badge bg-secondary';
+        }
+
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('customerInfoModal'));
+        modal.show();
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return 'Not available';
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
     $('body').on('click', '.option.block', function () {
         var customer = $('.chatButton.active').data('id');
         axios.get(`${APP_URL}/user/${customer}/toggle`).then(response => {
             location.reload();
         });
     });
+
     $('body').on('click', '.option.delete', function () {
         var customer = $('.chatButton.active').data('id');
         axios.get(`${APP_URL}/user/${customer}/delete`).then(response => {

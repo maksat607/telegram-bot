@@ -25,6 +25,7 @@ Route::post('login', [\App\Http\Controllers\ApiLoginController::class, 'login'])
     Route::post('/upload-audio/{customer}', [\App\Http\Controllers\TelegramController::class, 'uploadAudio'])->name('api.record-voice');
     Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users')->name('api.users');
     Route::get('user/{customer}/toggle', [\App\Http\Controllers\UserController::class, 'toggle'])->name('api.toggle');
+    Route::get('user/{customer}/info', [\App\Http\Controllers\UserController::class, 'info'])->name('api.info');
     Route::get('user/{customer}/delete', [\App\Http\Controllers\UserController::class, 'delete'])->name('api.delete');
     Route::get('chat', [\App\Http\Controllers\CustomerController::class, 'chat'])->name('api.chat');
     Route::get('event/{customer}', [\App\Http\Controllers\CustomerController::class, 'event'])->name('api.event');
