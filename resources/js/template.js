@@ -73,7 +73,6 @@ $(document).ready(function () {
     $('body').on('click', '.option.about', function () {
         var customer = $('.chatButton.active').data('id');
         axios.get(`${APP_URL}/user/${customer}/info`).then(response => {
-            // Populate modal with customer info
             showCustomerInfo(response.data);
         }).catch(error => {
             console.error('Error fetching customer info:', error);
@@ -94,15 +93,18 @@ $(document).ready(function () {
         const statusBadge = document.getElementById('customerStatus');
         if (customer.active) {
             statusBadge.textContent = 'Active';
-            statusBadge.className = 'badge bg-success';
+            statusBadge.className = 'inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800';
         } else {
             statusBadge.textContent = 'Inactive';
-            statusBadge.className = 'badge bg-secondary';
+            statusBadge.className = 'inline-block px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800';
         }
 
         // Show the modal
-        const modal = new bootstrap.Modal(document.getElementById('customerInfoModal'));
-        modal.show();
+        document.getElementById('customerInfoModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('customerInfoModal').classList.add('hidden');
     }
 
     function formatDate(dateString) {
@@ -116,6 +118,13 @@ $(document).ready(function () {
             minute: '2-digit'
         });
     }
+
+// Close modal when clicking outside of it
+    document.getElementById('customerInfoModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
 
     $('body').on('click', '.option.block', function () {
         var customer = $('.chatButton.active').data('id');

@@ -74,65 +74,90 @@
 
 </script>
 <!-- Customer Info Modal -->
-<div class="modal fade" id="customerInfoModal" tabindex="-1" aria-labelledby="customerInfoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="customerInfoModalLabel">
-                    <i class="fas fa-info-circle"></i> Customer Information
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4 text-center mb-4">
-                        <div class="bg-info rounded-circle d-inline-flex align-items-center justify-content-center"
-                             style="width: 100px; height: 100px; font-size: 3rem; color: white;">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h5 class="mt-3" id="customerName">Customer Name</h5>
-                        <span class="badge" id="customerStatus">Status</span>
+<div id="customerInfoModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-4 bg-blue-500 text-white rounded-t-md">
+            <h3 class="text-lg font-semibold">
+                <i class="fas fa-info-circle mr-2"></i>Customer Information
+            </h3>
+            <button onclick="closeModal()" class="text-white hover:text-gray-200 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6">
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Customer Avatar Section -->
+                <div class="md:w-1/3 text-center">
+                    <div class="w-24 h-24 mx-auto bg-blue-500 rounded-full flex items-center justify-center text-white text-3xl mb-4">
+                        <i class="fas fa-user"></i>
                     </div>
-                    <div class="col-md-8">
-                        <table class="table table-borderless">
-                            <tbody>
-                            <tr>
-                                <td class="fw-bold"><i class="fas fa-id-badge text-primary"></i> ID:</td>
-                                <td id="customerId">-</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><i class="fab fa-telegram text-primary"></i> Telegram ID:</td>
-                                <td id="customerTelegramId">-</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><i class="fas fa-user text-primary"></i> Username:</td>
-                                <td id="customerUsername">-</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><i class="fas fa-phone text-primary"></i> Phone:</td>
-                                <td id="customerPhone">-</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><i class="fas fa-calendar-plus text-primary"></i> Created:</td>
-                                <td id="customerCreated">-</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><i class="fas fa-calendar-edit text-primary"></i> Last Updated:</td>
-                                <td id="customerUpdated">-</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <h4 class="text-xl font-semibold mb-2" id="customerName">Customer Name</h4>
+                    <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full" id="customerStatus">Status</span>
+                </div>
+
+                <!-- Customer Details Section -->
+                <div class="md:w-2/3">
+                    <div class="space-y-4">
+                        <div class="flex border-b border-gray-200 pb-2">
+                            <div class="w-1/3 font-semibold text-gray-700">
+                                <i class="fas fa-id-badge text-blue-500 mr-2"></i>ID:
+                            </div>
+                            <div class="w-2/3 text-gray-900" id="customerId">-</div>
+                        </div>
+
+                        <div class="flex border-b border-gray-200 pb-2">
+                            <div class="w-1/3 font-semibold text-gray-700">
+                                <i class="fab fa-telegram text-blue-500 mr-2"></i>Telegram ID:
+                            </div>
+                            <div class="w-2/3 text-gray-900" id="customerTelegramId">-</div>
+                        </div>
+
+                        <div class="flex border-b border-gray-200 pb-2">
+                            <div class="w-1/3 font-semibold text-gray-700">
+                                <i class="fas fa-user text-blue-500 mr-2"></i>Username:
+                            </div>
+                            <div class="w-2/3 text-gray-900" id="customerUsername">-</div>
+                        </div>
+
+                        <div class="flex border-b border-gray-200 pb-2">
+                            <div class="w-1/3 font-semibold text-gray-700">
+                                <i class="fas fa-phone text-blue-500 mr-2"></i>Phone:
+                            </div>
+                            <div class="w-2/3 text-gray-900" id="customerPhone">-</div>
+                        </div>
+
+                        <div class="flex border-b border-gray-200 pb-2">
+                            <div class="w-1/3 font-semibold text-gray-700">
+                                <i class="fas fa-calendar-plus text-blue-500 mr-2"></i>Created:
+                            </div>
+                            <div class="w-2/3 text-gray-900" id="customerCreated">-</div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="w-1/3 font-semibold text-gray-700">
+                                <i class="fas fa-calendar-edit text-blue-500 mr-2"></i>Last Updated:
+                            </div>
+                            <div class="w-2/3 text-gray-900" id="customerUpdated">-</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times"></i> Close
-                </button>
-            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex justify-end p-4 border-t border-gray-200">
+            <button onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors">
+                <i class="fas fa-times mr-2"></i>Close
+            </button>
         </div>
     </div>
 </div>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
