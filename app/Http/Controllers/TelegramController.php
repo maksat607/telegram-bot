@@ -65,6 +65,7 @@ class TelegramController extends Controller
     {
         extract($this->getInfo($request));
         $dataR = json_decode($request->getContent(), true);
+        Log::info($request->getContent());
         Storage::disk('local')->append('json.txt', json_encode(($dataR)));
 
         switch (true) {
