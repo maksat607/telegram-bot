@@ -71,8 +71,10 @@ $(document).ready(function () {
 
 
     $('body').on('click', '.option.about', function () {
+        console.log('About option clicked');
         var customer = $('.chatButton.active').data('id');
         axios.get(`${APP_URL}/user/${customer}/info`).then(response => {
+            console.log('Customer info response:', response.data);
             showCustomerInfo(response.data);
         }).catch(error => {
             console.error('Error fetching customer info:', error);
