@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import * as Console from "console";
 window.$ = $;
 $(document).ready(function () {
     $('.pick').click(function () {
@@ -74,7 +75,7 @@ $(document).ready(function () {
         console.log('About option clicked');
         var customer = $('.chatButton.active').data('id');
         axios.get(`${APP_URL}/user/${customer}/info`).then(response => {
-            console.log('Customer info response:', response.data);
+            // console.log('Customer info response:', response.data);
             showCustomerInfo(response.data);
         }).catch(error => {
             console.error('Error fetching customer info:', error);
@@ -83,6 +84,7 @@ $(document).ready(function () {
 
     function showCustomerInfo(customer) {
         // Populate modal fields
+        console.log('Customer data:', customer);
         document.getElementById('customerId').textContent = customer.id || '-';
         document.getElementById('customerTelegramId').textContent = customer.telegram_id || '-';
         document.getElementById('customerName').textContent = customer.fullname || 'Unknown Customer';
