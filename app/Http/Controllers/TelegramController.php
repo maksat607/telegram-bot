@@ -137,13 +137,19 @@ class TelegramController extends Controller
             'chat_id' => $chatId,
             'text' => "Спасибо за предоставленный номер телефона: $phoneNumber",
         ]);
-        $request->replace([
-            'message' => [
-                'text' => $phoneNumber
-            ]
-        ]);
-        Log::info(json_encode($request->all()));
-        $this->handleTextMessages($request);
+
+
+        $customer = Customer::where('telegram_id', $chatId)->first();
+        if ($customer){
+            $data = [
+                'user_id' => 0,
+                'curomer_id' => $customer->id,
+                'message' => $phoneNumber,
+                'self' => 1
+            ];
+            $this->notify($customer, $data);
+        }
+
 
 
         return response()->json(['status' => 'Contact processed']);
