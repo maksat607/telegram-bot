@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <div id="error-message" class="alert alert-danger d-none"></div>
                         <form id="loginForm">
-{{--                            <div class="row mb-3">--}}
+                            <div class="row mb-3">
 {{--                                <label for="phone" class="col-md-4 col-form-label text-md-end">Phone</label>--}}
 {{--                                <div class="col-md-6">--}}
 {{--                                    <input id="phone" type="phone" class="form-control" name="phone" required autofocus>--}}
@@ -34,15 +34,15 @@
 {{--                            </div>--}}
 
 {{--                            <div class="row mb-0">--}}
-                            <a href="https://tg.kuleshov.studio/telegram/login?redirect={{ urlencode(route('login.telegram')) }}"
-                               style="display: inline-block; background-color: #0088cc; color: white; padding: 10px 20px;
-          border-radius: 5px; text-decoration: none; font-family: Arial, sans-serif;">
-                                <img src="https://telegram.org/img/t_logo.svg" alt="Telegram Logo"
-                                     style="width: 24px; vertical-align: middle; margin-right: 10px;">
-                                <span style="vertical-align: middle;">Войти через Telegram</span>
-                            </a>
+
                                 <div class="col-md-8 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">Login</button>
+                                    <a href="https://tg.kuleshov.studio/telegram/login?redirect={{ urlencode(route('login.telegram')) }}"
+                                       style="display: inline-block; background-color: #0088cc; color: white; padding: 10px 20px;
+          border-radius: 5px; text-decoration: none; font-family: Arial, sans-serif;">
+                                        <img src="https://telegram.org/img/t_logo.svg" alt="Telegram Logo"
+                                             style="width: 24px; vertical-align: middle; margin-right: 10px;">
+                                        <span style="vertical-align: middle;">Войти через Telegram</span>
+                                    </a>
                                 </div>
                             </div>
                         </form>
