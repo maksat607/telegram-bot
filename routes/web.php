@@ -19,7 +19,7 @@ Route::get('/hooks', [App\Http\Controllers\LogController::class, 'hooks']);
 Route::get('/logs', [LogController::class, 'index']);
 Route::get('/logs/{filename}', [LogController::class, 'show']);
 Route::delete('/logs/{filename}', [LogController::class, 'destroy']);
-
+Route::get('/login/telegram-widget', [\App\Http\Controllers\AuthController::class, 'handleTelegramCallback'])->name('login.telegram');
 
 
 //
@@ -31,12 +31,15 @@ Route::get('/login', [\App\Http\Controllers\ApiLoginController::class, 'showLogi
 Route::post('/login', [\App\Http\Controllers\ApiLoginController::class, 'login'])->name('login.post');
 //
 //// Custom logout route
-Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->post('/logout', [\App\Http\Controllers\ApiLoginController::class, 'logout'])->name('logout.post');
+//Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)
+Route::middleware(['web'])
+    ->post('/logout', [\App\Http\Controllers\ApiLoginController::class, 'logout'])->name('logout.post');
 //
 //// You can also add routes for registration if needed
 //
 //
-Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->get('/',
+//Route::middleware(\App\Http\Middleware\CheckAuthenticated::class)->get('/',
+Route::middleware(['web'])->get('/',
     [App\Http\Controllers\HomeController::class, 'index']
 )->name('home');
 
