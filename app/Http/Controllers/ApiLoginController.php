@@ -16,7 +16,7 @@ class ApiLoginController extends Controller
     // Show custom login form
     public function showLoginForm()
     {
-        dd('login');
+
         Log::info('showLoginForm');
         return view('auth.login'); // Point to your custom login view
     }

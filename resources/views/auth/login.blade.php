@@ -39,6 +39,13 @@
                                 </div>
                             </div>
                         </form>
+                        <a href="https://tg.kuleshov.studio/telegram/login?redirect=https://ваш-сайт.ru/auth/telegram-callback"
+                           style="display: inline-block; background-color: #0088cc; color: white; padding: 10px 20px;
+          border-radius: 5px; text-decoration: none; font-family: Arial, sans-serif;">
+                            <img src="https://telegram.org/img/t_logo.svg" alt="Telegram Logo"
+                                 style="width: 24px; vertical-align: middle; margin-right: 10px;">
+                            <span style="vertical-align: middle;">Войти через Telegram</span>
+                        </a>
                     </div>
                 </div>
             </div>
