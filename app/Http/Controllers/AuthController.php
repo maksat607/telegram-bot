@@ -45,7 +45,7 @@ class AuthController extends Controller
                 // Авторизация пользователя
                 Auth::login($user);
 
-                return redirect('/dashboard');
+                return redirect('/');
             }
         } catch (\Exception $e) {
             \Log::error('Ошибка аутентификации Telegram: ' . $e->getMessage());
