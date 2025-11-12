@@ -25,6 +25,8 @@ Route::delete('/logs/{filename}', [LogController::class, 'destroy']);
 //
 //
 ////// Custom login routes
+///
+
 Route::get('/login', [\App\Http\Controllers\ApiLoginController::class, 'showLoginForm'])->name('login.get');
 Route::post('/login', [\App\Http\Controllers\ApiLoginController::class, 'login'])->name('login.post');
 //
