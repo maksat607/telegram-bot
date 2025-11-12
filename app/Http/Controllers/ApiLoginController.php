@@ -24,7 +24,6 @@ class ApiLoginController extends Controller
     // Handle login form submission
     public function login(Request $request)
     {
-        dd('login');
         Log::info('login');
 //        Log::info(json_encode($request->all()));
         $request->validate([
@@ -67,10 +66,6 @@ class ApiLoginController extends Controller
                 Log::info('\auth()->user()');
                 Log::info(\auth()->user());
 
-
-
-
-                // Save the token in the cache
                 $token = $data['token'];
                 Cache::put($token, $tempUser, now()->addHours(1222)); // Save the token for 1 hour
 
