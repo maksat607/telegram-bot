@@ -24,6 +24,7 @@ class ApiLoginController extends Controller
     // Handle login form submission
     public function login(Request $request)
     {
+        dd('login');
         Log::info('login');
 //        Log::info(json_encode($request->all()));
         $request->validate([
